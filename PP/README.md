@@ -1,12 +1,15 @@
 # 3dgp-ex-plague-apocalypse
 
 Wat testen: Kaarten mechanic
+
 Spel: 
+
 Schaken maar elke beurt neem je 3 random kaarten en kies je er 1 uit en legt de andere weg.
 Je gebruikt deze direct als het jouw beurt is.
 
 
 Regels:
+
 Elke beurt krijg jeeen keuze tussen 3 random kaarten. Deze kaart gebruik op het begin van uw beurt.
 
 Harte (1-7): pion extra leven, maar mag niet meer bewegen tot extra leven weg is
