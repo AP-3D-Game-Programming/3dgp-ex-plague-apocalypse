@@ -24,4 +24,7 @@ Bijvoorbeeld:
 
 Wat het spel uniek maakt: De speler kiest om de zoveel rondes om een soort power up te krijgen dat grote voor en nadelen kan hebben. Dit zorgt wel dat het spel wel grotendeels kan veranderen en uniek blijft op basis wat je pakt.
 
-
+Games die erop lijken:
+- Call of duty Zombies
+- Vampire survivors
+- Megabonk
