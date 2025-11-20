@@ -17,7 +17,7 @@ Harte (1-7): pion extra leven, maar mag niet meer bewegen tot extra leven weg is
 
 Harte (8+): pion reviven, volgende beurt maar 2 kaarten kiezen ipv 3
 
-Ruit(1-7): 2 keer bewegen achter elkaar met 1 pion, pion mag volgende beurt niet gebruikt worden
+Ruit(1-7): 2 keer bewegen achter elkaar met 1 pion, pion mag volgende beurt niet gebruikt worden (Mag GEEN schaakmat maken)
 
 Ruit (8+): pion word koninging voor 1 beurd, pion gaat volgende beurt dood.
 
