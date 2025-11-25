@@ -6,7 +6,7 @@ Spel:
 
 Schaken maar elke beurt neem je 3 random kaarten en kies je er 1 uit en legt de andere weg.
 Je gebruikt deze direct als het jouw beurt is voor je uw pion beweegt.
-Elke speler krijgt timer van 7 min voor al hun beurten.
+Elke speler krijgt timer van  min voor al hun beurten.
 
 
 Regels:
