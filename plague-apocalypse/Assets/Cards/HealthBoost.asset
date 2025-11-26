@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2b927d19384024eb63656a984bf75a, type: 3}
+  m_Name: HealthBoost
+  m_EditorClassIdentifier: Assembly-CSharp::Card
+  cardName: HealthBoost
+  description: Gain 50 Health
+  target: 0
+  playerHealthBonus: 50
+  playerFireRateMultiplier: 1
+  playerBouncingBullets: 0
+  zombieHealthBonus: 0
+  zombieHealthScaleMultiplier: 1
+  zombieSpeedBonus: 0
+  zombieSpeedScaleMultiplier: 1
+  zombieFireRateBonus: 0
+  eliteHealthBonus: 0
+  eliteHealthScaleMultiplier: 1
+  eliteSpeedBonus: 0
+  spawnEliteNextRound: 0
