@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2b927d19384024eb63656a984bf75a, type: 3}
+  m_Name: Elite buff
+  m_EditorClassIdentifier: Assembly-CSharp::Card
+  cardName: Elite problem
+  description: '+100 Health
+
+    +5 Regen
+
+    +1 Luck
+
+
+
+    +50% Health
+
+    +50%
+    elite firerate
+
+    +2x Elite damage
+
+    +30%Phase 2 speed
+
+    Spawn 1 elite
+    next wave
+
+
+'
+  target: 3
+  rarity: 0
+  playerHealthBonus: 100
+  playerRegenBonus: 5
+  playerFireRateMultiplier: 1
+  lifeStealAmount: 1
+  playerBouncingBullets: 0
+  playerLuckBonus: 0
+  zombieHealthPercentIncrease: 0
+  zombieSpeedPercentIncrease: 0
+  zombieSpeedFlatBonus: 0
+  zombieFireRateBonus: 0
+  forceElitesNextRound: 1
+  eliteHealthPercentIncrease: 0.5
+  eliteSpeedPercentIncrease: 0
+  eliteFireRateMultiplier: 1.5
+  elitePhase2HealthTriggerMultiplier: 1
+  elitePhase2SpeedMultiplier: 1.3
+  eliteDamageMultiplier: 2
+  shotPointsMultiplier: 1
+  deathPointsMultiplier: 1
+  maxShootPointsIncrease: 0

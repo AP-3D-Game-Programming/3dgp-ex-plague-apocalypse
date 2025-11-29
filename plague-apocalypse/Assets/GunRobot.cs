@@ -16,7 +16,10 @@ public class GunRobot : MonoBehaviour
     public float hoverSmoothness = 2f; // how fast it adjusts height
     [Header("Effects")]
     public ParticleSystem shootEffect;
-
+    [Header("Points")]
+    public int pointsPerShot = 10;
+    public int pointsOnDeath = 100;
+    private int accumulatedPoints = 0;
     [HideInInspector] public RoundManager roundManager;
 
     private Transform player;
@@ -112,6 +115,16 @@ public class GunRobot : MonoBehaviour
         if (isDead) return;
 
         currentHealth -= damage;
+        if (accumulatedPoints < PlayerStats.Instance.maxShootPointsPerEnemy)
+        {
+            int pointsToGive = Mathf.Min(
+                Mathf.RoundToInt(pointsPerShot * PlayerStats.Instance.shotPointsMultiplier),
+                PlayerStats.Instance.maxShootPointsPerEnemy - accumulatedPoints
+            );
+
+            accumulatedPoints += pointsToGive;
+            PlayerStats.Instance.AddPoints(pointsToGive);
+        }
         if (currentHealth <= 0)
             Die();
     }
@@ -119,6 +132,9 @@ public class GunRobot : MonoBehaviour
     private void Die()
     {
         isDead = true;
+        //points
+        int pointsAwarded = Mathf.RoundToInt(pointsOnDeath * PlayerStats.Instance.deathPointsMultiplier);
+        PlayerStats.Instance.AddPoints(pointsAwarded);
 
         // Optional: play death animation or effects here
         Destroy(gameObject, 2f);

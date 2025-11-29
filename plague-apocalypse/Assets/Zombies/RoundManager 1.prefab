@@ -1,0 +1,186 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7694066243827524388
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4260478912151576284}
+  - component: {fileID: 4597928747175078859}
+  m_Layer: 0
+  m_Name: RoundManager 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4260478912151576284
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7694066243827524388}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.42582, y: 0.00001, z: 6.88898}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4597928747175078859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7694066243827524388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54c5c23607b191f45a602bf406ee81c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  currentRound: 1
+  baseEnemies: 5
+  playerLuck: 1
+  zombieTypes:
+  - typeName: Normal
+    prefab: {fileID: 1384917990484669054, guid: 717afd7973a80014b8302c25a36f4f82, type: 3}
+    baseHealth: 80
+    maxHealth: 500000
+    baseSpeed: 3
+    maxSpeed: 10
+    unlockRound: 1
+    initialSpawnChance: 1
+    spawnIncreasePerRound: 0
+    maxSpawnChance: 1
+    isFlying: 0
+    flyingHeight: 5
+    baseFireRate: 1
+    maxFireRate: 5
+    currentFireRate: 0
+    currentHealth: 0
+    currentSpeed: 0
+  - typeName: Speedy
+    prefab: {fileID: 4697678177311111914, guid: aa28e67879ee1aa4ca4ee40a02d02dab, type: 3}
+    baseHealth: 50
+    maxHealth: 100000
+    baseSpeed: 5
+    maxSpeed: 15
+    unlockRound: 2
+    initialSpawnChance: 0.5
+    spawnIncreasePerRound: 0.05
+    maxSpawnChance: 0.75
+    isFlying: 0
+    flyingHeight: 5
+    baseFireRate: 1
+    maxFireRate: 5
+    currentFireRate: 0
+    currentHealth: 0
+    currentSpeed: 0
+  - typeName: Slow
+    prefab: {fileID: 1384917990484669054, guid: 3a22d2a10eba58547a9b052e82afd71b, type: 3}
+    baseHealth: 200
+    maxHealth: 99999
+    baseSpeed: 1
+    maxSpeed: 8
+    unlockRound: 4
+    initialSpawnChance: 0.3
+    spawnIncreasePerRound: 0.05
+    maxSpawnChance: 0.6
+    isFlying: 0
+    flyingHeight: 5
+    baseFireRate: 1
+    maxFireRate: 5
+    currentFireRate: 0
+    currentHealth: 0
+    currentSpeed: 0
+  - typeName: Drone
+    prefab: {fileID: 195630857287291579, guid: 49d65d52f64205848bb2256f182bcccf, type: 3}
+    baseHealth: 500
+    maxHealth: 20000
+    baseSpeed: 3
+    maxSpeed: 10
+    unlockRound: 7
+    initialSpawnChance: 0.2
+    spawnIncreasePerRound: 0.05
+    maxSpawnChance: 0.5
+    isFlying: 1
+    flyingHeight: 10
+    baseFireRate: 10
+    maxFireRate: 20
+    currentFireRate: 0
+    currentHealth: 0
+    currentSpeed: 0
+  eliteTypes:
+  - typeName: ToiletMech
+    prefab: {fileID: 1956301178338429845, guid: cc838d7dee55c4549a86e78072091a87, type: 3}
+    unlockRound: 12
+    initialSpawnChance: 0.01
+    spawnIncreasePerRound: 0.05
+    maxSpawnChance: 0.4
+    guaranteedRounds: 0c00000014000000190000001e0000001f000000
+    baseHealth: 5000
+    maxHealth: 990000
+    baseSpeed: 3
+    maxSpeed: 5
+    currentHealth: 0
+    currentSpeed: 0
+  - typeName: MECH
+    prefab: {fileID: 5681999435274990917, guid: ec6e06388d12aa14181453b357ef0805, type: 3}
+    unlockRound: 18
+    initialSpawnChance: 0.01
+    spawnIncreasePerRound: 0.01
+    maxSpawnChance: 0.3
+    guaranteedRounds: 12000000160000001b0000001e0000001f00000032000000
+    baseHealth: 10000
+    maxHealth: 9990000
+    baseSpeed: 1
+    maxSpeed: 5
+    currentHealth: 0
+    currentSpeed: 0
+  spawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  spawnRange: 80
+  maxZombiesOnScreen: 50
+  spawnInterval: 0.8
+  roundText: {fileID: 0}
+  zombiesRemainingText: {fileID: 0}
+  healthIncrement: 20
+  speedIncrement: 0.2
+  fireRateIncrement: 0.15
+  globalEnemyHealthMultiplier: 1.1
+  globalEnemySpeedMultiplier: 1.1
+  globalEliteHealthMultiplier: 1.1
+  globalEliteSpeedMultiplier: 1.1
+  eliteHealthIncrement: 50
+  eliteSpeedIncrement: 0.3
+  globalEliteFireRateMultiplier: 1.1
+  globalEliteDamageMultiplier: 1.1
+  globalElitePhase2HealthTriggerMultiplier: 1.1
+  globalElitePhase2SpeedMultiplier: 1.1
+  playerTransform: {fileID: 0}
+  allCards:
+  - {fileID: 11400000, guid: 1415d3322ef5c5c45ba27c6174f385e3, type: 2}
+  - {fileID: 11400000, guid: 8fca3cb046c128247ad1d8967ddc4fd7, type: 2}
+  - {fileID: 11400000, guid: fa73a7b9aff29364282574a09fdfa2d7, type: 2}
+  - {fileID: 11400000, guid: 23f9195fe425d22478c547b534f55ed4, type: 2}
+  - {fileID: 11400000, guid: 3f05c59728d12c14ca033cb2caf84572, type: 2}
+  - {fileID: 11400000, guid: cecb6aeedf9979c4fb826161d2a66817, type: 2}
+  - {fileID: 11400000, guid: 0b2d0d4e39465674fa91bcf0f84da0de, type: 2}
+  - {fileID: 11400000, guid: ae38b273ce99754429e3ad10bb660f2f, type: 2}
+  - {fileID: 11400000, guid: 2292834e1e0a1314c99e0819a6b383ed, type: 2}
+  - {fileID: 11400000, guid: 49a81f1f7ae039046a7f1d05e37cefdd, type: 2}
+  - {fileID: 11400000, guid: f8299c7df22af864ea3917f68b5060ed, type: 2}
+  - {fileID: 11400000, guid: 76c1dd63a805cd040a0f5840b8626587, type: 2}

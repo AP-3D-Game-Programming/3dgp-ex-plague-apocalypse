@@ -1045,6 +1045,8 @@ MonoBehaviour:
   attackInterval: 1
   attackRange: 1.5
   roundManager: {fileID: 0}
+  pointsPerShot: 10
+  pointsOnDeath: 100
 --- !u!54 &3650099816391625552
 Rigidbody:
   m_ObjectHideFlags: 0
