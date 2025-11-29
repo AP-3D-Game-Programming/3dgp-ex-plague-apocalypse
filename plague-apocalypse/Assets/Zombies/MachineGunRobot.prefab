@@ -59,6 +59,8 @@ MonoBehaviour:
   hoverHeight: 5
   hoverSmoothness: 2
   shootEffect: {fileID: 9051537395049618260}
+  pointsPerShot: 5
+  pointsOnDeath: 50
   roundManager: {fileID: 0}
 --- !u!65 &6881644116390519164
 BoxCollider:

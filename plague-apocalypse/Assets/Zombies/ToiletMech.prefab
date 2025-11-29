@@ -4956,9 +4956,9 @@ MonoBehaviour:
   health: 100
   moveSpeed: 2
   damage: 100
-  attackInterval: 0.5
+  attackInterval: 0.8
   shootRange: 50
-  bulletSpeed: 20
+  bulletSpeed: 30
   projectilePrefab: {fileID: 649053698427245104, guid: 7f52a28590fa4fd49a912b3b9ec06fa5, type: 3}
   firePoint: {fileID: 1091794097984421730}
   chaseRange: 15
@@ -4973,6 +4973,8 @@ MonoBehaviour:
   roarDuration: 60
   shootEffect: {fileID: 3674074689804867109}
   phase2SpeedMultiplier: 1.5
+  pointsPerShot: 5
+  pointsOnDeath: 1000
   roundManager: {fileID: 0}
   fallTrigger: FallStart
   getUpTrigger: GetUp

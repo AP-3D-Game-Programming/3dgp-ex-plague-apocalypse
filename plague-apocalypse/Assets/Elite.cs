@@ -10,7 +10,10 @@ public class EliteToilet : MonoBehaviour, IElite
     public float moveSpeed = 2f;
     public int damage = 10;
     public float attackInterval = 5f;
-
+    private float globalFireRateMult = 1f;
+    private float globalDamageMult = 1f;
+    private float globalPhase2HealthMult = 1f;
+    private float globalPhase2SpeedMult = 1f;
     [Header("Combat")]
     public float shootRange = 10f;
     public float bulletSpeed = 20f;
@@ -36,7 +39,10 @@ public class EliteToilet : MonoBehaviour, IElite
     [Header("Phase 2 Settings")]
     public float phase2SpeedMultiplier = 1.5f;
     private bool phase2Active = false;
-
+    [Header("Points")]
+    public int pointsPerShot = 10;
+    public int pointsOnDeath = 100;
+    private int accumulatedPoints = 0;
     [HideInInspector] public RoundManager roundManager;
 
     private Coroutine meleeCoroutine;
@@ -52,13 +58,25 @@ public class EliteToilet : MonoBehaviour, IElite
     private bool isAttacking = false;
     private bool isDead = false;
 
-    // ===== IElite implementation =====
-    public void ApplyStats(int newHealth, float newSpeed, RoundManager roundManager)
+    // IElite implementation 
+    public void ApplyStats(
+            int newHealth,
+            float newSpeed,
+            RoundManager roundManager,
+            float fireRateMult,
+            float damageMult,
+            float phase2HealthMult,
+            float phase2SpeedMult
+        )
     {
         this.health = newHealth;
         this.maxHealth = newHealth;
         this.moveSpeed = newSpeed;
         this.roundManager = roundManager;
+        this.globalFireRateMult = fireRateMult;
+        this.globalDamageMult = damageMult;
+        this.globalPhase2HealthMult = phase2HealthMult;
+        this.globalPhase2SpeedMult = phase2SpeedMult;
 
         if (agent != null)
             agent.speed = moveSpeed;
@@ -175,11 +193,13 @@ public class EliteToilet : MonoBehaviour, IElite
             yield return new WaitForSeconds(punchDelay);
 
             // Deal  damage
-            int punchDamage = damage;
+            int punchDamage = Mathf.RoundToInt(damage * globalDamageMult);
             playerHealth.TakeDamage(punchDamage);
 
+
             // Wait for the rest of the animation
-            float remainingAnimTime = attackInterval - punchDelay;
+            float actualInterval = attackInterval / globalFireRateMult;
+            float remainingAnimTime = actualInterval - punchDelay;
             if (remainingAnimTime > 0f)
                 yield return new WaitForSeconds(remainingAnimTime);
         }
@@ -217,7 +237,8 @@ public class EliteToilet : MonoBehaviour, IElite
 
             ShootProjectile();
 
-            yield return new WaitForSeconds(attackInterval);
+            float actualInterval = attackInterval / globalFireRateMult;
+            yield return new WaitForSeconds(actualInterval);
         }
 
         StopAllAttacks();
@@ -245,8 +266,17 @@ public class EliteToilet : MonoBehaviour, IElite
         if (isDead || isInvulnerable) return;
 
         health -= damageAmount;
+        if (accumulatedPoints < PlayerStats.Instance.maxShootPointsPerEnemy)
+        {
+            int pointsToGive = Mathf.Min(
+                Mathf.RoundToInt(pointsPerShot * PlayerStats.Instance.shotPointsMultiplier),
+                PlayerStats.Instance.maxShootPointsPerEnemy - accumulatedPoints
+            );
 
-        if (!phase2Active && health <= maxHealth / 3)
+            accumulatedPoints += pointsToGive;
+            PlayerStats.Instance.AddPoints(pointsToGive);
+        }
+        if (!phase2Active && health <= (maxHealth / 3f) * globalPhase2HealthMult)
         {
             Debug.Log("Phase 2 triggered! Health: " + health);
             StartCoroutine(EnterPhase2());
@@ -291,7 +321,7 @@ public class EliteToilet : MonoBehaviour, IElite
             yield return new WaitForSeconds(getUpDuration);
         }
 
-        moveSpeed *= phase2SpeedMultiplier;
+        moveSpeed *= phase2SpeedMultiplier * globalPhase2SpeedMult;
         if (agent != null)
             agent.speed = moveSpeed;
 
@@ -306,6 +336,8 @@ public class EliteToilet : MonoBehaviour, IElite
     {
         isDead = true;
         anim?.SetBool("IsDead", true);
+        int pointsAwarded = Mathf.RoundToInt(pointsOnDeath * PlayerStats.Instance.deathPointsMultiplier);
+        PlayerStats.Instance.AddPoints(pointsAwarded);
         agent.isStopped = true;
         roundManager?.EnemyKilled();
         Destroy(gameObject, 3f);

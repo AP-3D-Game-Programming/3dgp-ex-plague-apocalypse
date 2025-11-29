@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2b927d19384024eb63656a984bf75a, type: 3}
+  m_Name: Test
+  m_EditorClassIdentifier: Assembly-CSharp::Card
+  cardName: 'Test '
+  description: 'Dit is voor de Test Sessie
+
+
+    uhoh'
+  target: 3
+  rarity: 0
+  playerHealthBonus: 500
+  playerRegenBonus: 500
+  playerFireRateMultiplier: 1
+  lifeStealAmount: 0
+  playerBouncingBullets: 0
+  playerLuckBonus: 500
+  zombieHealthPercentIncrease: 500
+  zombieSpeedPercentIncrease: 500
+  zombieSpeedFlatBonus: 500
+  zombieFireRateBonus: 500
+  forceElitesNextRound: 10
+  eliteHealthPercentIncrease: 55
+  eliteSpeedPercentIncrease: 55
+  eliteFireRateMultiplier: 5
+  elitePhase2HealthTriggerMultiplier: 5
+  elitePhase2SpeedMultiplier: 5
+  eliteDamageMultiplier: 5
+  shotPointsMultiplier: 5
+  deathPointsMultiplier: 5
+  maxShootPointsIncrease: 500

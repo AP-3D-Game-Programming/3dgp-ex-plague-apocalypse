@@ -138,7 +138,7 @@ public class RoundManager : MonoBehaviour
     [Header("Game Settings")]
     public int currentRound = 1;
     public int baseEnemies = 5;
-
+    public float playerLuck = 1.0f;
     [Header("Spawning Settings")]
     public List<ZombieType> zombieTypes;
     [Header("Elite zombies")]
@@ -152,9 +152,23 @@ public class RoundManager : MonoBehaviour
     [Header("UI")]
     public TextMeshProUGUI roundText;
     public TextMeshProUGUI zombiesRemainingText;
+    [Header("Enemy Scaling Settings")]
+    public float healthIncrement = 20f;
+    public float speedIncrement = 0.2f;
+    public float fireRateIncrement = 0.15f;
+    public float globalEnemyHealthMultiplier = 1f;
+    public float globalEnemySpeedMultiplier = 1f;
 
-    private int enemiesRemaining;      // Zombies left to spawn
-    private int zombiesAlive = 0;      // Zombies currently alive
+    public float globalEliteHealthMultiplier = 1f;
+    public float globalEliteSpeedMultiplier = 1f;
+    public float eliteHealthIncrement = 50f;
+    public float eliteSpeedIncrement = 0.3f;
+    public float globalEliteFireRateMultiplier = 1f;
+    public float globalEliteDamageMultiplier = 1f;
+    public float globalElitePhase2HealthTriggerMultiplier = 1f;
+    public float globalElitePhase2SpeedMultiplier = 1f;
+    private int enemiesRemaining;
+    private int zombiesAlive = 0;
     public Transform playerTransform;
     private Coroutine spawnRoutine;
 
@@ -233,11 +247,14 @@ public class RoundManager : MonoBehaviour
             return;
 
         // Scale stats
+        float finalHealthMult = healthIncrement * globalEnemyHealthMultiplier;
+        float finalSpeedMult = speedIncrement * globalEnemySpeedMultiplier;
+
         chosenType.ScaleStats(
             currentRound,
-            healthMultiplier: 20f,
-            speedMultiplier: 0.2f,
-            fireRateMultiplier: 0.15f
+            healthMultiplier: finalHealthMult,
+            speedMultiplier: finalSpeedMult,
+            fireRateMultiplier: fireRateIncrement
         );
 
         // Pick spawn point
@@ -298,7 +315,9 @@ public class RoundManager : MonoBehaviour
 
     void SpawnElite(EliteType elite)
     {
-        elite.ScaleStats(currentRound, healthMultiplier: 50f, speedMultiplier: 0.3f);
+        float finalHealthMult = eliteHealthIncrement * globalEliteHealthMultiplier;
+        float finalSpeedMult = eliteSpeedIncrement * globalEliteSpeedMultiplier;
+        elite.ScaleStats(currentRound, healthMultiplier: finalHealthMult, speedMultiplier: finalSpeedMult);
 
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
         GameObject enemy = Instantiate(elite.prefab, spawnPoint.position, spawnPoint.rotation);
@@ -306,7 +325,16 @@ public class RoundManager : MonoBehaviour
         IElite eliteScript = enemy.GetComponent<IElite>();
         if (eliteScript != null)
         {
-            eliteScript.ApplyStats(elite.currentHealth, elite.currentSpeed, this);
+            // --- UPDATED CALL TO PASS ALL MULTIPLIERS ---
+            eliteScript.ApplyStats(
+                elite.currentHealth,
+                elite.currentSpeed,
+                this,
+                fireRateMult: globalEliteFireRateMultiplier,
+                damageMult: globalEliteDamageMultiplier,
+                phase2HealthMult: globalElitePhase2HealthTriggerMultiplier,
+                phase2SpeedMult: globalElitePhase2SpeedMultiplier
+            );
         }
 
         zombiesAlive++;
@@ -419,22 +447,69 @@ public class RoundManager : MonoBehaviour
 
     IEnumerator ShowCardOptions()
     {
-        // Pick 3 random cards
+        yield return new WaitForSeconds(3f);
+        GameObject[] hudObjects = GameObject.FindGameObjectsWithTag("HUD");
+        foreach (var obj in hudObjects) obj.SetActive(false);
+
+        List<Card> availableCards = new List<Card>(allCards);
         List<Card> options = new List<Card>();
-        for (int i = 0; i < 3; i++)
-            options.Add(allCards[Random.Range(0, allCards.Count)]);
 
-        // Show in your UI
+        for (int i = 0; i < 3 && availableCards.Count > 0; i++)
+        {
+            float totalWeight = 0f;
+            foreach (var card in availableCards)
+                totalWeight += GetRarityWeight(card.rarity, playerLuck);
+
+            float rand = Random.value * totalWeight;
+            float sum = 0f;
+            Card cardToAdd = null;
+
+            foreach (var card in availableCards)
+            {
+                sum += GetRarityWeight(card.rarity, playerLuck);
+                if (rand <= sum)
+                {
+                    cardToAdd = card;
+                    break;
+                }
+            }
+
+            if (cardToAdd == null) cardToAdd = availableCards[0];
+
+            options.Add(cardToAdd);
+            availableCards.Remove(cardToAdd);
+        }
+
         CardSelectionUI.Instance.ShowOptions(options);
-
-        // Wait for player selection
         yield return new WaitUntil(() => CardSelectionUI.Instance.cardChosen);
-
         Card chosenCard = CardSelectionUI.Instance.GetChosenCard();
         chosenCard.Apply(this);
 
-        // Start next round
+        foreach (var obj in hudObjects) obj.SetActive(true);
         spawnRoutine = StartCoroutine(StartNextRoundWithDelay());
     }
 
+    // This method expects TWO arguments (rarity, currentLuck)
+    private float GetRarityWeight(CardRarity rarity, float currentLuck)
+    {
+        float baseWeight = 0f;
+        switch (rarity)
+        {
+            case CardRarity.Common: baseWeight = 50f; break;
+            case CardRarity.Uncommon: baseWeight = 25f; break;
+            case CardRarity.Rare: baseWeight = 13f; break;
+            case CardRarity.Epic: baseWeight = 7f; break;
+            case CardRarity.Legendary: baseWeight = 4f; break;
+            case CardRarity.Mythical: baseWeight = 0.5f; break;
+            case CardRarity.Exotic: baseWeight = 0.15f; break;
+            default: return 1f;
+        }
+
+        if (rarity >= CardRarity.Rare)
+        {
+            return baseWeight * currentLuck;
+        }
+        return baseWeight;
+    }
 }
+

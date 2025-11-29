@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2b927d19384024eb63656a984bf75a, type: 3}
+  m_Name: ZombieBuff
+  m_EditorClassIdentifier: Assembly-CSharp::Card
+  cardName: ZombieMoney
+  description: '1.5x more cash
+
+
+    Zombies 50% health scale.'
+  target: 1
+  rarity: 2
+  playerHealthBonus: 0
+  playerRegenBonus: 0
+  playerFireRateMultiplier: 1
+  lifeStealAmount: 0
+  playerBouncingBullets: 0
+  playerLuckBonus: 0
+  zombieHealthPercentIncrease: 0.5
+  zombieSpeedPercentIncrease: 0
+  zombieSpeedFlatBonus: 0
+  zombieFireRateBonus: 0
+  forceElitesNextRound: 0
+  eliteHealthPercentIncrease: 0
+  eliteSpeedPercentIncrease: 0
+  eliteFireRateMultiplier: 1
+  elitePhase2HealthTriggerMultiplier: 1
+  elitePhase2SpeedMultiplier: 1
+  eliteDamageMultiplier: 1
+  shotPointsMultiplier: 1.5
+  deathPointsMultiplier: 1.5
+  maxShootPointsIncrease: 0

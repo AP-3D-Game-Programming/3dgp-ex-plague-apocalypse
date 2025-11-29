@@ -513,6 +513,8 @@ MonoBehaviour:
   attackInterval: 1
   attackRange: 1.5
   roundManager: {fileID: 0}
+  pointsPerShot: 10
+  pointsOnDeath: 100
 --- !u!54 &-3291297291671420343
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -559,8 +561,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 1.9364184, z: 1}
+  m_Center: {x: 0, y: 0.8469444, z: 0}
 --- !u!195 &4607333324305455892
 NavMeshAgent:
   m_ObjectHideFlags: 0

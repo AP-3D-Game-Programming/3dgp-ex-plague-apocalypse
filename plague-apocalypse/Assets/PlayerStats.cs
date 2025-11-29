@@ -1,28 +1,61 @@
 using UnityEngine;
+using TMPro;
 
 public class PlayerStats : MonoBehaviour
 {
-    public int baseHealth = 100;  // optional reference for max health
+
     public float fireRate = 1f;
     public bool bouncingBullets = false;
 
-    private PlayerHealth playerHealth;
+    public static PlayerStats Instance;
+
+    public float lifeStealPerHit = 0f;
+
+    [Header("Points")]
+    public int points = 0;
+    public TextMeshProUGUI pointsText;
+
+    public float shotPointsMultiplier = 1f;
+    public float deathPointsMultiplier = 1f;
+    public int maxShootPointsPerEnemy = 100;
 
     void Awake()
     {
-        playerHealth = GetComponent<PlayerHealth>();
-        if (playerHealth != null)
-            playerHealth.maxHealth = baseHealth;
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
     }
 
-    public void ApplyHealth(int amount)
+    void Start()
     {
-        if (playerHealth != null)
-        {
-            playerHealth.maxHealth += amount;
-            playerHealth.currentHealth += amount; // also heal the player
-            Debug.Log($"Applied {amount} health. Current: {playerHealth.currentHealth}");
-        }
+        UpdateUI();
+    }
+
+    public void AddPoints(int amount)
+    {
+        points += amount;
+        UpdateUI();
+    }
+
+    public void RemovePoints(int amount)
+    {
+        points = Mathf.Max(0, points - amount);
+        UpdateUI();
+    }
+
+    public void SetPoints(int amount)
+    {
+        points = Mathf.Max(0, amount);
+        UpdateUI();
+    }
+
+    private void UpdateUI()
+    {
+        if (pointsText != null)
+            pointsText.text = $"{points}";
     }
 
     public void MultiplyFireRate(float multiplier)

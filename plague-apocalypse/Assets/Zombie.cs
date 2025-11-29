@@ -20,7 +20,10 @@ public class Zombie : MonoBehaviour
 
     private bool isAttacking = false;
     private bool isDead = false;
-
+    [Header("Points")]
+    public int pointsPerShot = 10;
+    public int pointsOnDeath = 100;
+    private int accumulatedPoints = 0;
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -66,6 +69,16 @@ public class Zombie : MonoBehaviour
         if (isDead) return;
 
         health -= damage;
+        if (accumulatedPoints < PlayerStats.Instance.maxShootPointsPerEnemy)
+        {
+            int pointsToGive = Mathf.Min(
+                Mathf.RoundToInt(pointsPerShot * PlayerStats.Instance.shotPointsMultiplier),
+                PlayerStats.Instance.maxShootPointsPerEnemy - accumulatedPoints
+            );
+
+            accumulatedPoints += pointsToGive;
+            PlayerStats.Instance.AddPoints(pointsToGive);
+        }
         if (health <= 0)
             Die();
     }
@@ -75,8 +88,12 @@ public class Zombie : MonoBehaviour
         isDead = true;
         anim.SetBool("IsDead", true);
         agent.isStopped = true;
+        //points
+        int pointsAwarded = Mathf.RoundToInt(pointsOnDeath * PlayerStats.Instance.deathPointsMultiplier);
+        PlayerStats.Instance.AddPoints(pointsAwarded);
+
         roundManager?.EnemyKilled();
-        Destroy(gameObject, 3f); // Allow death animation to play
+        Destroy(gameObject, 2f); // Allow death animation to play
     }
 
     private IEnumerator AttackPlayer()
