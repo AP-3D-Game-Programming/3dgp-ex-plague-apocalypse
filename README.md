@@ -1,4 +1,7 @@
 # 3dgp-ex-plague-apocalypse
+Game link: https://viktorvd.itch.io/plague-apocalypse
+
+
 Titel: Plague apocalypse
 Genre: First person shooter
 

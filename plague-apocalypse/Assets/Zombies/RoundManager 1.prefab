@@ -143,6 +143,19 @@ MonoBehaviour:
     maxSpeed: 5
     currentHealth: 0
     currentSpeed: 0
+  - typeName: Raging Zombie
+    prefab: {fileID: 5578967268775569554, guid: c85d13c776e5a4d4ca63da79be3e25bf, type: 3}
+    unlockRound: 18
+    initialSpawnChance: 0.01
+    spawnIncreasePerRound: 0.01
+    maxSpawnChance: 0.3
+    guaranteedRounds: 12000000160000001b0000001e0000001f00000032000000
+    baseHealth: 10000
+    maxHealth: 9990000
+    baseSpeed: 1
+    maxSpeed: 5
+    currentHealth: 0
+    currentSpeed: 0
   spawnPoints:
   - {fileID: 0}
   - {fileID: 0}

@@ -858,7 +858,7 @@ PrefabInstance:
       objectReference: {fileID: 1744492938}
     - target: {fileID: 4597928747175078859, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
       propertyPath: eliteTypes.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4597928747175078859, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
       propertyPath: spawnPoints.Array.size
@@ -925,6 +925,10 @@ PrefabInstance:
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4597928747175078859, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
+      propertyPath: eliteTypes.Array.data[2].unlockRound
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4597928747175078859, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
       propertyPath: eliteTypes.Array.data[0].maxSpawnChance
       value: 0.1
       objectReference: {fileID: 0}
@@ -934,7 +938,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4597928747175078859, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
       propertyPath: eliteTypes.Array.data[2].maxSpawnChance
-      value: 0.1
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 4597928747175078859, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
       propertyPath: eliteTypes.Array.data[1].initialSpawnChance
@@ -986,19 +990,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4597928747175078859, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
       propertyPath: 'eliteTypes.Array.data[2].guaranteedRounds.Array.data[0]'
-      value: 18
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4597928747175078859, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
       propertyPath: 'eliteTypes.Array.data[2].guaranteedRounds.Array.data[1]'
-      value: 22
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 4597928747175078859, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
       propertyPath: 'eliteTypes.Array.data[2].guaranteedRounds.Array.data[2]'
-      value: 27
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 4597928747175078859, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
       propertyPath: 'eliteTypes.Array.data[2].guaranteedRounds.Array.data[3]'
-      value: 50
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 7694066243827524388, guid: 4e6a4749e3ed19d48ac6c46435a9536d, type: 3}
       propertyPath: m_Name
