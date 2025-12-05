@@ -34,6 +34,7 @@ public class PlayerInteract : MonoBehaviour
         if(Physics.SphereCast(playerCamera.transform.position, 0.5f, playerCamera.transform.forward, out hit, 3f, interactLayers))
         {
             newInteractable = hit.collider.GetComponent<Interactable>();
+            Debug.Log("Ik raak object: " + hit.collider.gameObject.name);
         }
 
         if (newInteractable != currentInteractable)

@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class Interactable : MonoBehaviour
@@ -6,9 +7,22 @@ public class Interactable : MonoBehaviour
     public string promptMessage = "Press E to Interact";
     public GameObject promptUI;
 
+    private void Awake()
+    {
+        if (promptUI != null)
+        {
+            promptUI.SetActive(false);
+        }
+
+    }
+
     public void ShowPrompt()
     {
-        if (promptUI != null) promptUI.SetActive(true);
+        if (promptUI != null)
+        {
+            promptUI.SetActive(true);
+            promptUI.GetComponent<TextMeshPro>().text = promptMessage;
+        }
     }
 
     public void HidePrompt()

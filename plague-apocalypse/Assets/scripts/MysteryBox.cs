@@ -7,7 +7,7 @@ public class MysteryBox : Interactable
     [SerializeField] private List<WeaponData> weapons;
     public int boxCost = 950;
 
-    void Start()
+    void Awake()
     {
         promptMessage = $"Press E for Mystery Box [{boxCost}]";
     }
