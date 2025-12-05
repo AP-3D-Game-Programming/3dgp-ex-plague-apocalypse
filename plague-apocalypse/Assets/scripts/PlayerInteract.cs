@@ -5,10 +5,10 @@ using TMPro; // 1. Vergeet deze niet!
 public class PlayerInteract : MonoBehaviour
 {
     [Header("Setup")]
-    public Camera playerCamera;
-    public TextMeshProUGUI promptText;
-    public UnityEvent onInteract;
+    [SerializeField] private Camera playerCamera;
     private PlayerInventory inventory;
+    [SerializeField] private LayerMask interactableLayer;
+    [SerializeField] private float interactRange = 3f;
     private MysteryBox currentChest;
     void Awake()
     {
@@ -30,7 +30,8 @@ public class PlayerInteract : MonoBehaviour
     {
         RaycastHit hit;
 
-        if(Physics.SphereCast(playerCamera.transform.position, 0.5f, playerCamera.transform.forward, out hit, 3f))
+        if(Physics.SphereCast(playerCamera.transform.position, 0.5f,
+            playerCamera.transform.forward, out hit, interactRange, interactableLayer))
         {
             MysteryBox newChest = hit.collider.GetComponent<MysteryBox>();
             
@@ -62,7 +63,6 @@ public class PlayerInteract : MonoBehaviour
         {
             WeaponData newWeapon = currentChest.OpenChest();
             inventory.PickupWeapon(newWeapon);
-            onInteract.Invoke();
         }
     }
 }
