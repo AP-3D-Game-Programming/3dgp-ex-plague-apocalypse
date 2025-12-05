@@ -5,26 +5,37 @@ public class PlayerInventory : MonoBehaviour
 {
     [SerializeField] private List<WeaponData> weapons = new List<WeaponData>();
     [SerializeField] private Transform weaponHolder;
-    
     // Welk wapen hebben we nu vast? (0 of 1)
     private int currentWeaponIndex = 0;
-    
-    // Maximaal aantal wapens
     private int maxWeapons = 2;
     private GameObject currentWeapon;
+    private PlayerShooting shootingScript;
+    private void Start()
+    {
+        shootingScript = GetComponent<PlayerShooting>();
+    }
 
     void Update()
     {
         // Wapen wisselena met scrollwiel of toetsen
-        if (Input.GetKeyDown(KeyCode.Alpha1)) EquipWeapon(0);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) EquipWeapon(1);
-        
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            EquipWeapon(0);
+            shootingScript.UpdateCurrentGun();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            EquipWeapon(1);
+            shootingScript.UpdateCurrentGun();
+        }
+
         // Simpele scrollwiel logica
         if (Input.GetAxis("Mouse ScrollWheel") != 0)
         {
             // Wissel tussen 0 en 1
             int newIndex = currentWeaponIndex == 0 ? 1 : 0;
             EquipWeapon(newIndex);
+            shootingScript.UpdateCurrentGun();
         }
     }
     public void PickupWeapon(WeaponData newWeapon)
@@ -50,5 +61,14 @@ public class PlayerInventory : MonoBehaviour
         currentWeapon.transform.localPosition = new Vector3(0.25f, 1f, 1f);
         currentWeapon.transform.localRotation = Quaternion.identity;
         currentWeaponIndex = index;
+    }
+    public WeaponData GetCurrentWeapon()
+    {
+        if (weapons.Count == 0) return null;
+        if (currentWeaponIndex < weapons.Count)
+        {
+            return weapons[currentWeaponIndex];
+        }
+        return null;
     }
 }

@@ -10,7 +10,8 @@ public class WeaponData : ScriptableObject
     [Header("Visuals")]
     public Sprite icon;             // Plaatje voor in de UI
     public GameObject weaponPrefab; // Het 3D model
-
+    public GameObject projectilePrefab; // Het kogel model
+    
     [Header("Stats")]
     public int maxAmmo;             // Bijv: 80
     public int magazineSize;        // Bijv: 8
