@@ -231,7 +231,7 @@ MonoBehaviour:
   playerCamera: {fileID: 150843583}
   interactLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
 --- !u!1 &150843575 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1593727746557118, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
@@ -342,10 +342,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 3134067703797542476, guid: b68311f7e42ec7c45bf5edd6b4cfef2c, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4342130662132141281, guid: b68311f7e42ec7c45bf5edd6b4cfef2c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b68311f7e42ec7c45bf5edd6b4cfef2c, type: 3}
 --- !u!1 &355944632
 GameObject:
@@ -780,7 +777,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7864856087035489453, guid: 5e8d27f6f7d12cf498cf474b9b8d4259, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.026
       objectReference: {fileID: 0}
     - target: {fileID: 7864856087035489453, guid: 5e8d27f6f7d12cf498cf474b9b8d4259, type: 3}
       propertyPath: m_LocalPosition.z
@@ -817,10 +814,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7554256620471161880, guid: 5e8d27f6f7d12cf498cf474b9b8d4259, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e8d27f6f7d12cf498cf474b9b8d4259, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

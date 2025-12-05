@@ -1,37 +1,45 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Gun : MonoBehaviour
 {
     [Header("Setup")]
-    public Transform muzzlePoint; // HIER komt de kogel uit (leeg puntje voor de loop)
-    
-    private WeaponData data;
-    private float nextFireTime;
+    public Transform muzzlePoint;
+    private WeaponData currentWeaponData;
+    private float nextFireTime = 0f;
+    private PlayerEffectManager effectManager;
 
-    // Deze functie wordt aangeroepen zodra het wapen spawnt
-    public void Initialize(WeaponData weaponData)
+    public void Initialize(WeaponData data)
     {
-        this.data = weaponData;
+        currentWeaponData = data;
+        effectManager = GetComponentInParent<PlayerEffectManager>();
     }
-
     public void AttemptShoot()
     {
+        if (currentWeaponData == null) return;
+
         if (Time.time >= nextFireTime)
         {
-            nextFireTime = Time.time + data.fireRate;
-            Shoot();
+            nextFireTime = Time.time + currentWeaponData.fireRate;
+            if (currentWeaponData.projectilePrefab != null && muzzlePoint != null)
+            {
+                Shoot();
+            }
         }
     }
 
-    // VIRTUAL: Zodat je bv. een Shotgun script kunt maken dat 5 kogels tegelijk doet
     protected virtual void Shoot()
     {
-        if (data.projectilePrefab == null || muzzlePoint == null) return;
+        GameObject bullet = Instantiate(currentWeaponData.projectilePrefab, muzzlePoint.position, muzzlePoint.rotation);
+        Projectile bulletScript = bullet.GetComponent<Projectile>();
 
-        // 1. Maak de kogel
-        GameObject bullet = Instantiate(data.projectilePrefab, muzzlePoint.position, muzzlePoint.rotation);
-        
-        // Optioneel: Geef de bullet extra data mee als dat nodig is
-        // bullet.GetComponent<Projectile>().damage = data.damage;
+        if (bulletScript != null)
+        {
+            bulletScript.Initialize(
+                currentWeaponData.damage,
+                currentWeaponData.weaponType,
+                currentWeaponData.effects
+            );
+        }
     }
 }

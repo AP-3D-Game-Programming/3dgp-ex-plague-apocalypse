@@ -1,33 +1,54 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
 {
-    [Header("Projectile Stats")]
+    [Header("Base Stats")]
     public float speed = 50f;
-    public float damage = 20f;
-    public float lifetime = 5f; // Vernietig na 5 sec als we niks raken
+    public float lifetime = 5f;
+
+    // Deze data wordt ingevuld door het wapen
+    [HideInInspector] public float damage; 
+    [HideInInspector] public WeaponType sourceWeaponType;
 
     private Rigidbody rb;
+    public void Initialize(float weaponDamage, WeaponType type, List<BulletEffect> effects)
+    {
+        this.damage = weaponDamage;
+        this.sourceWeaponType = type;
 
-    // VIRTUAL: Zodat granaten dit kunnen aanpassen (bv. zwaartekracht aan)
-    protected virtual void Start()
+        if (effects != null)
+        {
+            foreach (var effect in effects)
+            {
+                effect.Apply(this.gameObject);
+            }
+        }
+    }
+
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
-        
-        // Zorg dat de kogel vliegt in de richting waarin hij kijkt
+        // (Zorg dat je UseGravity UIT hebt staan op de Rigidbody, tenzij het een granaat is)
         rb.linearVelocity = transform.forward * speed; 
-        
-        // Veiligheid: vernietig kogel na X seconden
+
         Destroy(gameObject, lifetime);
     }
 
-    // VIRTUAL: Wat gebeurt er bij impact?
-    protected virtual void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
-        // Hier kun je schade toebrengen aan wat je raakt
+        // 1. Check of we een zombie raken
+        // We gebruiken InParent voor het geval we een arm of been raken
+        // ZombieHealth zombie = collision.gameObject.GetComponentInParent<ZombieHealth>();
+        
+        // if (zombie != null)
+        // {
+        //     zombie.TakeDamage(damage);
+        // }
 
-        // Vernietig de kogel na impact
+        // 2. Vernietig de kogel
+        // (Later kun je hier code toevoegen om NIET te destroyen als je bouncy bent)
         Destroy(gameObject);
     }
 }
