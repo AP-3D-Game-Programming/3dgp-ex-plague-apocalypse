@@ -6,18 +6,22 @@ public class WeaponData : ScriptableObject
 {
     [Header("Info")]
     public string weaponName; 
+    public bool isAutomatic;
+    [Header("Visuals")]
     public GameObject weaponPrefab;
+    public GameObject muzzleFlashPrefab;
 
     [Header("Effects")]
     public List<BulletEffect> effects;
 
     [Header("Projectile")]
-    public GameObject projectilePrefab; // Het kogel model
+    public GameObject projectilePrefab;
 
     [Header("Stats")]
     public WeaponType weaponType;
-    public int maxAmmo;             // Bijv: 80
-    public int magazineSize;        // Bijv: 8
-    public float damage;            // Bijv: 25
-    public float fireRate;          // Tijd tussen schoten
+    public int maxAmmo;
+    public int magazineSize;
+    public float damage; 
+    public float fireRate; 
+    public float reloadTime;
 }
