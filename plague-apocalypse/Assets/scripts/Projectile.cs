@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
@@ -8,9 +9,10 @@ public class Projectile : MonoBehaviour
     public float speed = 50f;
     public float lifetime = 5f;
 
-    // Deze data wordt ingevuld door het wapen
     [HideInInspector] public float damage; 
     [HideInInspector] public WeaponType sourceWeaponType;
+    [HideInInspector] public Action<Collision> onHit;
+    [HideInInspector] public bool destroyOnHit = true;
 
     private Rigidbody rb;
     public void Initialize(float weaponDamage, WeaponType type, List<BulletEffect> effects)
@@ -38,8 +40,7 @@ public class Projectile : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        // 1. Check of we een zombie raken
-        // We gebruiken InParent voor het geval we een arm of been raken
+        // Basis functionaliteit: Damage to a zombie (indien aanwezig)
         // ZombieHealth zombie = collision.gameObject.GetComponentInParent<ZombieHealth>();
         
         // if (zombie != null)
@@ -47,8 +48,10 @@ public class Projectile : MonoBehaviour
         //     zombie.TakeDamage(damage);
         // }
 
-        // 2. Vernietig de kogel
-        // (Later kun je hier code toevoegen om NIET te destroyen als je bouncy bent)
-        Destroy(gameObject);
+        onHit?.Invoke(collision);
+        if (destroyOnHit)
+        {
+            Destroy(gameObject);
+        }
     }
 }

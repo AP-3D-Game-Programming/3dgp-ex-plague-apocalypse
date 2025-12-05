@@ -10,9 +10,11 @@ public class PlayerInventory : MonoBehaviour
     private int maxWeapons = 2;
     private GameObject currentWeapon;
     private PlayerShooting shootingScript;
-    private void Start()
+    private PlayerEffectManager effectManager;
+    private void Awake()
     {
         shootingScript = GetComponent<PlayerShooting>();
+        effectManager = GetComponent<PlayerEffectManager>();
     }
 
     void Update()
@@ -58,6 +60,11 @@ public class PlayerInventory : MonoBehaviour
         if (currentWeapon != null) Destroy(currentWeapon);
 
         currentWeapon = Instantiate(weapons[index].weaponPrefab, weaponHolder);
+        Gun gunComponent = currentWeapon.GetComponent<Gun>();
+        if (gunComponent != null)
+        {
+            gunComponent.Initialize(weapons[index], effectManager);
+        }
         currentWeapon.transform.localPosition = new Vector3(0.25f, 1f, 1f);
         currentWeapon.transform.localRotation = Quaternion.identity;
         currentWeaponIndex = index;

@@ -9,10 +9,10 @@ public class Gun : MonoBehaviour
     private float nextFireTime = 0f;
     private PlayerEffectManager effectManager;
 
-    public void Initialize(WeaponData data)
+    public void Initialize(WeaponData data, PlayerEffectManager manager)
     {
         currentWeaponData = data;
-        effectManager = GetComponentInParent<PlayerEffectManager>();
+        effectManager = manager;
     }
     public void AttemptShoot()
     {
@@ -20,6 +20,7 @@ public class Gun : MonoBehaviour
 
         if (Time.time >= nextFireTime)
         {
+            
             nextFireTime = Time.time + currentWeaponData.fireRate;
             if (currentWeaponData.projectilePrefab != null && muzzlePoint != null)
             {
@@ -32,13 +33,24 @@ public class Gun : MonoBehaviour
     {
         GameObject bullet = Instantiate(currentWeaponData.projectilePrefab, muzzlePoint.position, muzzlePoint.rotation);
         Projectile bulletScript = bullet.GetComponent<Projectile>();
+        List<BulletEffect> effectsToApply = new List<BulletEffect>();
+
+        if (effectManager != null)
+        {
+            effectsToApply = effectManager.GetActiveEffectsForWeapon(currentWeaponData.weaponType);
+        }
+
+        if (currentWeaponData.effects != null)
+        {
+            effectsToApply.AddRange(currentWeaponData.effects);
+        }
 
         if (bulletScript != null)
         {
             bulletScript.Initialize(
                 currentWeaponData.damage,
                 currentWeaponData.weaponType,
-                currentWeaponData.effects
+                effectsToApply
             );
         }
     }
