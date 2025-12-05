@@ -1,15 +1,13 @@
 using UnityEngine;
-using UnityEngine.Events;
-using TMPro; // 1. Vergeet deze niet!
+using TMPro;
 
 public class PlayerInteract : MonoBehaviour
 {
-    [Header("Setup")]
     [SerializeField] private Camera playerCamera;
+    [SerializeField] private LayerMask interactLayers;
     private PlayerInventory inventory;
-    [SerializeField] private LayerMask interactableLayer;
-    [SerializeField] private float interactRange = 3f;
-    private MysteryBox currentChest;
+    private Interactable currentInteractable; 
+
     void Awake()
     {
         inventory = GetComponent<PlayerInventory>();
@@ -17,47 +15,33 @@ public class PlayerInteract : MonoBehaviour
 
     void Update()
     {
-
         CheckForInteractable();
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            AttemptInteract();
+            if(currentInteractable != null)
+            {
+                currentInteractable.OnInteract(inventory);
+            }
         }
     }
 
     void CheckForInteractable()
     {
         RaycastHit hit;
-        MysteryBox targetChest = null;
+        Interactable newInteractable = null;
 
-        if(Physics.SphereCast(playerCamera.transform.position, 0.5f,
-            playerCamera.transform.forward, out hit, interactRange, interactableLayer))
+        if(Physics.SphereCast(playerCamera.transform.position, 0.5f, playerCamera.transform.forward, out hit, 3f, interactLayers))
         {
-            targetChest = hit.collider.GetComponent<MysteryBox>();
+            newInteractable = hit.collider.GetComponent<Interactable>();
         }
 
-        if (targetChest != currentChest)
+        if (newInteractable != currentInteractable)
         {
-            if(currentChest != null)
-            {
-                currentChest.HidePrompt();
-            }
-
-            if(targetChest != null)
-            {
-                targetChest.ShowPrompt();
-            }
-            currentChest = targetChest;
-        }
-    }
-
-    public void AttemptInteract()
-    {
-        if(currentChest != null)
-        {
-            WeaponData newWeapon = currentChest.OpenChest();
-            inventory.PickupWeapon(newWeapon);
+            if (currentInteractable != null) currentInteractable.HidePrompt();
+            if (newInteractable != null) newInteractable.ShowPrompt();
+            
+            currentInteractable = newInteractable;
         }
     }
 }

@@ -1,29 +1,26 @@
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class MysteryBox : MonoBehaviour
+public class MysteryBox : Interactable
 {
+    [Header("Mystery Box Settings")]
     [SerializeField] private List<WeaponData> weapons;
-    [SerializeField] private GameObject promptUI;
-    private void Start()
+    public int boxCost = 950;
+
+    void Start()
     {
-        HidePrompt();
+        promptMessage = $"Press E for Mystery Box [{boxCost}]";
     }
 
-    public void ShowPrompt()
+    public override void OnInteract(PlayerInventory inventory)
     {
-        promptUI.SetActive(true);
-    }
-    public void HidePrompt()
-    {
-        promptUI.SetActive(false);
-    }
-
-    public WeaponData OpenChest()
-    {
-        int randomIndex = Random.Range(0, weapons.Count);
-        WeaponData newWeapon = weapons[randomIndex];
-        return newWeapon;
+        if (weapons.Count > 0)
+        {
+            int randomIndex = Random.Range(0, weapons.Count);
+            WeaponData wonWeapon = weapons[randomIndex];
+            
+            inventory.PickupWeapon(wonWeapon);
+            Debug.Log("Mystery Box gaf: " + wonWeapon.weaponName);
+        }
     }
 }
