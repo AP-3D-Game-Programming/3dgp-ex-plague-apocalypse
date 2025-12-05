@@ -15,7 +15,7 @@ MonoBehaviour:
   weaponName: TestGun
   description: Weapon to test functionality
   icon: {fileID: 0}
-  weaponPrefab: {fileID: 0}
+  weaponPrefab: {fileID: 5896124597003368549, guid: 55af05e08c648c14bbf31eca694ab9dc, type: 3}
   maxAmmo: 9999
   magazineSize: 10
   damage: 10

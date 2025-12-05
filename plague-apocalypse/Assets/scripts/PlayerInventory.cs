@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
 {
-    // Lijst van wapens die de speler heeft (maximaal 2 in Zombies)
-    public List<WeaponData> weapons = new List<WeaponData>();
+    [SerializeField] private List<WeaponData> weapons = new List<WeaponData>();
+    [SerializeField] private Transform weaponHolder;
     
     // Welk wapen hebben we nu vast? (0 of 1)
     private int currentWeaponIndex = 0;
@@ -46,11 +46,9 @@ public class PlayerInventory : MonoBehaviour
         if (index >= weapons.Count) return;
         if (currentWeapon != null) Destroy(currentWeapon);
 
-        currentWeapon = Instantiate(weapons[index].weaponPrefab, this.transform);
+        currentWeapon = Instantiate(weapons[index].weaponPrefab, weaponHolder);
         currentWeapon.transform.localPosition = new Vector3(0.25f, 1f, 1f);
         currentWeapon.transform.localRotation = Quaternion.identity;
-        
-        
-        Debug.Log("Je hebt nu vast: " + weapons[index].weaponName);
+        currentWeaponIndex = index;
     }
 }
