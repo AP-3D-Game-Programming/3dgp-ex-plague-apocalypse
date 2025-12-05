@@ -29,31 +29,26 @@ public class PlayerInteract : MonoBehaviour
     void CheckForInteractable()
     {
         RaycastHit hit;
+        MysteryBox targetChest = null;
 
         if(Physics.SphereCast(playerCamera.transform.position, 0.5f,
             playerCamera.transform.forward, out hit, interactRange, interactableLayer))
         {
-            MysteryBox newChest = hit.collider.GetComponent<MysteryBox>();
-            
-            if(newChest != null)
+            targetChest = hit.collider.GetComponent<MysteryBox>();
+        }
+
+        if (targetChest != currentChest)
+        {
+            if(currentChest != null)
             {
-                if(currentChest != newChest)
-                {
-                    if( currentChest != null)
-                    {
-                        currentChest.HidePrompt();
-                    }
-                    currentChest = newChest;
-                    currentChest.ShowPrompt();
-                }
-                return;
+                currentChest.HidePrompt();
             }
 
-        }
-        if(currentChest != null)
-        {
-            currentChest.HidePrompt();
-            currentChest = null;
+            if(targetChest != null)
+            {
+                targetChest.ShowPrompt();
+            }
+            currentChest = targetChest;
         }
     }
 
