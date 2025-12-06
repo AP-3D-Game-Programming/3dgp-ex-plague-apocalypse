@@ -17,7 +17,7 @@ MonoBehaviour:
   weaponPrefab: {fileID: 2863285868115648588, guid: 55af05e08c648c14bbf31eca694ab9dc, type: 3}
   muzzleFlashPrefab: {fileID: 0}
   effects: []
-  projectilePrefab: {fileID: 8862881269505406453, guid: 1e14ac041afd04849a2c973a84d2a416, type: 3}
+  projectilePrefab: {fileID: 639195908317398632, guid: a1b6d7f8815655f468f8b07b59597121, type: 3}
   weaponType: 0
   maxAmmo: 9999
   magazineSize: 10
