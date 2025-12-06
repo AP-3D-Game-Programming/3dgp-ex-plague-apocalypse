@@ -5,6 +5,7 @@ public class PlayerInventory : MonoBehaviour
 {
     [SerializeField] private List<WeaponData> weapons = new List<WeaponData>();
     [SerializeField] private Transform weaponHolder;
+    [SerializeField] private AmmoHUD ammoHUD;
     // Welk wapen hebben we nu vast? (0 of 1)
     private int currentWeaponIndex = 0;
     private int maxWeapons = 2;
@@ -64,6 +65,9 @@ public class PlayerInventory : MonoBehaviour
         if (gunComponent != null)
         {
             gunComponent.Initialize(weapons[index], effectManager);
+            gunComponent.onAmmoChanged = null; // Reset eventuele oude listeners
+            gunComponent.onAmmoChanged += ammoHUD.UpdateAmmoDisplay;
+            ammoHUD.UpdateAmmoDisplay(weapons[index].magazineSize, weapons[index].maxAmmo);
         }
         currentWeapon.transform.localPosition = new Vector3(0.25f, 1f, 1f);
         currentWeapon.transform.localRotation = Quaternion.identity;

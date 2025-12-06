@@ -1,13 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class Gun : MonoBehaviour
 {
     [Header("Setup")]
     public Transform muzzlePoint;
-    
-    // Automatisch gevonden componenten
     private Animator gunAnimator;
     private WeaponData data;
     private PlayerEffectManager effectManager;
@@ -17,14 +16,17 @@ public class Gun : MonoBehaviour
     private int currentReserve;
     private bool isReloading = false;
 
+    public Action<int, int> onAmmoChanged; // Huidige clip, huidige reserve
+
     public void Initialize(WeaponData weaponData, PlayerEffectManager manager)
     {
         this.data = weaponData;
         this.effectManager = manager;
         this.gunAnimator = GetComponent<Animator>();
-    
+
         currentClip = data.magazineSize;
         currentReserve = data.maxAmmo;
+        onAmmoChanged?.Invoke(currentClip, currentReserve);
     }
 
     public void AttemptShoot()
@@ -44,6 +46,7 @@ public class Gun : MonoBehaviour
             // Alles OK? Vuur!
             nextFireTime = Time.time + data.fireRate;
             currentClip--; 
+            onAmmoChanged?.Invoke(currentClip, currentReserve);
             
             Shoot();
         }
@@ -106,6 +109,7 @@ public class Gun : MonoBehaviour
 
         currentReserve -= toLoad;
         currentClip += toLoad;
+        onAmmoChanged?.Invoke(currentClip, currentReserve);
 
         isReloading = false;
         Debug.Log("Reload Klaar!");
