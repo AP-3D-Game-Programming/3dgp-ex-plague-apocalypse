@@ -10,7 +10,7 @@ public class Gun : MonoBehaviour
     private Animator gunAnimator;
     private WeaponData data;
     private PlayerEffectManager effectManager;
-    
+
     private float nextFireTime;
     private int currentClip;
     private int currentReserve;
@@ -31,11 +31,11 @@ public class Gun : MonoBehaviour
 
     public void AttemptShoot()
     {
-        if (data == null) 
-    {
-        Debug.Log("FOUT: Data is NULL! Initialize is niet aangeroepen."); 
-        return;
-    }
+        if (data == null)
+        {
+            Debug.Log("FOUT: Data is NULL! Initialize is niet aangeroepen.");
+            return;
+        }
         if (data == null || isReloading) return;
 
         // 1. Fire Rate Check
@@ -50,9 +50,9 @@ public class Gun : MonoBehaviour
 
             // Alles OK? Vuur!
             nextFireTime = Time.time + data.fireRate;
-            currentClip--; 
+            currentClip--;
             onAmmoChanged?.Invoke(currentClip, currentReserve);
-            
+
             Shoot();
         }
     }
@@ -78,8 +78,8 @@ public class Gun : MonoBehaviour
             {
                 // Effecten verzamelen
                 List<BulletEffect> effects = new List<BulletEffect>();
-                if(effectManager != null) effects = effectManager.GetActiveEffectsForWeapon(data.weaponType);
-                if(data.effects != null) effects.AddRange(data.effects);
+                if (effectManager != null) effects = effectManager.GetActiveEffectsForWeapon(data.weaponType);
+                if (data.effects != null) effects.AddRange(data.effects);
 
                 // Kogel activeren
                 bulletScript.Initialize(data.damage, data.weaponType, effects);
@@ -90,8 +90,9 @@ public class Gun : MonoBehaviour
         if (data.muzzleFlashPrefab != null && muzzlePoint != null)
         {
             GameObject flash = Instantiate(data.muzzleFlashPrefab, muzzlePoint.position, muzzlePoint.rotation);
-            // Zorg dat de flash even meebeweegt met de loop
-            flash.transform.SetParent(muzzlePoint); 
+            flash.transform.SetParent(muzzlePoint);
+            ParticleSystem ps = flash.GetComponent<ParticleSystem>();
+            if (ps != null) ps.Play();
             Destroy(flash, 0.5f);
         }
         // C. Animatie afspelen

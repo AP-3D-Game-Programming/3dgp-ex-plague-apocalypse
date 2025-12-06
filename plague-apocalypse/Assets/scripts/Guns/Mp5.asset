@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 823e19a26cd2e964b85e1ad7988cc4ff, type: 3}
-  m_Name: TestGun
+  m_Name: Mp5
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  weaponName: TestGun
-  isAutomatic: 0
-  weaponPrefab: {fileID: 2863285868115648588, guid: 55af05e08c648c14bbf31eca694ab9dc, type: 3}
-  muzzleFlashPrefab: {fileID: 0}
+  weaponName: MP5
+  isAutomatic: 1
+  weaponPrefab: {fileID: 5583665245190303971, guid: 4c471bc37fe0af049a566a7797759144, type: 3}
+  muzzleFlashPrefab: {fileID: 5429976715460236203, guid: 5183b92872d510f4b8ae7c77cc037d0f, type: 3}
   effects: []
   projectilePrefab: {fileID: 558560356354663943, guid: c2b443950b2da494ead3bc0f54339b96, type: 3}
   weaponType: 0
-  maxAmmo: 9999
-  magazineSize: 10
+  maxAmmo: 250
+  magazineSize: 32
   damage: 10
-  fireRate: 0.2
-  reloadTime: 1
+  fireRate: 0.1
+  reloadTime: 2
