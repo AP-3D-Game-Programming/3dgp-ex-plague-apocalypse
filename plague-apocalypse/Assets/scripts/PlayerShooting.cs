@@ -41,6 +41,7 @@ public class PlayerShooting : MonoBehaviour
 
         if (isFiring)
         {
+            Debug.Log("1. Input gedetecteerd! Roep AttemptShoot aan.");
             currentGun.AttemptShoot();
         }
     }

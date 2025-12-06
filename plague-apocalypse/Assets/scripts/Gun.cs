@@ -31,6 +31,11 @@ public class Gun : MonoBehaviour
 
     public void AttemptShoot()
     {
+        if (data == null) 
+    {
+        Debug.Log("FOUT: Data is NULL! Initialize is niet aangeroepen."); 
+        return;
+    }
         if (data == null || isReloading) return;
 
         // 1. Fire Rate Check
@@ -65,6 +70,7 @@ public class Gun : MonoBehaviour
         // A. Kogel Spawnen
         if (data.projectilePrefab != null && muzzlePoint != null)
         {
+            Debug.Log("4. Shoot() gestart. Prefab: " + data.projectilePrefab);
             GameObject bulletObj = Instantiate(data.projectilePrefab, muzzlePoint.position, muzzlePoint.rotation);
             Projectile bulletScript = bulletObj.GetComponent<Projectile>();
 

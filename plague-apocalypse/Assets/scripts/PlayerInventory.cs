@@ -16,6 +16,7 @@ public class PlayerInventory : MonoBehaviour
     {
         shootingScript = GetComponent<PlayerShooting>();
         effectManager = GetComponent<PlayerEffectManager>();
+        if (shootingScript == null) Debug.LogError("HELP! Geen PlayerShooting script gevonden op de Player!");
     }
 
     void Update()
