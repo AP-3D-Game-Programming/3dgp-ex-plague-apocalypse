@@ -1,14 +1,11 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ExplosiveEffect", menuName = "Scriptable Objects/ExplosiveEffect")]
+[CreateAssetMenu(fileName = "ExplosiveEffect", menuName = "Effects/Explosive")]
 public class ExplosiveEffect : BulletEffect
 {
     public override void Apply(GameObject bullet)
     {
-        ExplosiveLogic logic = bullet.AddComponent<ExplosiveLogic>();
-        
-        Projectile p = bullet.GetComponent<Projectile>();
+        ExplosiveLogic logic = GetOrAddLogic<ExplosiveLogic>(bullet);
 
-        p.onHit += logic.Explode;
     }
 }

@@ -11,8 +11,7 @@ public class Projectile : MonoBehaviour
 
     [HideInInspector] public float damage; 
     [HideInInspector] public WeaponType sourceWeaponType;
-    [HideInInspector] public Action<Collision> onHit;
-    [HideInInspector] public bool destroyOnHit = true;
+    private List<BulletLogic> activeLogics = new List<BulletLogic>();
 
     private Rigidbody rb;
     public void Initialize(float weaponDamage, WeaponType type, List<BulletEffect> effects)
@@ -27,6 +26,7 @@ public class Projectile : MonoBehaviour
                 effect.Apply(this.gameObject);
             }
         }
+        activeLogics.AddRange(GetComponents<BulletLogic>());
     }
 
     void Start()
@@ -48,10 +48,34 @@ public class Projectile : MonoBehaviour
         //     zombie.TakeDamage(damage);
         // }
 
-        onHit?.Invoke(collision);
-        if (destroyOnHit)
+        BulletAction finalAction = BulletAction.Destroy;
+
+        foreach (var logic in activeLogics)
         {
-            Destroy(gameObject);
+            finalAction = logic.OnHit(collision, finalAction);
+        }
+
+        ExecuteAction(finalAction, collision);
+    }
+    void ExecuteAction(BulletAction action, Collision collision)
+    {
+        switch (action)
+        {
+            case BulletAction.Destroy:
+                Destroy(gameObject);
+                break;
+
+            case BulletAction.PassThrough:
+                // Piercing: We doen niks, de kogel vliegt gewoon door.
+                // Wel belangrijk: Zet collision uit tussen deze kogel en deze zombie
+                // anders krijg je "rattle" geluiden of dubbele hits.
+                Physics.IgnoreCollision(GetComponent<Collider>(), collision.collider);
+                break;
+
+            case BulletAction.Bounce:
+                // Bouncing: De logica heeft de richting waarschijnlijk al aangepast,
+                // of we doen het hier. Voor nu laten we de physics engine stuiteren.
+                break;
         }
     }
 }

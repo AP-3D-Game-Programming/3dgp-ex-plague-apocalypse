@@ -19,7 +19,6 @@ public class PlayerEffectManager : MonoBehaviour
         List<BulletEffect> validEffects = new List<BulletEffect>();
         foreach (var effect in collectedEffects)
         {
-            // Check: Staat het type in de 'allowedTypes' van het effect?
             if (effect.allowedTypes.Contains(type))
             {
                 validEffects.Add(effect);

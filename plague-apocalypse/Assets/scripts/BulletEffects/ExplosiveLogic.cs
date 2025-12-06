@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ExplosiveLogic : MonoBehaviour
+public class ExplosiveLogic : BulletLogic
 {
     public float radius = 5f;
     public float explosionDamage = 50f;
@@ -15,6 +15,15 @@ public class ExplosiveLogic : MonoBehaviour
             // if(z != null) z.TakeDamage(explosionDamage);
         }
         
-        // Spawn particle effect hier...
+    }
+    public override BulletAction OnHit(Collision collision, BulletAction currentAction)
+    {
+        if (currentAction != BulletAction.Destroy)
+            return currentAction;
+        else
+        {
+            Explode(collision);
+            return BulletAction.Destroy;
+        }
     }
 }

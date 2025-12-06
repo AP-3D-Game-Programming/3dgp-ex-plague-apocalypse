@@ -22,7 +22,7 @@ public class Gun : MonoBehaviour
         this.data = weaponData;
         this.effectManager = manager;
         this.gunAnimator = GetComponent<Animator>();
-
+    
         currentClip = data.magazineSize;
         currentReserve = data.maxAmmo;
     }
