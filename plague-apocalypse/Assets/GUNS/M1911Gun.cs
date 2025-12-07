@@ -7,6 +7,9 @@ public class M1911Gun : MonoBehaviour
     public GameObject bulletPrefab;      // Je bullet prefab
     public float bulletForce = 800f;     // Snelheid van de kogel
 
+    [Header("Effects")]
+    public ParticleSystem muzzleFlash;   // Wijs hier je "muzzle_flash" ParticleSystem toe
+
     [Header("Ammo Settings")]
     public int magazineSize = 7;         // Grootte van magazijn
     public int reserveAmmo = 35;         // Reserve kogels
@@ -16,11 +19,15 @@ public class M1911Gun : MonoBehaviour
     public int currentAmmo;              // Kogels momenteel in magazijn
 
     bool isReloading = false;
+    Animator animator;
+    float shotFired = 0f;
 
     void Start()
     {
         // Begin met een vol magazijn
         currentAmmo = magazineSize;
+        animator = GetComponent<Animator>();
+        Debug.Log(animator);
     }
 
     void Update()
@@ -37,7 +44,13 @@ public class M1911Gun : MonoBehaviour
         // Linkermuisknop om te schieten
         if (Input.GetButtonDown("Fire1"))
         {
+            animator.SetTrigger("shots_fired");
             Shoot();
+            if (Time.time - shotFired > 0.05f)
+            {
+                animator.ResetTrigger("shots_fired");
+                Debug.Log("Reset trigger");
+            }
         }
     }
 
@@ -49,6 +62,8 @@ public class M1911Gun : MonoBehaviour
             Debug.Log("Klik... Geen kogels in magazijn! Reload met R.");
             return;
         }
+
+
 
         // Spawn bullet
         if (bulletPrefab != null && muzzlePoint != null)
@@ -62,12 +77,48 @@ public class M1911Gun : MonoBehaviour
             }
 
             Destroy(bullet, 3f); // verwijder na 3 seconden
+
         }
 
+        // Play muzzle flash at the muzzlePoint.
+        // If `muzzleFlash` is a scene object, parent it to the muzzlePoint and play.
+        // If it's a prefab/asset, instantiate it as a child of the muzzlePoint with local position/rotation zero.
+        if (muzzleFlash != null && muzzlePoint != null)
+        {
+            if (muzzleFlash.gameObject.scene.IsValid())
+            {
+                // Parent the scene ParticleSystem to the muzzlePoint so it aligns properly.
+                muzzleFlash.transform.SetParent(muzzlePoint, false);
+                muzzleFlash.transform.localPosition = Vector3.zero;
+                muzzleFlash.transform.localRotation = Quaternion.identity;
+                muzzleFlash.Play();
+            }
+            else
+            {
+                ParticleSystem spawned = Instantiate(muzzleFlash, muzzlePoint);
+                spawned.transform.localPosition = Vector3.zero;
+                spawned.transform.localRotation = Quaternion.identity;
+                spawned.Play();
+
+                // Destroy the instantiated particle after its lifetime (duration + startLifetime)
+                var main = spawned.main;
+                float startLifetime = 0f;
+                // handle different startLifetime modes
+                if (main.startLifetime.mode == ParticleSystemCurveMode.TwoConstants)
+                    startLifetime = main.startLifetime.constantMax;
+                else
+                    startLifetime = main.startLifetime.constant;
+
+                float lifetime = main.duration + startLifetime;
+                Destroy(spawned.gameObject, lifetime);
+            }
+        }
+        
         // 1 kogel kwijt
         currentAmmo--;
 
         Debug.Log($"Ammo: {currentAmmo} / {reserveAmmo}");
+        shotFired = Time.time;
     }
 
     void TryReload()
