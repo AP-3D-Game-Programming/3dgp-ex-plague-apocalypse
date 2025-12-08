@@ -7,20 +7,43 @@ public class MysteryBox : Interactable
     [SerializeField] private List<WeaponData> weapons;
     public int boxCost = 950;
 
-    void Awake()
+    [Header("Visuals")]
+    [SerializeField] private GameObject skyBeamObj; // Drag your Cylinder here
+
+    void Start()
     {
         promptMessage = $"Press E for Mystery Box [{boxCost}]";
+
+        // Turn the beam ON when the game starts
+        if (skyBeamObj != null)
+        {
+            skyBeamObj.SetActive(true);
+        }
     }
 
     public override void OnInteract(PlayerInventory inventory)
     {
-        if (weapons.Count > 0)
+        if (PlayerStats.Instance.points >= boxCost)
         {
-            int randomIndex = Random.Range(0, weapons.Count);
-            WeaponData wonWeapon = weapons[randomIndex];
-            
-            inventory.PickupWeapon(wonWeapon);
-            Debug.Log("Mystery Box gaf: " + wonWeapon.weaponName);
+            PlayerStats.Instance.RemovePoints(boxCost);
+
+            if (weapons.Count > 0)
+            {
+                int randomIndex = Random.Range(0, weapons.Count);
+                WeaponData wonWeapon = weapons[randomIndex];
+
+                inventory.PickupWeapon(wonWeapon);
+                Debug.Log($"Mystery Box bought: {wonWeapon.weaponName}");
+            }
         }
+        else
+        {
+            Debug.Log("Not enough points!");
+        }
+    }
+    public void HideBox()
+    {
+        if (skyBeamObj != null) skyBeamObj.SetActive(false);
+
     }
 }

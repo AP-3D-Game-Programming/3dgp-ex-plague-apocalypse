@@ -19,8 +19,8 @@ MonoBehaviour:
   effects: []
   projectilePrefab: {fileID: 558560356354663943, guid: c2b443950b2da494ead3bc0f54339b96, type: 3}
   weaponType: 0
-  maxAmmo: 9999
+  maxAmmo: 100
   magazineSize: 10
-  damage: 10
-  fireRate: 0.2
+  damage: 50
+  fireRate: 0.3
   reloadTime: 1
