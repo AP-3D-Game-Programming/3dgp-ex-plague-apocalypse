@@ -276,7 +276,7 @@ public class EliteToilet : MonoBehaviour, IElite
             accumulatedPoints += pointsToGive;
             PlayerStats.Instance.AddPoints(pointsToGive);
         }
-        if (!phase2Active && health <= (maxHealth / 3f) * globalPhase2HealthMult)
+        if (!phase2DisableShooting && health <= (maxHealth / 3f) * globalPhase2HealthMult)
         {
             Debug.Log("Phase 2 triggered! Health: " + health);
             StartCoroutine(EnterPhase2());

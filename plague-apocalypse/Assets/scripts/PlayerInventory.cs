@@ -18,7 +18,15 @@ public class PlayerInventory : MonoBehaviour
         effectManager = GetComponent<PlayerEffectManager>();
         if (shootingScript == null) Debug.LogError("HELP! Geen PlayerShooting script gevonden op de Player!");
     }
+    private void Start()
+    {
 
+        if (weapons.Count > 0)
+        {
+            EquipWeapon(0); // equip the starter gun
+            if (shootingScript != null) shootingScript.UpdateCurrentGun();
+        }
+    }
     void Update()
     {
         // Wapen wisselena met scrollwiel of toetsen
@@ -82,5 +90,29 @@ public class PlayerInventory : MonoBehaviour
             return weapons[currentWeaponIndex];
         }
         return null;
+    }
+    // Voeg dit toe aan PlayerInventory.cs
+
+    public bool HasWeapon(WeaponData weaponToCheck)
+    {
+        // Check of dit wapen al in onze lijst zit
+        return weapons.Contains(weaponToCheck);
+    }
+
+    public void RefillAmmo(WeaponData weaponToRefill)
+    {
+        // Als we het wapen momenteel vast hebben, vul het direct bij
+        if (currentWeapon != null)
+        {
+            Gun currentGunScript = currentWeapon.GetComponent<Gun>();
+
+            if (GetCurrentWeapon() == weaponToRefill && currentGunScript != null)
+            {
+                currentGunScript.RefillAmmo();
+            }
+        }
+
+
+
     }
 }

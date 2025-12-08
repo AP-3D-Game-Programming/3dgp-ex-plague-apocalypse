@@ -23,4 +23,10 @@ public class ZombieDance : MonoBehaviour
         animator.SetFloat("DanceIndex", (float)randomIndex);
         animator.Play("ZombieDance", 0, 0f);
     }
+    public void SetDance(int index)
+    {
+        if (!animator) return;
+        animator.SetFloat("DanceIndex", (float)index);
+        animator.Play("ZombieDance", 0, 0f);
+    }
 }

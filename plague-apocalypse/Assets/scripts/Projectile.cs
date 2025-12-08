@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Projectile : MonoBehaviour
@@ -9,11 +8,12 @@ public class Projectile : MonoBehaviour
     public float speed = 50f;
     public float lifetime = 5f;
 
-    [HideInInspector] public float damage; 
+    [HideInInspector] public float damage;
     [HideInInspector] public WeaponType sourceWeaponType;
     private List<BulletLogic> activeLogics = new List<BulletLogic>();
 
     private Rigidbody rb;
+
     public void Initialize(float weaponDamage, WeaponType type, List<BulletEffect> effects)
     {
         this.damage = weaponDamage;
@@ -32,31 +32,77 @@ public class Projectile : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        // (Zorg dat je UseGravity UIT hebt staan op de Rigidbody, tenzij het een granaat is)
-        rb.linearVelocity = transform.forward * speed; 
+        rb.linearVelocity = transform.forward * speed;
 
         Destroy(gameObject, lifetime);
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        // Basis functionaliteit: Damage to a zombie (indien aanwezig)
-        // ZombieHealth zombie = collision.gameObject.GetComponentInParent<ZombieHealth>();
-        
-        // if (zombie != null)
-        // {
-        //     zombie.TakeDamage(damage);
-        // }
+
+        bool enemyHit = false; // Track if we hit something so we don't hit 2 things at once
+
+        // Check for Zombie
+        if (!enemyHit)
+        {
+            Zombie zombie = collision.gameObject.GetComponent<Zombie>();
+            if (zombie != null)
+            {
+                zombie.TakeDamage((int)damage); // Cast float damage to int
+                TriggerLifeSteal();
+                enemyHit = true;
+            }
+        }
+
+        // Check for EliteToilet
+        if (!enemyHit)
+        {
+            EliteToilet elite = collision.gameObject.GetComponent<EliteToilet>();
+            if (elite != null)
+            {
+                elite.TakeDamage((int)damage);
+                TriggerLifeSteal();
+                enemyHit = true;
+            }
+        }
+
+        // Check for MechEnemy 
+        if (!enemyHit)
+        {
+            MechEnemy mech = collision.gameObject.GetComponentInParent<MechEnemy>();
+            if (mech != null)
+            {
+                mech.TakeDamage((int)damage);
+                TriggerLifeSteal();
+                enemyHit = true;
+            }
+        }
+
+        // Check for RageZombie
+        if (!enemyHit)
+        {
+            RageZombie rageZombie = collision.gameObject.GetComponentInParent<RageZombie>();
+            if (rageZombie != null)
+            {
+                rageZombie.TakeDamage((int)damage);
+                TriggerLifeSteal();
+                enemyHit = true;
+            }
+        }
+
+        // --- 2. BULLET EFFECTS LOGIC ---
 
         BulletAction finalAction = BulletAction.Destroy;
 
         foreach (var logic in activeLogics)
         {
+            // Pass the collision data to any effects (explosions, poison, etc.)
             finalAction = logic.OnHit(collision, finalAction);
         }
 
         ExecuteAction(finalAction, collision);
     }
+
     void ExecuteAction(BulletAction action, Collision collision)
     {
         switch (action)
@@ -66,16 +112,32 @@ public class Projectile : MonoBehaviour
                 break;
 
             case BulletAction.PassThrough:
-                // Piercing: We doen niks, de kogel vliegt gewoon door.
-                // Wel belangrijk: Zet collision uit tussen deze kogel en deze zombie
-                // anders krijg je "rattle" geluiden of dubbele hits.
                 Physics.IgnoreCollision(GetComponent<Collider>(), collision.collider);
                 break;
 
             case BulletAction.Bounce:
-                // Bouncing: De logica heeft de richting waarschijnlijk al aangepast,
-                // of we doen het hier. Voor nu laten we de physics engine stuiteren.
+                // Bouncing logic here if needed
                 break;
+        }
+    }
+    void TriggerLifeSteal()
+    {
+
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player == null) return;
+
+        PlayerStats stats = player.GetComponent<PlayerStats>();
+        PlayerHealth health = player.GetComponent<PlayerHealth>();
+
+        if (stats != null && health != null && stats.lifeStealPerHit > 0)
+        {
+            // Heal the player
+            int oldHealth = health.currentHealth;
+            health.currentHealth += (int)stats.lifeStealPerHit;
+
+            if (health.currentHealth > health.maxHealth)
+                health.currentHealth = health.maxHealth;
+
         }
     }
 }
