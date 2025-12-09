@@ -451,10 +451,32 @@ public class RoundManager : MonoBehaviour
         GameObject[] hudObjects = GameObject.FindGameObjectsWithTag("HUD");
         foreach (var obj in hudObjects) obj.SetActive(false);
 
-        List<Card> availableCards = new List<Card>(allCards);
-        List<Card> options = new List<Card>();
+        // 1. Generate the initial cards
+        List<Card> options = GenerateRandomCards();
 
-        for (int i = 0; i < 3 && availableCards.Count > 0; i++)
+        // 2. Show the UI
+        CardSelectionUI.Instance.ShowOptions(options);
+
+        // 3. Wait until a choice is made
+        yield return new WaitUntil(() => CardSelectionUI.Instance.cardChosen);
+
+        // 4. Apply logic
+        Card chosenCard = CardSelectionUI.Instance.GetChosenCard();
+        chosenCard.Apply(this);
+
+        foreach (var obj in hudObjects) obj.SetActive(true);
+        spawnRoutine = StartCoroutine(StartNextRoundWithDelay());
+    }
+
+    // --- NEW FUNCTION: CALLED BY UI TO REROLL ---
+    public List<Card> GenerateRandomCards()
+    {
+        List<Card> availableCards = new List<Card>(allCards);
+        List<Card> selectedCards = new List<Card>();
+
+        int cardsToPick = Mathf.Min(3, availableCards.Count);
+
+        for (int i = 0; i < cardsToPick; i++)
         {
             float totalWeight = 0f;
             foreach (var card in availableCards)
@@ -467,49 +489,57 @@ public class RoundManager : MonoBehaviour
             foreach (var card in availableCards)
             {
                 sum += GetRarityWeight(card.rarity, playerLuck);
-                if (rand <= sum)
+                if (sum >= rand)
                 {
                     cardToAdd = card;
                     break;
                 }
             }
 
-            if (cardToAdd == null) cardToAdd = availableCards[0];
+            if (cardToAdd == null && availableCards.Count > 0)
+                cardToAdd = availableCards[availableCards.Count - 1];
 
-            options.Add(cardToAdd);
+            selectedCards.Add(cardToAdd);
             availableCards.Remove(cardToAdd);
         }
 
-        CardSelectionUI.Instance.ShowOptions(options);
-        yield return new WaitUntil(() => CardSelectionUI.Instance.cardChosen);
-        Card chosenCard = CardSelectionUI.Instance.GetChosenCard();
-        chosenCard.Apply(this);
-
-        foreach (var obj in hudObjects) obj.SetActive(true);
-        spawnRoutine = StartCoroutine(StartNextRoundWithDelay());
+        return selectedCards;
     }
 
-    // This method expects TWO arguments (rarity, currentLuck)
+    public void RerollCards()
+    {
+        List<Card> newCards = GenerateRandomCards();
+        CardSelectionUI.Instance.UpdateCardOptions(newCards);
+    }
     private float GetRarityWeight(CardRarity rarity, float currentLuck)
     {
-        float baseWeight = 0f;
+        float luck = Mathf.Max(currentLuck, 1f);
+
         switch (rarity)
         {
-            case CardRarity.Common: baseWeight = 50f; break;
-            case CardRarity.Uncommon: baseWeight = 25f; break;
-            case CardRarity.Rare: baseWeight = 13f; break;
-            case CardRarity.Epic: baseWeight = 7f; break;
-            case CardRarity.Legendary: baseWeight = 4f; break;
-            case CardRarity.Mythical: baseWeight = 0.5f; break;
-            case CardRarity.Exotic: baseWeight = 0.15f; break;
+            case CardRarity.Common:
+                return 100f / luck;
+
+            case CardRarity.Uncommon:
+                return 50f / (luck * 0.5f);
+
+            case CardRarity.Rare:
+                return 20f * Mathf.Clamp(luck, 1f, 50f);
+
+            case CardRarity.Epic:
+                return 10f * (luck * 0.5f);
+
+            case CardRarity.Legendary:
+                return 4f * luck;
+
+            case CardRarity.Mythical:
+                return 1f * Mathf.Pow(luck, 1.2f);
+
+            case CardRarity.Exotic:
+                return 0.15f * Mathf.Pow(luck, 1.5f);
+
             default: return 1f;
         }
-
-        if (rarity >= CardRarity.Rare)
-        {
-            return baseWeight * currentLuck;
-        }
-        return baseWeight;
     }
 }
 
