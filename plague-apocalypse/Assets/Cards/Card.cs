@@ -38,6 +38,15 @@ public class Card : ScriptableObject
     public bool playerBouncingBullets = false;
     [Header("Luck")]
     public float playerLuckBonus = 0f;
+    [Header("Weapon Specifics")]
+    public bool applyToSpecificType = false;
+    public WeaponType targetWeaponType;
+    [Header("Weapon Buffs")]
+
+    public float weaponDamageMultiplier = 1f;
+    public float weaponFireRateMultiplier = 1f;
+    public float weaponReloadTimeMultiplier = 1f;
+    public int weaponMagSizeBonus = 0;
 
     [Header("Zombie Stats")]
     public float zombieHealthPercentIncrease = 0f;
@@ -107,9 +116,31 @@ public class Card : ScriptableObject
 
                 if (shotPointsMultiplier > 0) playerStats.shotPointsMultiplier *= shotPointsMultiplier;
                 if (deathPointsMultiplier > 0) playerStats.deathPointsMultiplier *= deathPointsMultiplier;
+                if (applyToSpecificType)
+                {
+                    if (playerStats.typeDamageMults.ContainsKey(targetWeaponType))
+                        playerStats.typeDamageMults[targetWeaponType] *= weaponDamageMultiplier;
 
-                playerStats.maxShootPointsPerEnemy += maxShootPointsIncrease;
+                    if (playerStats.typeFireRateMults.ContainsKey(targetWeaponType))
+                        playerStats.typeFireRateMults[targetWeaponType] *= weaponFireRateMultiplier;
+                }
+                else
+                {
+                    if (weaponDamageMultiplier != 1f)
+                        playerStats.damageMultiplier *= weaponDamageMultiplier;
+
+                    if (weaponFireRateMultiplier != 1f)
+                        playerStats.fireRateMultiplier *= weaponFireRateMultiplier;
+                }
+
+                if (weaponReloadTimeMultiplier != 1f)
+                    playerStats.reloadSpeedMultiplier *= weaponReloadTimeMultiplier;
+
+                if (weaponMagSizeBonus != 0)
+                    playerStats.magazineSizeBonus += weaponMagSizeBonus;
+
             }
+
         }
 
         // --- 2. APPLY ZOMBIE STATS (SAFELY) ---
@@ -179,4 +210,8 @@ public class Card : ScriptableObject
 
         Debug.Log($"Applied Card: {cardName}");
     }
+
+
+
 }
+

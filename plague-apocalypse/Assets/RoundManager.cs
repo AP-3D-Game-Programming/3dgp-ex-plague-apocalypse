@@ -131,7 +131,14 @@ public class EliteType
     }
 }
 
-
+public struct CurrentEnemyStats
+{
+    public float totalHealthMultiplier;
+    public float totalSpeedMultiplier;
+    public float totalFireRateMultiplier;
+    public float totalDamageMultiplier;
+    public float currentHealthIncrement;
+}
 
 public class RoundManager : MonoBehaviour
 {
@@ -174,8 +181,12 @@ public class RoundManager : MonoBehaviour
 
     private Dictionary<EliteType, bool> eliteSpawnedThisRound = new Dictionary<EliteType, bool>();
 
+    private const string DifficultyKey = "Difficulty";
+
     void Start()
     {
+
+        ApplyDifficulty();
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
             playerTransform = playerObj.transform;
@@ -187,7 +198,47 @@ public class RoundManager : MonoBehaviour
 
         spawnRoutine = StartCoroutine(StartRound());
     }
+    void ApplyDifficulty()
+    {
+        int difficultyIndex = PlayerPrefs.GetInt(DifficultyKey, 1);
 
+        float statMultiplier = 1f;
+
+        switch (difficultyIndex)
+        {
+            case 0: // Easy
+                statMultiplier = 0.7f;
+                break;
+            case 1: // Normal
+                statMultiplier = 1.0f;
+                break;
+            case 2: // Hard
+                statMultiplier = 1.5f;
+                break;
+            case 3: // Nightmare
+                statMultiplier = 3.0f;
+                break;
+        }
+
+        Debug.Log($"Applying Difficulty: Index {difficultyIndex}, Multiplier {statMultiplier}x");
+
+        globalEnemyHealthMultiplier *= statMultiplier;
+        globalEliteHealthMultiplier *= statMultiplier;
+
+        healthIncrement *= statMultiplier;
+        eliteHealthIncrement *= statMultiplier;
+        globalEliteDamageMultiplier *= statMultiplier;
+
+
+        // Easy = 0.9x, Normal = 1.0x, Hard = 1.1x, Nightmare = 1.3x
+        float speedMod = 1.0f;
+        if (difficultyIndex == 0) speedMod = 0.9f;
+        if (difficultyIndex == 2) speedMod = 1.1f;
+        if (difficultyIndex == 3) speedMod = 1.3f;
+
+        globalEnemySpeedMultiplier *= speedMod;
+        globalEliteSpeedMultiplier *= speedMod;
+    }
     IEnumerator StartRound()
     {
         eliteSpawnedThisRound.Clear();
@@ -540,6 +591,20 @@ public class RoundManager : MonoBehaviour
 
             default: return 1f;
         }
+    }
+    public CurrentEnemyStats GetCurrentEnemyMultipliers()
+    {
+
+        float currentHealthInc = healthIncrement * globalEnemyHealthMultiplier;
+
+        return new CurrentEnemyStats
+        {
+            totalHealthMultiplier = globalEnemyHealthMultiplier,
+            totalSpeedMultiplier = globalEnemySpeedMultiplier,
+            totalFireRateMultiplier = globalEliteFireRateMultiplier,
+            totalDamageMultiplier = globalEliteDamageMultiplier,
+            currentHealthIncrement = currentHealthInc
+        };
     }
 }
 

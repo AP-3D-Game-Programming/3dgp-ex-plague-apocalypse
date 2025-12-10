@@ -10,24 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ca2b927d19384024eb63656a984bf75a, type: 3}
-  m_Name: Dracula
+  m_Name: Lucky 3
   m_EditorClassIdentifier: Assembly-CSharp::Card
-  cardName: Dracula
-  description: '-80 Health
-
-    -1e+20 Regen
+  cardName: Lucky Clover
+  description: '+0.2 Luck
 
 
-
-    +100 Life steal'
+    +2 Zombie speed'
   target: 3
-  rarity: 6
-  playerHealthBonus: -90
-  playerRegenBonus: -1e+20
+  rarity: 0
+  playerHealthBonus: 0
+  playerRegenBonus: 0
   playerFireRateMultiplier: 1
-  lifeStealAmount: 100
+  lifeStealAmount: 0
   playerBouncingBullets: 0
-  playerLuckBonus: 0
+  playerLuckBonus: 0.2
   applyToSpecificType: 0
   targetWeaponType: 0
   weaponDamageMultiplier: 1
@@ -36,7 +33,7 @@ MonoBehaviour:
   weaponMagSizeBonus: 0
   zombieHealthPercentIncrease: 0
   zombieSpeedPercentIncrease: 0
-  zombieSpeedFlatBonus: 0
+  zombieSpeedFlatBonus: 2
   zombieFireRateBonus: 0
   forceElitesNextRound: 0
   eliteHealthPercentIncrease: 0

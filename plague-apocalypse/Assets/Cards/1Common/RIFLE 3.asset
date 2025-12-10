@@ -10,29 +10,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ca2b927d19384024eb63656a984bf75a, type: 3}
-  m_Name: Test 2
+  m_Name: RIFLE 3
   m_EditorClassIdentifier: Assembly-CSharp::Card
-  cardName: Elite Test
-  description: 'Test voor test sesie
+  cardName: RIFLE buff 2
+  description: '+20% RIFLE damage
+
+    +10% RIFLE firerate
 
 
-    Veel geluk
-
-
-    +100 Luck'
-  target: 0
+    +10% zombie health'
+  target: 3
   rarity: 0
-  playerHealthBonus: 6767
+  playerHealthBonus: 0
   playerRegenBonus: 0
   playerFireRateMultiplier: 1
-  lifeStealAmount: 10
+  lifeStealAmount: 0
   playerBouncingBullets: 0
-  playerLuckBonus: 100
-  zombieHealthPercentIncrease: 0
+  playerLuckBonus: 0
+  applyToSpecificType: 1
+  targetWeaponType: 2
+  weaponDamageMultiplier: 1.2
+  weaponFireRateMultiplier: 1.1
+  weaponReloadTimeMultiplier: 1
+  weaponMagSizeBonus: 0
+  zombieHealthPercentIncrease: 0.1
   zombieSpeedPercentIncrease: 0
   zombieSpeedFlatBonus: 0
   zombieFireRateBonus: 0
-  forceElitesNextRound: 50
+  forceElitesNextRound: 0
   eliteHealthPercentIncrease: 0
   eliteSpeedPercentIncrease: 0
   eliteFireRateMultiplier: 1

@@ -10,32 +10,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ca2b927d19384024eb63656a984bf75a, type: 3}
-  m_Name: Dracula
+  m_Name: RIFLE
   m_EditorClassIdentifier: Assembly-CSharp::Card
-  cardName: Dracula
-  description: '-80 Health
+  cardName: RIFLE buff
+  description: '+5% RIFLE damage
 
-    -1e+20 Regen
+    +50 RIFLE bullets
 
 
-
-    +100 Life steal'
+    +20% reload RIFLE time'
   target: 3
-  rarity: 6
-  playerHealthBonus: -90
-  playerRegenBonus: -1e+20
+  rarity: 0
+  playerHealthBonus: 0
+  playerRegenBonus: 0
   playerFireRateMultiplier: 1
-  lifeStealAmount: 100
+  lifeStealAmount: 0
   playerBouncingBullets: 0
   playerLuckBonus: 0
-  applyToSpecificType: 0
-  targetWeaponType: 0
-  weaponDamageMultiplier: 1
-  weaponFireRateMultiplier: 1
-  weaponReloadTimeMultiplier: 1
-  weaponMagSizeBonus: 0
-  zombieHealthPercentIncrease: 0
-  zombieSpeedPercentIncrease: 0
+  applyToSpecificType: 1
+  targetWeaponType: 2
+  weaponDamageMultiplier: 1.2
+  weaponFireRateMultiplier: 1.1
+  weaponReloadTimeMultiplier: 1.2
+  weaponMagSizeBonus: 50
+  zombieHealthPercentIncrease: 0.1
+  zombieSpeedPercentIncrease: 0.1
   zombieSpeedFlatBonus: 0
   zombieFireRateBonus: 0
   forceElitesNextRound: 0
