@@ -64,23 +64,23 @@ public class RifleScope_CameraSwitcher : MonoBehaviour {
     }
 
     private void SetScopeActive(bool scoped) {
-        if (playerCamera == null || scopeCamera == null || scopeOverlayObject == null || scopeCanvasComponent == null) return;
+        if (playerCamera == null || scopeCamera == null || scopeOverlayObject == null || scopeCanvasComponent == null) {
+            Debug.LogError("Één van de componenten is null! Check de Inspector toewijzingen.");
+            return;
+        }
 
         // 1. Schakel de Camera componenten
         scopeCamera.enabled = scoped;
         playerCamera.enabled = !scoped;
         
-        // 2. Koppel de Canvas aan de JUISTE actieve camera (DIT IS DE OPLOSSING)
-        if (scoped) {
-            // Scope AAN: Koppel Canvas aan de Scope Camera
-            scopeCanvasComponent.worldCamera = scopeCamera;
-        } else {
-            // Scope UIT: Koppel Canvas aan de Player Camera
-            scopeCanvasComponent.worldCamera = playerCamera;
-        }
-
-        // 3. Schakel het Scope Overlay GameObject AAN of UIT
+        // 2. Schakel het Scope Overlay GameObject AAN of UIT
         scopeOverlayObject.SetActive(scoped);
+        
+        // 3. Zorg dat Canvas op Screen Space - Overlay staat (geen camera nodig)
+        if (scoped) {
+            scopeCanvasComponent.renderMode = RenderMode.ScreenSpaceOverlay;
+            scopeCanvasComponent.sortingOrder = 100; // Voorop alles
+        }
 
         // 4. Schakel de AudioListener component
         if (playerCameraListener != null) {
@@ -88,7 +88,7 @@ public class RifleScope_CameraSwitcher : MonoBehaviour {
         }
 
         Debug.Log(scoped 
-            ? $"Scope AAN -> {scopeCamera.name} is actief en Canvas gekoppeld."
-            : $"Scope UIT -> {playerCamera.name} is actief en Canvas gekoppeld.");
+            ? $"✓ SCOPE AAN -> ScopeCamera={scopeCamera.enabled}, PlayerCamera={playerCamera.enabled}, Overlay={scopeOverlayObject.activeSelf}, Canvas RenderMode={scopeCanvasComponent.renderMode}"
+            : $"✓ SCOPE UIT -> ScopeCamera={scopeCamera.enabled}, PlayerCamera={playerCamera.enabled}");
     }
 }
