@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Elder Vampire
   m_EditorClassIdentifier: Assembly-CSharp::Card
   cardName: Elder Vampire
-  description: '+5 Hp Life steal
+  description: '+2 Hp Life steal
 
 
     -25 Health
@@ -24,14 +24,26 @@ MonoBehaviour:
   playerHealthBonus: -25
   playerRegenBonus: -5
   playerFireRateMultiplier: 1
-  lifeStealAmount: 5
+  lifeStealAmount: 2
   playerBouncingBullets: 0
   playerLuckBonus: 0
+  applyToSpecificType: 0
+  targetWeaponType: 0
+  weaponDamageMultiplier: 1
+  weaponFireRateMultiplier: 1
+  weaponReloadTimeMultiplier: 1
+  weaponMagSizeBonus: 0
   zombieHealthPercentIncrease: 0
   zombieSpeedPercentIncrease: 0
   zombieSpeedFlatBonus: 0
   zombieFireRateBonus: 0
   forceElitesNextRound: 0
+  eliteHealthPercentIncrease: 0
+  eliteSpeedPercentIncrease: 0
+  eliteFireRateMultiplier: 1
+  elitePhase2HealthTriggerMultiplier: 1
+  elitePhase2SpeedMultiplier: 1
+  eliteDamageMultiplier: 1
   shotPointsMultiplier: 1
   deathPointsMultiplier: 1
   maxShootPointsIncrease: 0

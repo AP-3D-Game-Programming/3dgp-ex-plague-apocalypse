@@ -152,6 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e24df5328dbd37b42b3fad0a366c69ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  damage: 45
+  damage: 55
   hitEffect: {fileID: 2312591318274358134, guid: 77da29788f3010e4396994ea52057980, type: 3}
   lifeTime: 5

@@ -41,7 +41,11 @@ public class Projectile : MonoBehaviour
     {
 
         bool enemyHit = false; // Track if we hit something so we don't hit 2 things at once
-
+        if (collision.gameObject.CompareTag("Projectile") || collision.gameObject.CompareTag("BossProjectile"))
+        {
+            Physics.IgnoreCollision(GetComponent<Collider>(), collision.collider);
+            return;
+        }
         // Check for Zombie
         if (!enemyHit)
         {
@@ -53,7 +57,19 @@ public class Projectile : MonoBehaviour
                 enemyHit = true;
             }
         }
+        // Check for GunRobot 
+        if (!enemyHit)
+        {
+            GunRobot robot = collision.gameObject.GetComponent<GunRobot>();
+            if (robot == null) robot = collision.gameObject.GetComponentInParent<GunRobot>();
 
+            if (robot != null)
+            {
+                robot.TakeDamage((int)damage);
+                TriggerLifeSteal();
+                enemyHit = true;
+            }
+        }
         // Check for EliteToilet
         if (!enemyHit)
         {
@@ -89,7 +105,25 @@ public class Projectile : MonoBehaviour
                 enemyHit = true;
             }
         }
+        Rigidbody otherRb = collision.gameObject.GetComponent<Rigidbody>();
+        if (otherRb != null)
+        {
+            otherRb.linearVelocity = Vector3.zero;
+            otherRb.angularVelocity = Vector3.zero;
 
+        }
+
+        // Finalboss
+        FINALLBOSS boss = collision.gameObject.GetComponent<FINALLBOSS>();
+        if (boss == null) boss = collision.gameObject.GetComponentInParent<FINALLBOSS>();
+
+        if (boss != null)
+        {
+            boss.TakeDamage((int)damage);
+
+            TriggerLifeSteal();
+            enemyHit = true;
+        }
         // --- 2. BULLET EFFECTS LOGIC ---
 
         BulletAction finalAction = BulletAction.Destroy;

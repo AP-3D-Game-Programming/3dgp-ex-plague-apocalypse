@@ -21,6 +21,6 @@ MonoBehaviour:
   weaponType: 0
   maxAmmo: 100
   magazineSize: 10
-  damage: 50
+  damage: 5000
   fireRate: 0.3
   reloadTime: 1

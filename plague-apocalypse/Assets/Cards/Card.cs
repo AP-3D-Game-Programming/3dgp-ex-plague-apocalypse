@@ -70,7 +70,10 @@ public class Card : ScriptableObject
     public float shotPointsMultiplier = 1f;
     public float deathPointsMultiplier = 1f;
     public int maxShootPointsIncrease = 0;
-
+    [Header("Boss/Unit Spawning")]
+    public GameObject specialUnitPrefab;
+    public int specialUnitCount = 0;
+    public bool spawnImmediately = false;
     public Color GetRarityColor()
     {
         switch (rarity)
@@ -207,7 +210,18 @@ public class Card : ScriptableObject
         }
         if (forceElitesNextRound > 0)
             roundManager.ForceSpawnEliteNextRound(forceElitesNextRound);
+        if (specialUnitPrefab != null && specialUnitCount > 0)
+        {
+            if (spawnImmediately)
+            {
+                roundManager.SpawnSpecialUnitImmediate(specialUnitPrefab, specialUnitCount);
+            }
+            else
+            {
 
+                roundManager.QueueSpecialUnit(specialUnitPrefab, specialUnitCount);
+            }
+        }
         Debug.Log($"Applied Card: {cardName}");
     }
 

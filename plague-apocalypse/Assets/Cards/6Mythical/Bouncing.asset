@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2b927d19384024eb63656a984bf75a, type: 3}
+  m_Name: Bouncing
+  m_EditorClassIdentifier: Assembly-CSharp::Card
+  cardName: Bouncing bullets
+  description: '+ Enables bouncing bullets
+
+
+    +50% Robot firerate
+
+    +20% Zombie 
+    health
+
+    +50% Robot Phase 2 speed'
+  target: 3
+  rarity: 0
+  playerHealthBonus: 0
+  playerRegenBonus: 0
+  playerFireRateMultiplier: 1
+  lifeStealAmount: 0
+  playerBouncingBullets: 1
+  playerLuckBonus: 0
+  applyToSpecificType: 0
+  targetWeaponType: 0
+  weaponDamageMultiplier: 1
+  weaponFireRateMultiplier: 1
+  weaponReloadTimeMultiplier: 1
+  weaponMagSizeBonus: 0
+  zombieHealthPercentIncrease: 0.2
+  zombieSpeedPercentIncrease: 0
+  zombieSpeedFlatBonus: 0
+  zombieFireRateBonus: 0.5
+  forceElitesNextRound: 0
+  eliteHealthPercentIncrease: 0
+  eliteSpeedPercentIncrease: 0
+  eliteFireRateMultiplier: 1
+  elitePhase2HealthTriggerMultiplier: 1
+  elitePhase2SpeedMultiplier: 1.5
+  eliteDamageMultiplier: 1
+  shotPointsMultiplier: 1
+  deathPointsMultiplier: 1
+  maxShootPointsIncrease: 0

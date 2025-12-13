@@ -29,8 +29,8 @@ MonoBehaviour:
   playerLuckBonus: 0
   applyToSpecificType: 1
   targetWeaponType: 2
-  weaponDamageMultiplier: 1.2
-  weaponFireRateMultiplier: 1.1
+  weaponDamageMultiplier: 1.05
+  weaponFireRateMultiplier: 1
   weaponReloadTimeMultiplier: 1.2
   weaponMagSizeBonus: 50
   zombieHealthPercentIncrease: 0.1

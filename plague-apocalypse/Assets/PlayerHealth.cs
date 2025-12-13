@@ -18,17 +18,28 @@ public class PlayerHealth : MonoBehaviour
     private float lastDamageTime;
     private float regenBuffer = 0f;
 
+    [Header("Game Over Settings")]
+    public Gameoverscript gameOverUI;
+    public RoundManager roundManager;
+    public GameObject mapCamera;
+    public GameObject mainCamera;
+    public float deathDelay = 2.0f;
+    private bool isDead = false;
+
     void Awake()
     {
         currentHealth = maxHealth;
         lastDamageTime = -regenDelay;
-
+        if (mainCamera != null) mainCamera.SetActive(true);
+        if (mapCamera != null) mapCamera.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         UpdateHealthDisplay();
     }
 
     void Update()
     {
-        if (currentHealth < maxHealth && Time.time >= lastDamageTime + regenDelay)
+        if (!isDead && currentHealth < maxHealth && Time.time >= lastDamageTime + regenDelay)
         {
             Regenerate();
         }
@@ -61,6 +72,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (isDead) return;
         currentHealth -= damage;
         lastDamageTime = Time.time;
         regenBuffer = 0f;
@@ -109,14 +121,41 @@ public class PlayerHealth : MonoBehaviour
 
     void Die()
     {
+        if (isDead) return;
+        isDead = true;
+
         Debug.Log("Player died!");
 
-        StartCoroutine(RestartLevel());
+        var movement = GetComponent<FirstPersonMovement>();
+        if (movement != null) movement.enabled = false;
+
+        StartCoroutine(DeathSequence());
     }
 
-    IEnumerator RestartLevel()
+    IEnumerator DeathSequence()
     {
-        yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        yield return new WaitForSeconds(deathDelay);
+
+        if (mainCamera != null) mainCamera.SetActive(false);
+        if (mapCamera != null) mapCamera.SetActive(true);
+
+        int kills = 0;
+        int round = 0;
+        int score = 0;
+        if (roundManager != null)
+        {
+            kills = roundManager.totalZombiesKilled;
+            round = roundManager.currentRound;
+            score = roundManager.totalPointsEarned;
+        }
+
+        if (gameOverUI != null)
+        {
+            gameOverUI.Setup(round, kills, score);
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 }

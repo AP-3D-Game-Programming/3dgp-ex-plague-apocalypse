@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
-
+using System.Collections;
 public class MechEnemy : MonoBehaviour, IElite
 {
     // ==========================================
@@ -23,6 +23,8 @@ public class MechEnemy : MonoBehaviour, IElite
     public Vector3 rotationOffset;
     private float globalFireRateMult = 1f;
     private float globalDamageMult = 1f;
+    [Header("Effects")]
+    public GameObject explosionPrefab;
     // ==========================================
     // 2. MECH WEAPON SYSTEM
     // ==========================================
@@ -42,14 +44,15 @@ public class MechEnemy : MonoBehaviour, IElite
         public float projectileSpeed = 20f;
         public string animTrigger;
         public float startDelay = 0f;
-
+        public AudioClip[] fireSounds;
         [Header("Mortar Settings")]
         public bool isMortar = false; // CHECK THIS TRUE FOR MORTARS
         public float lobHeight = 5f;  // How high the arc goes
 
         [HideInInspector] public float nextFireTime;
     }
-
+    [Header("Music Settings")]
+    public AudioClip mechMusic;
     // ==========================================
     // 3. INTERNAL REFERENCES
     // ==========================================
@@ -59,7 +62,14 @@ public class MechEnemy : MonoBehaviour, IElite
     private bool isDead = false;
 
     [HideInInspector] public RoundManager roundManager;
+    [Header("Audio Settings")]
+    public AudioSource audioSource;
+    public AudioClip[] ambientSounds;
+    public AudioClip[] hurtSounds;
+    public AudioClip[] deathSounds;
 
+    public float minAmbientInterval = 3f;
+    public float maxAmbientInterval = 8f;
     // ==========================================
     // 4. IELITE INTERFACE
     // ==========================================
@@ -95,6 +105,7 @@ public class MechEnemy : MonoBehaviour, IElite
     {
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponentInChildren<Animator>();
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
         player = GameObject.FindWithTag("Player")?.transform;
 
         if (agent != null)
@@ -104,7 +115,14 @@ public class MechEnemy : MonoBehaviour, IElite
         }
         maxHealth = health;
     }
-
+    void Start()
+    {
+        if (MusicManager.Instance != null && mechMusic != null)
+        {
+            MusicManager.Instance.RequestMusic(mechMusic, 1);
+        }
+        StartCoroutine(AmbientSoundRoutine());
+    }
     void Update()
     {
         if (isDead || player == null) return;
@@ -198,7 +216,7 @@ public class MechEnemy : MonoBehaviour, IElite
     void Shoot(WeaponConfig weapon)
     {
         if (weapon.projectilePrefab == null || weapon.firePoint == null) return;
-
+        PlayRandomSound(weapon.fireSounds);
         // 1. Play Animation
         if (anim != null && !string.IsNullOrEmpty(weapon.animTrigger))
         {
@@ -272,7 +290,7 @@ public class MechEnemy : MonoBehaviour, IElite
     {
         if (isDead) return;
         health -= damageAmount;
-
+        PlayRandomSound(hurtSounds);
         if (accumulatedPoints < PlayerStats.Instance.maxShootPointsPerEnemy)
         {
             int pointsToGive = Mathf.Min(
@@ -287,10 +305,21 @@ public class MechEnemy : MonoBehaviour, IElite
 
     private void Die()
     {
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.StopRequest(1);
+        }
         isDead = true;
+        if (explosionPrefab != null)
+        {
+            Vector3 spawnPos = (body != null) ? body.position : transform.position;
+            GameObject explosion = Instantiate(explosionPrefab, spawnPos, Quaternion.identity);
+
+            Destroy(explosion, 4f);
+        }
         if (agent != null) agent.isStopped = true;
         if (anim != null) anim.SetBool("IsDead", true);
-
+        PlayRandomSound(deathSounds);
         if (PlayerStats.Instance != null)
         {
             int pointsAwarded = Mathf.RoundToInt(pointsOnDeath * PlayerStats.Instance.deathPointsMultiplier);
@@ -305,5 +334,29 @@ public class MechEnemy : MonoBehaviour, IElite
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
+    IEnumerator AmbientSoundRoutine()
+    {
+        while (!isDead)
+        {
+            float waitTime = Random.Range(minAmbientInterval, maxAmbientInterval);
+            yield return new WaitForSeconds(waitTime);
+
+            if (!isDead)
+            {
+                PlayRandomSound(ambientSounds);
+            }
+        }
+    }
+
+    void PlayRandomSound(AudioClip[] clips)
+    {
+        if (clips == null || clips.Length == 0) return;
+
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+
+        audioSource.pitch = Random.Range(0.8f, 1.0f);
+
+        audioSource.PlayOneShot(clip);
     }
 }

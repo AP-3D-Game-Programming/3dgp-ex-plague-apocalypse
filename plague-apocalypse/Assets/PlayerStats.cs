@@ -31,7 +31,7 @@ public class PlayerStats : MonoBehaviour
     public float shotPointsMultiplier = 1f;
     public float deathPointsMultiplier = 1f;
     public int maxShootPointsPerEnemy = 100;
-
+    public int totalPointsEarned = 0;
     [Header("Global Weapon Modifiers")]
     public float damageMultiplier = 1f;
     public float fireRateMultiplier = 1f;
@@ -40,7 +40,7 @@ public class PlayerStats : MonoBehaviour
 
     public Dictionary<WeaponType, float> typeDamageMults = new Dictionary<WeaponType, float>();
     public Dictionary<WeaponType, float> typeFireRateMults = new Dictionary<WeaponType, float>();
-
+    private RoundManager _roundManager;
 
     void Awake()
     {
@@ -61,6 +61,7 @@ public class PlayerStats : MonoBehaviour
 
     void Start()
     {
+        _roundManager = FindObjectOfType<RoundManager>();
         if (pointsText != null) originalScale = pointsText.transform.localScale;
         UpdateUIInstant();
     }
@@ -86,6 +87,12 @@ public class PlayerStats : MonoBehaviour
     public void AddPoints(int amount)
     {
         points += amount;
+
+        if (_roundManager != null)
+        {
+            _roundManager.AddPointsToTotal(amount);
+        }
+
         RefreshUIAnimated();
     }
 

@@ -38,11 +38,14 @@ public class EliteToilet : MonoBehaviour, IElite
 
     [Header("Phase 2 Settings")]
     public float phase2SpeedMultiplier = 1.5f;
+    public ParticleSystem phase2TransitionEffect;
+    public ParticleSystem phase2ConstantEffect;
     private bool phase2Active = false;
     [Header("Points")]
     public int pointsPerShot = 10;
     public int pointsOnDeath = 100;
     private int accumulatedPoints = 0;
+
     [HideInInspector] public RoundManager roundManager;
 
     private Coroutine meleeCoroutine;
@@ -57,7 +60,19 @@ public class EliteToilet : MonoBehaviour, IElite
     private bool phase2DisableShooting = false;
     private bool isAttacking = false;
     private bool isDead = false;
+    public AudioSource audioSource;
 
+    public AudioClip[] ambientSounds;
+    public AudioClip[] roarSounds;
+    public AudioClip[] meleeSounds;
+    public AudioClip[] shootSounds;
+    public AudioClip[] hurtSounds;
+    public AudioClip[] deathSounds;
+    public AudioClip[] phase2TransitionSounds;
+    public AudioClip phase1Music;
+    public AudioClip phase2Music;
+    public float minAmbientInterval = 3f;
+    public float maxAmbientInterval = 8f;
     // IElite implementation 
     public void ApplyStats(
             int newHealth,
@@ -84,10 +99,11 @@ public class EliteToilet : MonoBehaviour, IElite
 
     void Awake()
     {
+        maxHealth = health;
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponentInChildren<Animator>();
         player = GameObject.FindWithTag("Player")?.transform;
-
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (player != null)
             playerHealth = player.GetComponent<PlayerHealth>();
 
@@ -100,7 +116,14 @@ public class EliteToilet : MonoBehaviour, IElite
         if (!string.IsNullOrEmpty(roarAnimName))
             StartCoroutine(PlayRoar());
     }
-
+    void Start()
+    {
+        if (MusicManager.Instance != null && phase1Music != null)
+        {
+            MusicManager.Instance.RequestMusic(phase1Music, 1);
+        }
+        StartCoroutine(AmbientSoundRoutine());
+    }
     void Update()
     {
         if (isDead || player == null || agent == null) return;
@@ -187,7 +210,7 @@ public class EliteToilet : MonoBehaviour, IElite
 
             if (!string.IsNullOrEmpty(animName))
                 anim?.SetTrigger(animName);
-
+            PlayRandomSound(meleeSounds);
             // Wait for the punch animation to reach the damage frame
             float punchDelay = 1.5f; // adjust this to match the animation timing
             yield return new WaitForSeconds(punchDelay);
@@ -250,7 +273,7 @@ public class EliteToilet : MonoBehaviour, IElite
 
         if (shootEffect != null)
             shootEffect.Play();
-
+        PlayRandomSound(shootSounds);
         Vector3 targetPoint = player.position + Vector3.up;
         Vector3 aimDirection = (targetPoint - firePoint.position).normalized;
         firePoint.rotation = Quaternion.LookRotation(aimDirection);
@@ -264,7 +287,7 @@ public class EliteToilet : MonoBehaviour, IElite
     public void TakeDamage(int damageAmount)
     {
         if (isDead || isInvulnerable) return;
-
+        PlayRandomSound(hurtSounds);
         health -= damageAmount;
         if (accumulatedPoints < PlayerStats.Instance.maxShootPointsPerEnemy)
         {
@@ -276,9 +299,12 @@ public class EliteToilet : MonoBehaviour, IElite
             accumulatedPoints += pointsToGive;
             PlayerStats.Instance.AddPoints(pointsToGive);
         }
-        if (!phase2DisableShooting && health <= (maxHealth / 3f) * globalPhase2HealthMult)
+
+        //40 %
+        float phase2Threshold = (maxHealth * 0.4f) * globalPhase2HealthMult;
+        if (!phase2DisableShooting && !phase2Active && health <= phase2Threshold)
         {
-            Debug.Log("Phase 2 triggered! Health: " + health);
+            Debug.Log($"Phase 2 triggered! Health: {health} / Threshold: {phase2Threshold}");
             StartCoroutine(EnterPhase2());
         }
 
@@ -293,13 +319,27 @@ public class EliteToilet : MonoBehaviour, IElite
 
     private IEnumerator EnterPhase2()
     {
-        phase2Active = true;
-        Debug.Log("Entered Phase 2");
+        phase2Active = true; // This now blocks TakeDamage from triggering this again
         isInvulnerable = true;
-        // Stop all attacks
-        StopAllAttacks();
+        if (MusicManager.Instance != null && phase2Music != null)
+        {
+            // 1. Remove the "Phase 1" request so the counter drops to 0 (temporarily)
+            MusicManager.Instance.StopRequest(1);
+        }
+        Debug.Log("Entered Phase 2");
 
-        // Stop movement
+        if (phase2TransitionSounds.Length > 0)
+        {
+            audioSource.Stop();
+            AudioClip clip = phase2TransitionSounds[Random.Range(0, phase2TransitionSounds.Length)];
+
+            audioSource.PlayOneShot(clip, 5.0f);
+        }
+        if (phase2TransitionEffect != null)
+        {
+            phase2TransitionEffect.Play();
+        }
+        StopAllAttacks();
         agent.isStopped = true;
 
         if (anim != null)
@@ -309,7 +349,7 @@ public class EliteToilet : MonoBehaviour, IElite
 
             // Start fall loop
             anim.SetBool("IsFallen", true);
-            yield return new WaitForSeconds(fallDuration + 5f); // fall + downtime
+            yield return new WaitForSeconds(fallDuration + 6.1f); // downtime
 
             // Exit fall loop and get up
             anim.SetBool("IsFallen", false);
@@ -317,10 +357,12 @@ public class EliteToilet : MonoBehaviour, IElite
             yield return new WaitForSeconds(getUpDuration);
 
 
-            anim.SetTrigger(getUpTrigger);
-            yield return new WaitForSeconds(getUpDuration);
         }
+        if (phase2TransitionEffect != null)
+            phase2TransitionEffect.Stop();
 
+        if (phase2ConstantEffect != null)
+            phase2ConstantEffect.Play();
         moveSpeed *= phase2SpeedMultiplier * globalPhase2SpeedMult;
         if (agent != null)
             agent.speed = moveSpeed;
@@ -329,18 +371,26 @@ public class EliteToilet : MonoBehaviour, IElite
         agent.isStopped = false;
         phase2Active = false;
         isInvulnerable = false;
+        // 2. Add the "Phase 2" request so the counter goes back to 1
+        MusicManager.Instance.RequestMusic(phase2Music, 1);
         Debug.Log("Phase 2 complete, resuming AI");
     }
-
     private void Die()
     {
         isDead = true;
         anim?.SetBool("IsDead", true);
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.StopRequest(1);
+        }
+        if (phase2ConstantEffect != null)
+            phase2ConstantEffect.Stop();
+        PlayRandomSound(deathSounds);
         int pointsAwarded = Mathf.RoundToInt(pointsOnDeath * PlayerStats.Instance.deathPointsMultiplier);
         PlayerStats.Instance.AddPoints(pointsAwarded);
         agent.isStopped = true;
         roundManager?.EnemyKilled();
-        Destroy(gameObject, 3f);
+        Destroy(gameObject, 1f);
     }
 
     private void StopAllAttacks()
@@ -376,5 +426,26 @@ public class EliteToilet : MonoBehaviour, IElite
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, shootRange);
+    }
+    IEnumerator AmbientSoundRoutine()
+    {
+        while (!isDead)
+        {
+            float waitTime = Random.Range(minAmbientInterval, maxAmbientInterval);
+            yield return new WaitForSeconds(waitTime);
+
+            if (!isDead && !isAttacking && !phase2Active)
+            {
+                PlayRandomSound(ambientSounds);
+            }
+        }
+    }
+
+    void PlayRandomSound(AudioClip[] clips)
+    {
+        if (clips == null || clips.Length == 0) return;
+
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+        audioSource.PlayOneShot(clip);
     }
 }

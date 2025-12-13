@@ -31,8 +31,8 @@ MonoBehaviour:
   weaponFireRateMultiplier: 1
   weaponReloadTimeMultiplier: 1
   weaponMagSizeBonus: 0
-  zombieHealthPercentIncrease: 0.1
-  zombieSpeedPercentIncrease: 0.1
+  zombieHealthPercentIncrease: 0
+  zombieSpeedPercentIncrease: 0
   zombieSpeedFlatBonus: 0
   zombieFireRateBonus: 0
   forceElitesNextRound: 0

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4260478912151576284}
   - component: {fileID: 4597928747175078859}
+  - component: {fileID: 7149361379254493435}
   m_Layer: 0
   m_Name: RoundManager 1
   m_TagString: Untagged
@@ -116,6 +117,40 @@ MonoBehaviour:
     currentFireRate: 0
     currentHealth: 0
     currentSpeed: 0
+  - typeName: Mini Homer
+    prefab: {fileID: 1956017306491076222, guid: 7d693fa9043779c4ab18393a1a04d03f, type: 3}
+    baseHealth: 100
+    maxHealth: 20000
+    baseSpeed: 7
+    maxSpeed: 18
+    unlockRound: 7
+    initialSpawnChance: 0.2
+    spawnIncreasePerRound: 0.001
+    maxSpawnChance: 0.3
+    isFlying: 0
+    flyingHeight: 10
+    baseFireRate: 10
+    maxFireRate: 20
+    currentFireRate: 0
+    currentHealth: 0
+    currentSpeed: 0
+  - typeName: Homer Simpson
+    prefab: {fileID: 1956017306491076222, guid: d04920b36c59c254bb8c793930e7acbb, type: 3}
+    baseHealth: 25000
+    maxHealth: 9999999
+    baseSpeed: 2
+    maxSpeed: 5
+    unlockRound: 20
+    initialSpawnChance: 0.001
+    spawnIncreasePerRound: 0.001
+    maxSpawnChance: 0.1
+    isFlying: 0
+    flyingHeight: 10
+    baseFireRate: 10
+    maxFireRate: 20
+    currentFireRate: 0
+    currentHealth: 0
+    currentSpeed: 0
   eliteTypes:
   - typeName: ToiletMech
     prefab: {fileID: 1956301178338429845, guid: cc838d7dee55c4549a86e78072091a87, type: 3}
@@ -145,14 +180,14 @@ MonoBehaviour:
     currentSpeed: 0
   - typeName: Raging Zombie
     prefab: {fileID: 5578967268775569554, guid: c85d13c776e5a4d4ca63da79be3e25bf, type: 3}
-    unlockRound: 18
-    initialSpawnChance: 0.01
+    unlockRound: 10
+    initialSpawnChance: 0.05
     spawnIncreasePerRound: 0.01
-    maxSpawnChance: 0.3
+    maxSpawnChance: 0.5
     guaranteedRounds: 12000000160000001b0000001e0000001f00000032000000
-    baseHealth: 10000
+    baseHealth: 1000
     maxHealth: 9990000
-    baseSpeed: 1
+    baseSpeed: 2
     maxSpeed: 5
     currentHealth: 0
     currentSpeed: 0
@@ -170,6 +205,9 @@ MonoBehaviour:
   spawnInterval: 0.8
   roundText: {fileID: 0}
   zombiesRemainingText: {fileID: 0}
+  audioSource: {fileID: 7149361379254493435}
+  roundCompleteSound: {fileID: 8300000, guid: 0d16307c06d928e47bb801b7cb8e9cf3, type: 3}
+  roundStartSound: {fileID: 8300000, guid: 02ee3b4a4ddc6744c81326a577ac4462, type: 3}
   healthIncrement: 20
   speedIncrement: 0.2
   fireRateIncrement: 0.15
@@ -185,15 +223,112 @@ MonoBehaviour:
   globalElitePhase2SpeedMultiplier: 1.1
   playerTransform: {fileID: 0}
   allCards:
-  - {fileID: 11400000, guid: 1415d3322ef5c5c45ba27c6174f385e3, type: 2}
-  - {fileID: 11400000, guid: 8fca3cb046c128247ad1d8967ddc4fd7, type: 2}
-  - {fileID: 11400000, guid: fa73a7b9aff29364282574a09fdfa2d7, type: 2}
-  - {fileID: 11400000, guid: 23f9195fe425d22478c547b534f55ed4, type: 2}
-  - {fileID: 11400000, guid: 3f05c59728d12c14ca033cb2caf84572, type: 2}
-  - {fileID: 11400000, guid: cecb6aeedf9979c4fb826161d2a66817, type: 2}
-  - {fileID: 11400000, guid: 0b2d0d4e39465674fa91bcf0f84da0de, type: 2}
-  - {fileID: 11400000, guid: ae38b273ce99754429e3ad10bb660f2f, type: 2}
-  - {fileID: 11400000, guid: 2292834e1e0a1314c99e0819a6b383ed, type: 2}
-  - {fileID: 11400000, guid: 49a81f1f7ae039046a7f1d05e37cefdd, type: 2}
-  - {fileID: 11400000, guid: f8299c7df22af864ea3917f68b5060ed, type: 2}
-  - {fileID: 11400000, guid: 76c1dd63a805cd040a0f5840b8626587, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!82 &7149361379254493435
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7694066243827524388}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 256
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
