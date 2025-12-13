@@ -40,12 +40,7 @@ public class Projectile : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
 
-        bool enemyHit = false; // Track if we hit something so we don't hit 2 things at once
-        if (collision.gameObject.CompareTag("Projectile") || collision.gameObject.CompareTag("BossProjectile"))
-        {
-            Physics.IgnoreCollision(GetComponent<Collider>(), collision.collider);
-            return;
-        }
+        bool enemyHit = false;
         // Check for Zombie
         if (!enemyHit)
         {

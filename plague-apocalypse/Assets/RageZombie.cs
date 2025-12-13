@@ -3,7 +3,7 @@ using UnityEngine.AI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class RageZombie : MonoBehaviour
+public class RageZombie : MonoBehaviour, IElite
 {
     [Header("Stats")]
     public int health = 100;
@@ -71,7 +71,21 @@ public class RageZombie : MonoBehaviour
             anim.SetBool(isMovingParam, true);
         }
     }
+    public void ApplyStats(int hp, float speed, RoundManager rm, float fireRateMult, float damageMult, float phase2HealthMult, float phase2SpeedMult)
+    {
+        this.health = hp;
+        this.maxHealth = hp;
+        this.moveSpeed = speed;
+        this.roundManager = rm;
 
+        // Apply elite multipliers
+        this.damage = Mathf.RoundToInt(this.damage * damageMult);
+        this.rageSpeedMultiplier *= phase2SpeedMult;
+
+        // Update Agent Speed immediately
+        if (GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+            GetComponent<UnityEngine.AI.NavMeshAgent>().speed = speed;
+    }
     void Update()
     {
         if (isDead || player == null || agent == null || isScreaming) return;

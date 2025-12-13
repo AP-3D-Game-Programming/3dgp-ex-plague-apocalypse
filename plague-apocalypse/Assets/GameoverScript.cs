@@ -14,13 +14,21 @@ public class Gameoverscript : MonoBehaviour
     [Header("Scene Settings")]
     public string mainMenuSceneName = "MAINMENU";
     public float fadeDuration = 1.5f;
-
+    [Header("Audio")]
+    public AudioClip[] gameOverMusicList;
     public void Setup(int roundsSurvived, int totalKills, int totalScore)
     {
         GameObject[] hudObjects = GameObject.FindGameObjectsWithTag("HUD");
         foreach (GameObject obj in hudObjects)
         {
             obj.SetActive(false);
+        }
+        if (MusicManager.Instance != null && gameOverMusicList != null && gameOverMusicList.Length > 0)
+        {
+            int randomIndex = Random.Range(0, gameOverMusicList.Length);
+            AudioClip randomSong = gameOverMusicList[randomIndex];
+
+            MusicManager.Instance.RequestMusic(randomSong, 10);
         }
         panel.SetActive(true);
         canvasGroup.alpha = 0f;

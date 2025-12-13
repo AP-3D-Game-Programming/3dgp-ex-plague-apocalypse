@@ -21,7 +21,7 @@ MonoBehaviour:
     +1.5x all zombie
     stats'
   target: 3
-  rarity: 0
+  rarity: 6
   playerHealthBonus: 0
   playerRegenBonus: 0
   playerFireRateMultiplier: 1

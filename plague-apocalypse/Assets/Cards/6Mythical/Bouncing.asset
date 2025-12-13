@@ -23,7 +23,7 @@ MonoBehaviour:
 
     +50% Robot Phase 2 speed'
   target: 3
-  rarity: 0
+  rarity: 5
   playerHealthBonus: 0
   playerRegenBonus: 0
   playerFireRateMultiplier: 1
@@ -50,3 +50,6 @@ MonoBehaviour:
   shotPointsMultiplier: 1
   deathPointsMultiplier: 1
   maxShootPointsIncrease: 0
+  specialUnitPrefab: {fileID: 0}
+  specialUnitCount: 0
+  spawnImmediately: 0

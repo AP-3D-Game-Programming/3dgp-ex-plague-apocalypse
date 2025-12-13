@@ -56,10 +56,10 @@ MonoBehaviour:
   bulletSpeed: 30
   attackRange: 15
   maxHealth: 100
-  explosionPrefab: {fileID: 8714244275622671896, guid: abf8d5b763621654486813c5c8af8234, type: 3}
+  explosionPrefab: {fileID: 2312591318274358134, guid: 77da29788f3010e4396994ea52057980, type: 3}
   moveSpeed: 5
-  hoverHeight: 5
-  hoverSmoothness: 2
+  hoverHeight: 15
+  hoverSmoothness: 3
   shootEffect: {fileID: 9051537395049618260}
   pointsPerShot: 5
   pointsOnDeath: 50
@@ -204,7 +204,7 @@ GameObject:
   - component: {fileID: 6623906552869713037}
   m_Layer: 0
   m_Name: MuzzleFlashEffect
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4993,7 +4993,7 @@ GameObject:
   - component: {fileID: 8516137293420716942}
   m_Layer: 0
   m_Name: MachineGunRobot_Glass
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5082,7 +5082,7 @@ GameObject:
   - component: {fileID: 1941104761586534624}
   m_Layer: 0
   m_Name: Light
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5208,7 +5208,7 @@ GameObject:
   - component: {fileID: 8967023986426620878}
   m_Layer: 0
   m_Name: Laser
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5361,7 +5361,7 @@ GameObject:
   - component: {fileID: 640495427432055969}
   m_Layer: 0
   m_Name: MachineGunRobot_Laser
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5451,7 +5451,7 @@ GameObject:
   - component: {fileID: 4646080994869696964}
   m_Layer: 0
   m_Name: MachineGunRobot_GunJoint
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5541,7 +5541,7 @@ GameObject:
   - component: {fileID: 8820233897842612054}
   m_Layer: 0
   m_Name: MachineGunRobot_Gun
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5629,7 +5629,7 @@ GameObject:
   - component: {fileID: 5324248856810484481}
   m_Layer: 0
   m_Name: Gunpoint
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5662,7 +5662,7 @@ GameObject:
   - component: {fileID: 2139991924504974380}
   m_Layer: 0
   m_Name: MachineGunRobot_Base
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5754,7 +5754,7 @@ GameObject:
   - component: {fileID: 2928372412508204226}
   m_Layer: 0
   m_Name: Robot_Eye
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5843,7 +5843,7 @@ GameObject:
   - component: {fileID: 4661725727551761743}
   m_Layer: 0
   m_Name: MachineGunRobot_FireBurster
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5933,7 +5933,7 @@ GameObject:
   - component: {fileID: 5600666855520957421}
   m_Layer: 0
   m_Name: FireBurstEffect
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

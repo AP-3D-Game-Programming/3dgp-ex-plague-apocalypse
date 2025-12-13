@@ -258,24 +258,37 @@ public class RoundManager : MonoBehaviour
             audioSource.PlayOneShot(roundStartSound);
         }
         SpawnQueuedUnits();
-        while (enemiesRemaining > 0 || zombiesAlive > 0)
+        bool elitesPending = true;
+
+        while (enemiesRemaining > 0 || zombiesAlive > 0 || elitesPending)
         {
+            // 1. Spawn Normal Enemies
             if (enemiesRemaining > 0 && zombiesAlive < maxZombiesOnScreen)
             {
                 SpawnEnemy();
                 enemiesRemaining--;
             }
 
+            // 2. Spawn Forced Elites
             SpawnForcedElites();
+
+            // 3. Check and Spawn Quota Elites
+            elitesPending = false;
             foreach (var elite in eliteTypes)
             {
-                if (AttemptSpawnEliteFromQuota(elite))
+                // Check if we still have this type needed
+                if (eliteRoundQuota.ContainsKey(elite) && eliteRoundQuota[elite] > 0)
                 {
-                    SpawnElite(elite);
+                    elitesPending = true; // We found one, keep loop alive
+                    if (AttemptSpawnEliteFromQuota(elite))
+                    {
+                        SpawnElite(elite);
+                    }
                 }
             }
 
             yield return new WaitForSeconds(spawnInterval);
+
         }
     }
 
@@ -677,21 +690,17 @@ public class RoundManager : MonoBehaviour
     // --- NEW FUNCTION: TRY TO SPAWN ONE FROM QUOTA ---
     bool AttemptSpawnEliteFromQuota(EliteType elite)
     {
-        // 1. Do we have any left in the budget?
-        if (!eliteRoundQuota.ContainsKey(elite) || eliteRoundQuota[elite] <= 0)
-            return false;
+        if (!eliteRoundQuota.ContainsKey(elite) || eliteRoundQuota[elite] <= 0) return false;
+        if (zombiesAlive >= maxZombiesOnScreen) return false;
 
-        // 2. Is screen full?
-        if (zombiesAlive >= maxZombiesOnScreen)
+        if (enemiesRemaining <= 0 && zombiesAlive == 0)
+        {
+        }
+        else if (Random.value > 0.05f)
+        {
             return false;
+        }
 
-        // 3. Stagger them! (Don't spawn all instantly at second 0)
-        // 5% chance per second to release a queued elite.
-        // This makes them appear randomly DURING the round.
-        if (Random.value > 0.05f)
-            return false;
-
-        // Success: Decrease quota and spawn
         eliteRoundQuota[elite]--;
         return true;
     }

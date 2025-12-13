@@ -18,9 +18,9 @@ MonoBehaviour:
   muzzleFlashPrefab: {fileID: 0}
   effects: []
   projectilePrefab: {fileID: 558560356354663943, guid: c2b443950b2da494ead3bc0f54339b96, type: 3}
-  weaponType: 0
+  weaponType: 6
   maxAmmo: 100
-  magazineSize: 10
+  magazineSize: 1
   damage: 5000
   fireRate: 0.3
-  reloadTime: 1
+  reloadTime: 5

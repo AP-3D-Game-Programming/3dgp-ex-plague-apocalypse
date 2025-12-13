@@ -42,6 +42,12 @@ public class CardSelectionUI : MonoBehaviour
         currentCards = cards;
         cardChosen = false; // Reset flag
         panel.SetActive(true);
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            var controller = player.GetComponent<FirstPersonLook>();
+            if (controller != null) controller.enabled = false;
+        }
         UpdateRefreshButtonUI();
         RoundManager rm = FindObjectOfType<RoundManager>();
         if (rm != null && currentLuckText != null)
@@ -208,7 +214,12 @@ public class CardSelectionUI : MonoBehaviour
         panel.SetActive(false);
 
         Time.timeScale = 1f;
-
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            var controller = player.GetComponent<FirstPersonLook>();
+            if (controller != null) controller.enabled = true;
+        }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }

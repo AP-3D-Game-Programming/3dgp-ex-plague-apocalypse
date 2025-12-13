@@ -202,6 +202,7 @@ public class FINALLBOSS : MonoBehaviour
 
         isIntroComplete = true;
         currentState = BossState.Moving;
+        targetMovePosition = transform.position;
         dashTimer = Time.time; // Reset dash timer
         if (BossUI.Instance != null)
         {

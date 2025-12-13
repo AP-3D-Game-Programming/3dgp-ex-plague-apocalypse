@@ -36,13 +36,19 @@ MonoBehaviour:
 
 '
   target: 3
-  rarity: 0
+  rarity: 4
   playerHealthBonus: 100
   playerRegenBonus: 5
   playerFireRateMultiplier: 1
   lifeStealAmount: 1
   playerBouncingBullets: 0
   playerLuckBonus: 0
+  applyToSpecificType: 0
+  targetWeaponType: 0
+  weaponDamageMultiplier: 1
+  weaponFireRateMultiplier: 1
+  weaponReloadTimeMultiplier: 1
+  weaponMagSizeBonus: 0
   zombieHealthPercentIncrease: 0
   zombieSpeedPercentIncrease: 0
   zombieSpeedFlatBonus: 0
@@ -57,3 +63,6 @@ MonoBehaviour:
   shotPointsMultiplier: 1
   deathPointsMultiplier: 1
   maxShootPointsIncrease: 0
+  specialUnitPrefab: {fileID: 0}
+  specialUnitCount: 0
+  spawnImmediately: 0

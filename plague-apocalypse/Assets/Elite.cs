@@ -284,28 +284,47 @@ public class EliteToilet : MonoBehaviour, IElite
             rb.linearVelocity = firePoint.forward * bulletSpeed;
     }
 
+    // Add this flag to ensure we only trigger it once per life
+    private bool phase2Triggered = false;
+
     public void TakeDamage(int damageAmount)
     {
         if (isDead || isInvulnerable) return;
+
+        // 1. Calculate Phase 2 Threshold (e.g. 40% of max health)
+        float phase2Threshold = (maxHealth * 0.4f) * globalPhase2HealthMult;
+
+        // 2. Predict health after damage
+        int projectedHealth = health - damageAmount;
+
+        // 3. OVERKILL CHECK
+        // If we haven't started phase 2 yet, and this hit would drop us below the threshold...
+        if (!phase2DisableShooting && !phase2Triggered && projectedHealth <= phase2Threshold)
+        {
+            // Clamp health to just above threshold so he doesn't die or skip it
+            health = Mathf.FloorToInt(phase2Threshold) + 1;
+
+            // Mark as triggered so we don't do this check again next hit
+            phase2Triggered = true;
+
+            Debug.Log($"Phase 2 Triggered! Damage clamped. Health: {health}");
+            StartCoroutine(EnterPhase2());
+            return; // Stop here, don't apply the full damage or play hurt sound yet
+        }
+
+        // 4. Apply Normal Damage if check didn't trigger
         PlayRandomSound(hurtSounds);
         health -= damageAmount;
+
+        // Points Logic
         if (accumulatedPoints < PlayerStats.Instance.maxShootPointsPerEnemy)
         {
             int pointsToGive = Mathf.Min(
                 Mathf.RoundToInt(pointsPerShot * PlayerStats.Instance.shotPointsMultiplier),
                 PlayerStats.Instance.maxShootPointsPerEnemy - accumulatedPoints
             );
-
             accumulatedPoints += pointsToGive;
             PlayerStats.Instance.AddPoints(pointsToGive);
-        }
-
-        //40 %
-        float phase2Threshold = (maxHealth * 0.4f) * globalPhase2HealthMult;
-        if (!phase2DisableShooting && !phase2Active && health <= phase2Threshold)
-        {
-            Debug.Log($"Phase 2 triggered! Health: {health} / Threshold: {phase2Threshold}");
-            StartCoroutine(EnterPhase2());
         }
 
         if (health <= 0) Die();

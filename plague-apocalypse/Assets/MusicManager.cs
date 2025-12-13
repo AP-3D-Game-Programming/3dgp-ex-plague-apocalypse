@@ -9,14 +9,14 @@ public class MusicManager : MonoBehaviour
     public AudioSource musicSource;
     public float fadeDuration = 1.0f;
     public float maxVolume = 0.3f;
-    // The "Playlist" slots
+
+    // INCREASED SIZE to 11 to allow index 10
     // 0 = Ambient
     // 1 = MiniBoss
     // 2 = FinalBoss
-    private AudioClip[] activeRequests = new AudioClip[3];
-
-    // Tracks HOW MANY enemies are currently requesting each priority level
-    private int[] priorityCounts = new int[3];
+    // 10 = Game Over (Highest)
+    private AudioClip[] activeRequests = new AudioClip[11];
+    private int[] priorityCounts = new int[11];
 
     private void Awake()
     {
@@ -28,35 +28,32 @@ public class MusicManager : MonoBehaviour
     {
         if (priority < 0 || priority >= activeRequests.Length) return;
 
-        // 1. Assign the clip
         activeRequests[priority] = clip;
-
-        // 2. Increment the counter
         priorityCounts[priority]++;
-        // This ensures that if a Boss (2) appears, any existing MiniBoss (1) 
-        // requests are forgotten. 
-        // WARNING: If the Boss dies while a MiniBoss is alive, music will go to Ambient.
-        for (int i = 0; i < priority; i++)
+
+        // Clean up lower priorities if a major event starts (optional but keeps it clean)
+        // If Game Over (10) starts, we don't care about anything else.
+        if (priority == 10)
         {
-            activeRequests[i] = null;
-            priorityCounts[i] = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                activeRequests[i] = null;
+                priorityCounts[i] = 0;
+            }
         }
-        // ----------------------------------
 
         EvaluateMusic();
     }
+
     public void StopRequest(int priority)
     {
         if (priority < 0 || priority >= activeRequests.Length) return;
 
-        // 1. Decrement the counter
         priorityCounts[priority]--;
 
-        // 2. Only remove the music if the counter hits ZERO
-        // If it's > 0, it means another boss is still alive and wants this music.
         if (priorityCounts[priority] <= 0)
         {
-            priorityCounts[priority] = 0; // Safety clamp
+            priorityCounts[priority] = 0;
             activeRequests[priority] = null;
         }
 
@@ -67,23 +64,27 @@ public class MusicManager : MonoBehaviour
     {
         AudioClip clipToPlay = null;
 
-        // Check Highest Priority First
-        if (activeRequests[2] != null)
+        // 1. CHECK PRIORITY 10 (GAME OVER) FIRST
+        if (activeRequests[10] != null)
+        {
+            clipToPlay = activeRequests[10];
+        }
+        // 2. Final Boss
+        else if (activeRequests[2] != null)
         {
             clipToPlay = activeRequests[2];
         }
-        // Check Mini Boss
+        // 3. Mini Boss
         else if (activeRequests[1] != null)
         {
             clipToPlay = activeRequests[1];
         }
-        // Check Ambient
+        // 4. Ambient
         else if (activeRequests[0] != null)
         {
             clipToPlay = activeRequests[0];
         }
 
-        // Only switch if the song is actually different
         if (musicSource.clip != clipToPlay)
         {
             StopAllCoroutines();
@@ -93,9 +94,8 @@ public class MusicManager : MonoBehaviour
 
     IEnumerator CrossfadeMusic(AudioClip newClip)
     {
-        float startVolume = maxVolume; // I changed 0.3f to use your public maxVolume variable so it's adjustable
+        float startVolume = maxVolume;
 
-        // Fade Out
         if (musicSource.isPlaying)
         {
             startVolume = musicSource.volume;
@@ -107,16 +107,11 @@ public class MusicManager : MonoBehaviour
             musicSource.Stop();
         }
 
-        // Swap Clip
         musicSource.clip = newClip;
 
-        // Fade In
         if (newClip != null)
         {
-            // --- ADD THIS LINE ---
-            musicSource.loop = true;
-            // ---------------------
-
+            musicSource.loop = true; // Ensure looping
             musicSource.Play();
             while (musicSource.volume < maxVolume)
             {

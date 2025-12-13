@@ -159,6 +159,7 @@ MonoBehaviour:
     spawnIncreasePerRound: 0.05
     maxSpawnChance: 0.4
     guaranteedRounds: 0c00000014000000190000001e0000001f000000
+    maxPerRound: 3
     baseHealth: 5000
     maxHealth: 990000
     baseSpeed: 3
@@ -172,6 +173,7 @@ MonoBehaviour:
     spawnIncreasePerRound: 0.01
     maxSpawnChance: 0.3
     guaranteedRounds: 12000000160000001b0000001e0000001f00000032000000
+    maxPerRound: 3
     baseHealth: 10000
     maxHealth: 9990000
     baseSpeed: 1
@@ -185,6 +187,7 @@ MonoBehaviour:
     spawnIncreasePerRound: 0.01
     maxSpawnChance: 0.5
     guaranteedRounds: 12000000160000001b0000001e0000001f00000032000000
+    maxPerRound: 3
     baseHealth: 1000
     maxHealth: 9990000
     baseSpeed: 2
@@ -193,18 +196,14 @@ MonoBehaviour:
     currentSpeed: 0
   spawnPoints:
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   spawnRange: 80
   maxZombiesOnScreen: 50
   spawnInterval: 0.8
   roundText: {fileID: 0}
   zombiesRemainingText: {fileID: 0}
+  gameOverUI: {fileID: 0}
+  totalZombiesKilled: 0
+  totalPointsEarned: 0
   audioSource: {fileID: 7149361379254493435}
   roundCompleteSound: {fileID: 8300000, guid: 0d16307c06d928e47bb801b7cb8e9cf3, type: 3}
   roundStartSound: {fileID: 8300000, guid: 02ee3b4a4ddc6744c81326a577ac4462, type: 3}
@@ -222,15 +221,9 @@ MonoBehaviour:
   globalElitePhase2HealthTriggerMultiplier: 1.1
   globalElitePhase2SpeedMultiplier: 1.1
   playerTransform: {fileID: 0}
+  queuedSpecialUnits: []
   allCards:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 11a6408c3005f234d989f45cecbb56ab, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
