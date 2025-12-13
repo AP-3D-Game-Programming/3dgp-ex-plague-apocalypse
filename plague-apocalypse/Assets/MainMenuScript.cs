@@ -17,6 +17,8 @@ public class MainMenuScript : MonoBehaviour
     public Slider volumeSlider;
     public TMP_Dropdown qualityDropdown;
     public Toggle motionBlurToggle;
+    public Slider sensitivitySlider;
+    public TMP_Text sensitivityValueText;
     [Header("Lighting")]
     public Light mainDirectionalLight;
     public Color[] difficultyColors;
@@ -35,7 +37,7 @@ public class MainMenuScript : MonoBehaviour
     private const string VolumePrefKey = "MasterVolume";
     private const string QualityPrefKey = "QualitySetting";
     private const string MotionBlurKey = "MotionBlur";
-
+    private const string SensitivityKey = "MouseSensitivity";
     void Start()
     {
         if (difficultyPopup != null) difficultyPopup.SetActive(false);
@@ -91,6 +93,15 @@ public class MainMenuScript : MonoBehaviour
     {
         PlayerPrefs.SetInt(MotionBlurKey, isEnabled ? 1 : 0);
     }
+    public void SetSensitivity(float sensitivity)
+    {
+        PlayerPrefs.SetFloat(SensitivityKey, sensitivity);
+
+        if (sensitivityValueText != null)
+        {
+            sensitivityValueText.text = sensitivity.ToString("F1");
+        }
+    }
 
     private void LoadSettings()
     {
@@ -119,6 +130,20 @@ public class MainMenuScript : MonoBehaviour
             motionBlurToggle.isOn = (savedBlur == 1);
             motionBlurToggle.onValueChanged.AddListener(SetMotionBlur);
         }
+        float defaultSens = 2.0f;
+        float savedSens = PlayerPrefs.GetFloat(SensitivityKey, defaultSens);
+
+        if (sensitivitySlider != null)
+        {
+            sensitivitySlider.value = savedSens;
+            sensitivitySlider.onValueChanged.AddListener(SetSensitivity);
+
+
+            if (sensitivityValueText != null)
+            {
+                sensitivityValueText.text = savedSens.ToString("F1");
+            }
+        }
     }
 
     public void ToggleDifficultyMenu()
@@ -138,6 +163,16 @@ public class MainMenuScript : MonoBehaviour
     private void UpdateDifficultyIcon()
     {
         int currentDiff = PlayerPrefs.GetInt(DifficultyKey, 1);
+        Color targetColor = Color.white;
+        if (currentDiff >= 0 && currentDiff < difficultyColors.Length)
+        {
+            targetColor = difficultyColors[currentDiff];
+            if (mainDirectionalLight != null)
+            {
+                mainDirectionalLight.color = targetColor;
+            }
+        }
+
         if (mainDifficultyIcon != null && currentDiff >= 0 && currentDiff < difficultyIcons.Length)
         {
             mainDifficultyIcon.sprite = difficultyIcons[currentDiff];
@@ -147,11 +182,8 @@ public class MainMenuScript : MonoBehaviour
         if (mainDifficultyText != null && currentDiff >= 0 && currentDiff < difficultyNames.Length)
         {
             mainDifficultyText.text = difficultyNames[currentDiff];
-        }
 
-        if (mainDirectionalLight != null && currentDiff >= 0 && currentDiff < difficultyColors.Length)
-        {
-            mainDirectionalLight.color = difficultyColors[currentDiff];
+            mainDifficultyText.color = targetColor;
         }
     }
 }

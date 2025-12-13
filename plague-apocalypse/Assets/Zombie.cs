@@ -93,7 +93,7 @@ public class Zombie : MonoBehaviour
         PlayerStats.Instance.AddPoints(pointsAwarded);
 
         roundManager?.EnemyKilled();
-        Destroy(gameObject, 2f); // Allow death animation to play
+        Destroy(gameObject, 1.04f); // Allow death animation to play
     }
 
     private IEnumerator AttackPlayer()

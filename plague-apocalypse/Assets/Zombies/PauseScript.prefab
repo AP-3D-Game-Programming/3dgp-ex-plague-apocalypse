@@ -50,4 +50,24 @@ MonoBehaviour:
   volumeSlider: {fileID: 0}
   qualityDropdown: {fileID: 0}
   motionBlurToggle: {fileID: 0}
+  sensitivitySlider: {fileID: 0}
+  sensitivityValueText: {fileID: 0}
+  inGameStatsText: {fileID: 0}
+  pauseDifficultyIcon: {fileID: 0}
+  pauseDifficultyText: {fileID: 0}
+  difficultyColors:
+  - {r: 0, g: 0.46968535, b: 0.7433963, a: 1}
+  - {r: 0, g: 0, b: 0, a: 1}
+  - {r: 0.9245283, g: 0, b: 0, a: 1}
+  - {r: 0.5156832, g: 0, b: 0.6075471, a: 1}
   mainMenuScene: MAINMENU
+  difficultyIcons:
+  - {fileID: 21300000, guid: 1d5ab3f869e2b2245acdc0d65b27c39b, type: 3}
+  - {fileID: 21300000, guid: 93157dc98991e034cb2e08b4a5f59c0e, type: 3}
+  - {fileID: 21300000, guid: 1f7a8121d6735014181fd11d8172c15c, type: 3}
+  - {fileID: 21300000, guid: 4f005504c012cff4a965eb37c62af103, type: 3}
+  difficultyNames:
+  - EASY
+  - NORMAL
+  - HARD
+  - IMPOSSIBLE

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class WeaponData : ScriptableObject
 {
     [Header("Info")]
-    public string weaponName; 
+    public string weaponName;
     public bool isAutomatic;
     [Header("Visuals")]
     public GameObject weaponPrefab;
@@ -21,7 +21,7 @@ public class WeaponData : ScriptableObject
     public WeaponType weaponType;
     public int maxAmmo;
     public int magazineSize;
-    public float damage; 
-    public float fireRate; 
+    public float damage;
+    public float fireRate;
     public float reloadTime;
 }

@@ -3,8 +3,7 @@ using UnityEngine;
 public class dubbel_barrel : MonoBehaviour
 {
     [Header("Bullet")]
-    public Transform muzzlePoint1;       // Waar de eerste kogel uitkomt
-    public Transform muzzlePoint2;       // Waar de tweede kogel uitkomt
+    public Transform muzzlePoint1;       // Waar de kogels uitkomen
     public GameObject bulletPrefab;      // Je bullet prefab
     public float bulletForce = 800f;     // Snelheid van de kogels
 
@@ -16,7 +15,8 @@ public class dubbel_barrel : MonoBehaviour
     public int reserveAmmo = 40;         // Reserve kogels
     public float reloadTime = 5f;        // Tijd om te herladen (5 seconden)
     public float fireRate = 0.5f;        // Tijd tussen schoten
-    public int bulletsPerShot = 2;       // 2 kogels per schot
+    public int bulletsPerShot = 10;      // 10 kogels per schot
+    public float spreadRadius = 3f;      // Spreiding radius in graden (klein = dicht bij elkaar)
 
     [HideInInspector]
     public int currentAmmo;              // Kogels momenteel in magazijn
@@ -31,6 +31,14 @@ public class dubbel_barrel : MonoBehaviour
         currentAmmo = magazineSize;
         animator = GetComponent<Animator>();
         Debug.Log(animator);
+
+        // Zorg ervoor dat muzzle_flash uitgeschakeld is aan het begin
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            muzzleFlash.gameObject.SetActive(false);
+            Debug.Log("Muzzle flash disabled at start");
+        }
     }
 
     void Update()
@@ -74,25 +82,23 @@ public class dubbel_barrel : MonoBehaviour
             return;
         }
 
-        // Spawn 2 bullets uit beide muzzle points
-        Transform[] muzzlePoints = { muzzlePoint1, muzzlePoint2 };
-        
+        Debug.Log($"Shooting {bulletsPerShot} bullets!");
+
+        // Spawn 10 bullets uit muzzlePoint1 met random spreiding
         for (int i = 0; i < bulletsPerShot; i++)
         {
-            Transform muzzlePoint = muzzlePoints[i % muzzlePoints.Length];
-
-            if (bulletPrefab != null && muzzlePoint != null)
+            if (bulletPrefab != null && muzzlePoint1 != null)
             {
-                // bepaal richting met licht random spreiding voor shotgun effect
-                Vector3 shootDir = muzzlePoint.forward;
-                float spreadAngle = 5f; // Wat spreiding tussen kogels
-                shootDir = Quaternion.Euler(
-                    Random.Range(-spreadAngle, spreadAngle),
-                    Random.Range(-spreadAngle, spreadAngle),
-                    0
-                ) * shootDir;
+                // bepaal richting met random spreiding in een cone
+                Vector3 shootDir = muzzlePoint1.forward;
+                
+                // Random spreiding in cone shape (met bias naar links)
+                float randomX = Random.Range(-spreadRadius, spreadRadius);
+                float randomY = Random.Range(-spreadRadius * 3f, spreadRadius * 0.5f);  // Veel meer naar links
+                
+                shootDir = Quaternion.Euler(randomX, randomY, 0) * shootDir;
 
-                GameObject bullet = Instantiate(bulletPrefab, muzzlePoint.position, Quaternion.LookRotation(shootDir));
+                GameObject bullet = Instantiate(bulletPrefab, muzzlePoint1.position, Quaternion.LookRotation(shootDir));
 
                 // Zorg dat de bullet meteen een vaste wereld-snelheid krijgt
                 Rigidbody rb = bullet.GetComponent<Rigidbody>();
@@ -101,51 +107,56 @@ public class dubbel_barrel : MonoBehaviour
                     rb.interpolation = RigidbodyInterpolation.Interpolate; // smoother movement
                     rb.AddForce(shootDir * bulletForce, ForceMode.VelocityChange);
                 }
-                else
-                {
-                    Debug.LogWarning("DubbelBarrel: Bullet prefab has no Rigidbody — it won't move.");
-                }
+                
 
                 Destroy(bullet, 5f); // verwijder na 5 seconden
             }
+            else
+            {
+                Debug.LogWarning($"bulletPrefab is null: {bulletPrefab == null}, muzzlePoint1 is null: {muzzlePoint1 == null}");
+            }
         }
 
-        // Play muzzle flash at both muzzle points.
-        Transform[] flashPoints = { muzzlePoint1, muzzlePoint2 };
-        
-        for (int i = 0; i < flashPoints.Length; i++)
+        // Play muzzle flash at muzzlePoint1
+        if (muzzleFlash != null && muzzlePoint1 != null)
         {
-            Transform flashPoint = flashPoints[i];
-            
-            if (muzzleFlash != null && flashPoint != null)
+            if (muzzleFlash.gameObject.scene.IsValid())
             {
-                if (muzzleFlash.gameObject.scene.IsValid())
-                {
-                    // Parent the scene ParticleSystem to the muzzlePoint so it aligns properly.
-                    muzzleFlash.transform.SetParent(flashPoint, false);
-                    muzzleFlash.transform.localPosition = Vector3.zero;
-                    muzzleFlash.transform.localRotation = Quaternion.identity;
-                    muzzleFlash.Play();
-                }
+                // Enable en Setup de particle system
+                muzzleFlash.gameObject.SetActive(true);
+                muzzleFlash.transform.SetParent(muzzlePoint1, false);
+                muzzleFlash.transform.localPosition = Vector3.zero;
+                muzzleFlash.transform.localRotation = Quaternion.identity;
+                
+                // Clear en play
+                muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                muzzleFlash.Play();
+                
+                Debug.Log("Muzzle flash played");
+                
+                // Disable het na de duration
+                var main = muzzleFlash.main;
+                StartCoroutine(DisableMuzzleFlashAfter(main.duration + 0.5f));
+            }
+            else
+            {
+                ParticleSystem spawned = Instantiate(muzzleFlash, muzzlePoint1);
+                spawned.gameObject.SetActive(true);
+                spawned.transform.localPosition = Vector3.zero;
+                spawned.transform.localRotation = Quaternion.identity;
+                spawned.Play();
+
+                // Destroy the instantiated particle after its lifetime (duration + startLifetime)
+                var main = spawned.main;
+                float startLifetime = 0f;
+                // handle different startLifetime modes
+                if (main.startLifetime.mode == ParticleSystemCurveMode.TwoConstants)
+                    startLifetime = main.startLifetime.constantMax;
                 else
-                {
-                    ParticleSystem spawned = Instantiate(muzzleFlash, flashPoint);
-                    spawned.transform.localPosition = Vector3.zero;
-                    spawned.transform.localRotation = Quaternion.identity;
-                    spawned.Play();
+                    startLifetime = main.startLifetime.constant;
 
-                    // Destroy the instantiated particle after its lifetime (duration + startLifetime)
-                    var main = spawned.main;
-                    float startLifetime = 0f;
-                    // handle different startLifetime modes
-                    if (main.startLifetime.mode == ParticleSystemCurveMode.TwoConstants)
-                        startLifetime = main.startLifetime.constantMax;
-                    else
-                        startLifetime = main.startLifetime.constant;
-
-                    float lifetime = main.duration + startLifetime;
-                    Destroy(spawned.gameObject, lifetime);
-                }
+                float lifetime = main.duration + startLifetime;
+                Destroy(spawned.gameObject, lifetime);
             }
         }
 
@@ -155,7 +166,7 @@ public class dubbel_barrel : MonoBehaviour
             animator.Play("DubbelBarrel", 0, 0f);
         }
         
-        // 1 kogel kwijt (per schot)
+        // 1 schot kwijt (= 10 kogels)
         currentAmmo--;
 
         Debug.Log($"Ammo: {currentAmmo} / {reserveAmmo}");
@@ -201,5 +212,17 @@ public class dubbel_barrel : MonoBehaviour
         Debug.Log($"Reload klaar: {currentAmmo} / {reserveAmmo}");
 
         isReloading = false;
+    }
+
+    System.Collections.IEnumerator DisableMuzzleFlashAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            muzzleFlash.gameObject.SetActive(false);
+            Debug.Log("Muzzle flash disabled after duration");
+        }
     }
 }
