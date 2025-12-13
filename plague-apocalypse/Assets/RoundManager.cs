@@ -89,6 +89,7 @@ public class EliteType
     [Range(0f, 1f)]
     public float maxSpawnChance = 1f;
     public int[] guaranteedRounds;
+    public int maxPerRound = 3; // Default limit
 
     [Header("Stats")]
     public int baseHealth = 500;
@@ -159,6 +160,13 @@ public class RoundManager : MonoBehaviour
     [Header("UI")]
     public TextMeshProUGUI roundText;
     public TextMeshProUGUI zombiesRemainingText;
+    public Gameoverscript gameOverUI;
+    public int totalZombiesKilled = 0;
+    public int totalPointsEarned = 0;
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip roundCompleteSound;
+    public AudioClip roundStartSound;
     [Header("Enemy Scaling Settings")]
     public float healthIncrement = 20f;
     public float speedIncrement = 0.2f;
@@ -179,9 +187,10 @@ public class RoundManager : MonoBehaviour
     public Transform playerTransform;
     private Coroutine spawnRoutine;
 
-    private Dictionary<EliteType, bool> eliteSpawnedThisRound = new Dictionary<EliteType, bool>();
+    private Dictionary<EliteType, int> eliteRoundQuota = new Dictionary<EliteType, int>();
 
     private const string DifficultyKey = "Difficulty";
+    public List<GameObject> queuedSpecialUnits = new List<GameObject>();
 
     void Start()
     {
@@ -241,10 +250,14 @@ public class RoundManager : MonoBehaviour
     }
     IEnumerator StartRound()
     {
-        eliteSpawnedThisRound.Clear();
+        CalculateEliteQuota();
         enemiesRemaining = baseEnemies + (currentRound - 1) * 2;
         UpdateZombiesUI();
-
+        if (audioSource != null && roundStartSound != null)
+        {
+            audioSource.PlayOneShot(roundStartSound);
+        }
+        SpawnQueuedUnits();
         while (enemiesRemaining > 0 || zombiesAlive > 0)
         {
             if (enemiesRemaining > 0 && zombiesAlive < maxZombiesOnScreen)
@@ -256,7 +269,7 @@ public class RoundManager : MonoBehaviour
             SpawnForcedElites();
             foreach (var elite in eliteTypes)
             {
-                if (ShouldSpawnElite(elite, currentRound))
+                if (AttemptSpawnEliteFromQuota(elite))
                 {
                     SpawnElite(elite);
                 }
@@ -410,33 +423,12 @@ public class RoundManager : MonoBehaviour
         }
     }
 
-    bool ShouldSpawnElite(EliteType elite, int currentRound)
-    {
-        if (currentRound < elite.unlockRound)
-            return false;
-
-
-        // Guaranteed rounds
-        if (elite.guaranteedRounds != null && elite.guaranteedRounds.Length > 0)
-        {
-            if (System.Array.Exists(elite.guaranteedRounds, r => r == currentRound))
-            {
-                if (eliteSpawnedThisRound.ContainsKey(elite) && eliteSpawnedThisRound[elite])
-                    return false;
-                eliteSpawnedThisRound[elite] = true;
-                return true;
-            }
-        }
-
-        // Weighted chance
-        return Random.value <= elite.GetSpawnChance(currentRound);
-    }
-
 
 
     public void EnemyKilled()
     {
         zombiesAlive--;
+        totalZombiesKilled++;
         UpdateZombiesUI();
 
         if (enemiesRemaining <= 0 && zombiesAlive <= 0)
@@ -446,6 +438,10 @@ public class RoundManager : MonoBehaviour
 
             currentRound++;
             UpdateRoundUI();
+            if (audioSource != null && roundCompleteSound != null)
+            {
+                audioSource.PlayOneShot(roundCompleteSound);
+            }
             StartCoroutine(RoundFlash());
             StartCoroutine(ShowCardOptions());
         }
@@ -519,7 +515,7 @@ public class RoundManager : MonoBehaviour
         spawnRoutine = StartCoroutine(StartNextRoundWithDelay());
     }
 
-    // --- NEW FUNCTION: CALLED BY UI TO REROLL ---
+
     public List<Card> GenerateRandomCards()
     {
         List<Card> availableCards = new List<Card>(allCards);
@@ -605,6 +601,124 @@ public class RoundManager : MonoBehaviour
             totalDamageMultiplier = globalEliteDamageMultiplier,
             currentHealthIncrement = currentHealthInc
         };
+    }
+    public void QueueSpecialUnit(GameObject prefab, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            queuedSpecialUnits.Add(prefab);
+        }
+    }
+    public void SpawnSpecialUnitImmediate(GameObject prefab, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            if (spawnPoints.Length == 0) return;
+
+            Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
+
+            GameObject boss = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
+
+            zombiesAlive++;
+            UpdateZombiesUI();
+        }
+    }
+    void CalculateEliteQuota()
+    {
+        eliteRoundQuota.Clear();
+
+        foreach (var elite in eliteTypes)
+        {
+            int countToSpawn = 0;
+
+            // 1. Check Unlock
+            if (currentRound < elite.unlockRound)
+            {
+                eliteRoundQuota[elite] = 0;
+                continue;
+            }
+
+            // 2. Check Guaranteed Rounds (Force spawn)
+            bool isGuaranteed = false;
+            if (elite.guaranteedRounds != null)
+            {
+                if (System.Array.Exists(elite.guaranteedRounds, r => r == currentRound))
+                {
+                    countToSpawn = 1; // At least one
+                    isGuaranteed = true;
+                }
+            }
+
+            // 3. Roll Dice for EXTRA spawns (only up to maxPerRound)
+            // We run the probability check 'maxPerRound' times.
+            // If chance is 20%, and max is 3, we flip a coin 3 times.
+            // You might get 0, 1, 2, or 3.
+
+            int attempts = elite.maxPerRound;
+            if (isGuaranteed) attempts--; // We already used one slot
+
+            float chance = elite.GetSpawnChance(currentRound);
+
+            for (int i = 0; i < attempts; i++)
+            {
+                if (Random.value <= chance)
+                {
+                    countToSpawn++;
+                }
+            }
+
+            eliteRoundQuota[elite] = countToSpawn;
+
+            if (countToSpawn > 0)
+                Debug.Log($"Round {currentRound}: Quota for {elite.typeName} is {countToSpawn}");
+        }
+    }
+
+    // --- NEW FUNCTION: TRY TO SPAWN ONE FROM QUOTA ---
+    bool AttemptSpawnEliteFromQuota(EliteType elite)
+    {
+        // 1. Do we have any left in the budget?
+        if (!eliteRoundQuota.ContainsKey(elite) || eliteRoundQuota[elite] <= 0)
+            return false;
+
+        // 2. Is screen full?
+        if (zombiesAlive >= maxZombiesOnScreen)
+            return false;
+
+        // 3. Stagger them! (Don't spawn all instantly at second 0)
+        // 5% chance per second to release a queued elite.
+        // This makes them appear randomly DURING the round.
+        if (Random.value > 0.05f)
+            return false;
+
+        // Success: Decrease quota and spawn
+        eliteRoundQuota[elite]--;
+        return true;
+    }
+    private void SpawnQueuedUnits()
+    {
+        if (queuedSpecialUnits.Count == 0) return;
+
+        foreach (GameObject prefab in queuedSpecialUnits)
+        {
+            SpawnSpecialUnitImmediate(prefab, 1);
+        }
+        queuedSpecialUnits.Clear();
+    }
+    public void AddPointsToTotal(int amount)
+    {
+        totalPointsEarned += amount;
+    }
+    public void TriggerGameOver()
+    {
+        if (gameOverUI != null)
+        {
+            gameOverUI.Setup(currentRound, totalZombiesKilled, totalPointsEarned);
+        }
+        else
+        {
+            Debug.LogError("GameOverUI reference not set in RoundManager!");
+        }
     }
 }
 

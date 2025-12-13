@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SuperBuff
   m_EditorClassIdentifier: Assembly-CSharp::Card
   cardName: SuperBuffed
-  description: '+1000 Health
+  description: '+100 Health
 
     +25 regen bonus
 
@@ -30,26 +30,34 @@ MonoBehaviour:
     +500
     Elite health bonus
 
-    Spawn 1 elite next wave'
+    Spawn 1 Elite next wave
+
+    +1.2x on all Elite Stats'
   target: 3
   rarity: 6
-  playerHealthBonus: 1000
+  playerHealthBonus: 100
   playerRegenBonus: 25
   playerFireRateMultiplier: 1
   lifeStealAmount: 0
   playerBouncingBullets: 0
   playerLuckBonus: 0
+  applyToSpecificType: 0
+  targetWeaponType: 0
+  weaponDamageMultiplier: 1
+  weaponFireRateMultiplier: 1
+  weaponReloadTimeMultiplier: 1
+  weaponMagSizeBonus: 0
   zombieHealthPercentIncrease: 1
   zombieSpeedPercentIncrease: 0.5
   zombieSpeedFlatBonus: 0
   zombieFireRateBonus: 0
   forceElitesNextRound: 1
   eliteHealthPercentIncrease: 5
-  eliteSpeedPercentIncrease: 0
-  eliteFireRateMultiplier: 1
-  elitePhase2HealthTriggerMultiplier: 1
-  elitePhase2SpeedMultiplier: 1
-  eliteDamageMultiplier: 1
+  eliteSpeedPercentIncrease: 1.2
+  eliteFireRateMultiplier: 1.2
+  elitePhase2HealthTriggerMultiplier: 1.2
+  elitePhase2SpeedMultiplier: 1.2
+  eliteDamageMultiplier: 1.2
   shotPointsMultiplier: 3
   deathPointsMultiplier: 3
   maxShootPointsIncrease: 500

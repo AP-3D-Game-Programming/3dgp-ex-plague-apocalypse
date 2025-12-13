@@ -13,19 +13,20 @@ MonoBehaviour:
   m_Name: Dracula
   m_EditorClassIdentifier: Assembly-CSharp::Card
   cardName: Dracula
-  description: '-80 Health
+  description: '+50 Life steal
+
+
+    -80 Health
 
     -1e+20 Regen
 
-
-
-    +100 Life steal'
+'
   target: 3
   rarity: 6
   playerHealthBonus: -90
   playerRegenBonus: -1e+20
   playerFireRateMultiplier: 1
-  lifeStealAmount: 100
+  lifeStealAmount: 50
   playerBouncingBullets: 0
   playerLuckBonus: 0
   applyToSpecificType: 0

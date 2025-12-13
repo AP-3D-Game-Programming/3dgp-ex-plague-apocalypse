@@ -13,13 +13,12 @@ MonoBehaviour:
   m_Name: SHOTGUN 2
   m_EditorClassIdentifier: Assembly-CSharp::Card
   cardName: SHOTGUN buff 2
-  description: '+20% SHOTGUN damage
+  description: '+6% SHOTGUN damage
 
-    +10% SHOTGUN firerate
+    +7% SHOTGUN firerate
 
 
-    +10% zombie
-    health'
+    +10% zombie health'
   target: 3
   rarity: 0
   playerHealthBonus: 0
@@ -30,8 +29,8 @@ MonoBehaviour:
   playerLuckBonus: 0
   applyToSpecificType: 1
   targetWeaponType: 3
-  weaponDamageMultiplier: 1.2
-  weaponFireRateMultiplier: 1.1
+  weaponDamageMultiplier: 1.06
+  weaponFireRateMultiplier: 1.07
   weaponReloadTimeMultiplier: 1
   weaponMagSizeBonus: 0
   zombieHealthPercentIncrease: 0.1

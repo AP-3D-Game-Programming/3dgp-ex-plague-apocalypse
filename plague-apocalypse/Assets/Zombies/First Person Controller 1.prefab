@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distanceThreshold: 0.15
-  isGrounded: 1
+  isGrounded: 0
 --- !u!1 &3197815827948382997
 GameObject:
   m_ObjectHideFlags: 0
@@ -1045,6 +1045,11 @@ MonoBehaviour:
   currentHealth: 0
   regenRate: 5
   regenDelay: 5
+  gameOverUI: {fileID: 0}
+  roundManager: {fileID: 0}
+  mapCamera: {fileID: 0}
+  mainCamera: {fileID: 0}
+  deathDelay: 2
 --- !u!136 &3329960695386200800
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1088,6 +1093,11 @@ MonoBehaviour:
   shotPointsMultiplier: 1
   deathPointsMultiplier: 1
   maxShootPointsPerEnemy: 100
+  totalPointsEarned: 0
+  damageMultiplier: 1
+  fireRateMultiplier: 1
+  reloadSpeedMultiplier: 1
+  magazineSizeBonus: 0
 --- !u!114 &3966835343433180167
 MonoBehaviour:
   m_ObjectHideFlags: 0

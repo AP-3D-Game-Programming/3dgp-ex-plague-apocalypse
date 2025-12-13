@@ -25,6 +25,12 @@ MonoBehaviour:
   lifeStealAmount: 0
   playerBouncingBullets: 0
   playerLuckBonus: 0.3
+  applyToSpecificType: 0
+  targetWeaponType: 0
+  weaponDamageMultiplier: 1
+  weaponFireRateMultiplier: 1
+  weaponReloadTimeMultiplier: 1
+  weaponMagSizeBonus: 0
   zombieHealthPercentIncrease: 0.25
   zombieSpeedPercentIncrease: 0
   zombieSpeedFlatBonus: 0

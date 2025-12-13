@@ -22,6 +22,10 @@ public class MainMenuScript : MonoBehaviour
     [Header("Lighting")]
     public Light mainDirectionalLight;
     public Color[] difficultyColors;
+    [Header("Audio")]
+    public AudioSource menuMusicSource;
+    public AudioClip menuMusicClip;
+    public AudioClip[] difficultySelectSounds;
     [Header("Difficulty UI")]
     public Image mainDifficultyIcon;
 
@@ -44,7 +48,15 @@ public class MainMenuScript : MonoBehaviour
 
         Time.timeScale = 1f;
         LoadSettings();
-
+        if (menuMusicSource != null && menuMusicClip != null)
+        {
+            menuMusicSource.clip = menuMusicClip;
+            menuMusicSource.loop = true;
+            if (!menuMusicSource.isPlaying)
+            {
+                menuMusicSource.Play();
+            }
+        }
         // This updates the text immediately when the game starts
         UpdateDifficultyIcon();
         ReturnToMain();
@@ -158,6 +170,14 @@ public class MainMenuScript : MonoBehaviour
         PlayerPrefs.Save();
         UpdateDifficultyIcon();
         difficultyPopup.SetActive(false);
+        if (menuMusicSource != null && difficultySelectSounds != null && index >= 0 && index < difficultySelectSounds.Length)
+        {
+            AudioClip clipToPlay = difficultySelectSounds[index];
+            if (clipToPlay != null)
+            {
+                menuMusicSource.PlayOneShot(clipToPlay);
+            }
+        }
     }
 
     private void UpdateDifficultyIcon()

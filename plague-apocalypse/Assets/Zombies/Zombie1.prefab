@@ -436,6 +436,7 @@ GameObject:
   - component: {fileID: -3291297291671420343}
   - component: {fileID: -1330347778267686246}
   - component: {fileID: 4607333324305455892}
+  - component: {fileID: -3202290295230294450}
   m_Layer: 0
   m_Name: Zombie1
   m_TagString: Zombie
@@ -512,9 +513,31 @@ MonoBehaviour:
   damage: 10
   attackInterval: 1
   attackRange: 1.5
+  attackDamageDelay: 0.12
   roundManager: {fileID: 0}
+  deathAnimationDuration: 1.04
   pointsPerShot: 10
   pointsOnDeath: 100
+  audioSource: {fileID: -3202290295230294450}
+  ambientSounds:
+  - {fileID: 8300000, guid: 1040a4908bbd46047a8a981eb9560001, type: 3}
+  - {fileID: 8300000, guid: 9cb1c4db10c37404ea2691a060e93951, type: 3}
+  - {fileID: 8300000, guid: 1d61e9d3f254eb74798a35e4266a2fb4, type: 3}
+  - {fileID: 8300000, guid: 3d643e2ab4a9825449f4e41a6b5fe98f, type: 3}
+  - {fileID: 8300000, guid: 0d2933e61c407f7478720bdad3ee07d2, type: 3}
+  - {fileID: 8300000, guid: f658e5afb9671cf43afae56ac7b34ea5, type: 3}
+  - {fileID: 8300000, guid: 2dd329456c53b6843bc64a5f3c01f1c8, type: 3}
+  attackSounds:
+  - {fileID: 8300000, guid: 0776efe856b15e7419119f1c207391ad, type: 3}
+  hurtSounds:
+  - {fileID: 8300000, guid: f4c22a8bd2d194f4682ea580970063e7, type: 3}
+  - {fileID: 8300000, guid: 2fe72ea6a8cf29841906b0d59f0331ef, type: 3}
+  - {fileID: 8300000, guid: c0d52cbf843f37b429fba1de2f57edf0, type: 3}
+  deathSounds:
+  - {fileID: 8300000, guid: 0bba6e93deedfeb40808f3470e6f3799, type: 3}
+  - {fileID: 8300000, guid: d70207ed49c451f41b81b298d200f9be, type: 3}
+  minAmbientInterval: 3
+  maxAmbientInterval: 10
 --- !u!54 &-3291297291671420343
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -585,6 +608,103 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!82 &-3202290295230294450
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384917990484669054}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 2
+  MaxDistance: 60
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1385679161359751013
 GameObject:
   m_ObjectHideFlags: 0

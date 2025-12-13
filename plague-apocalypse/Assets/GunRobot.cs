@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections;
 public class GunRobot : MonoBehaviour
 {
     [Header("Combat Settings")]
@@ -9,7 +9,7 @@ public class GunRobot : MonoBehaviour
     public float bulletSpeed = 20f;
     public float attackRange = 10f; // Distance at which robot starts shooting
     public int maxHealth = 100;
-
+    public GameObject explosionPrefab;
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float hoverHeight = 5f; // height above ground to maintain
@@ -20,6 +20,14 @@ public class GunRobot : MonoBehaviour
     public int pointsPerShot = 10;
     public int pointsOnDeath = 100;
     private int accumulatedPoints = 0;
+    [Header("Audio Settings")]
+    public AudioSource audioSource;
+    public AudioClip[] ambientSounds;
+    public AudioClip[] shootSounds;
+    public AudioClip[] hurtSounds;
+    public AudioClip[] deathSounds;
+    public float minAmbientInterval = 2f;
+    public float maxAmbientInterval = 6f;
     [HideInInspector] public RoundManager roundManager;
 
     private Transform player;
@@ -30,14 +38,17 @@ public class GunRobot : MonoBehaviour
     void Awake()
     {
         currentHealth = maxHealth;
-
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
             player = playerObj.transform;
         else
             Debug.LogError("GunRobot: Player not found!");
     }
-
+    void Start()
+    {
+        StartCoroutine(AmbientSoundRoutine());
+    }
     void Update()
     {
 
@@ -83,7 +94,7 @@ public class GunRobot : MonoBehaviour
         if (bulletPrefab == null || firePoint == null || player == null) return;
         if (shootEffect != null)
             shootEffect.Play();
-
+        PlayRandomSound(shootSounds);
         //  offset to aim slightly above the player's feet
         float aimHeightOffset = 1f;
         Vector3 targetPoint = player.position + Vector3.up * aimHeightOffset;
@@ -113,7 +124,7 @@ public class GunRobot : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (isDead) return;
-
+        PlayRandomSound(hurtSounds);
         currentHealth -= damage;
         if (accumulatedPoints < PlayerStats.Instance.maxShootPointsPerEnemy)
         {
@@ -132,14 +143,46 @@ public class GunRobot : MonoBehaviour
     private void Die()
     {
         isDead = true;
+
         //points
         int pointsAwarded = Mathf.RoundToInt(pointsOnDeath * PlayerStats.Instance.deathPointsMultiplier);
         PlayerStats.Instance.AddPoints(pointsAwarded);
+        PlayRandomSound(deathSounds);
+        Destroy(gameObject, 0.1f);
+        if (explosionPrefab != null)
+        {
+            GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            Destroy(explosion, 4f);
+        }
 
-        // Optional: play death animation or effects here
-        Destroy(gameObject, 2f);
+
 
         // Notify RoundManager
         roundManager?.EnemyKilled();
+    }
+    IEnumerator AmbientSoundRoutine()
+    {
+        while (!isDead)
+        {
+            float waitTime = Random.Range(minAmbientInterval, maxAmbientInterval);
+            yield return new WaitForSeconds(waitTime);
+
+            if (!isDead)
+            {
+                PlayRandomSound(ambientSounds);
+            }
+        }
+    }
+
+    void PlayRandomSound(AudioClip[] clips)
+    {
+        if (clips == null || clips.Length == 0) return;
+
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+
+
+        audioSource.pitch = Random.Range(0.9f, 1.1f);
+
+        audioSource.PlayOneShot(clip);
     }
 }

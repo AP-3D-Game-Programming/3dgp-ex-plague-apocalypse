@@ -630,6 +630,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100046, guid: fec746e46c2fd354fa0bc92720075dbd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6671449970811669349}
+    - targetCorrespondingSourceObject: {fileID: 100046, guid: fec746e46c2fd354fa0bc92720075dbd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9018491733746099192}
   m_SourcePrefab: {fileID: 100100000, guid: fec746e46c2fd354fa0bc92720075dbd, type: 3}
 --- !u!1 &5681999435274990917 stripped
 GameObject:
@@ -655,6 +658,7 @@ MonoBehaviour:
   body: {fileID: 5681999435275348251}
   bodyRotationSpeed: 10
   rotationOffset: {x: 0, y: 0, z: -90}
+  explosionPrefab: {fileID: 8714244275622671896, guid: abf8d5b763621654486813c5c8af8234, type: 3}
   attackRange: 35
   rotationSpeed: 5
   weapons:
@@ -665,6 +669,8 @@ MonoBehaviour:
     projectileSpeed: 25
     animTrigger: ShootSmallA
     startDelay: 0
+    fireSounds:
+    - {fileID: 8300000, guid: 1b42babf6ae433245b11e5bc02d5f180, type: 3}
     isMortar: 0
     lobHeight: 5
     nextFireTime: 0
@@ -675,6 +681,8 @@ MonoBehaviour:
     projectileSpeed: 25
     animTrigger: ShootSmallB
     startDelay: 1
+    fireSounds:
+    - {fileID: 8300000, guid: 1b42babf6ae433245b11e5bc02d5f180, type: 3}
     isMortar: 0
     lobHeight: 5
     nextFireTime: 0
@@ -685,6 +693,8 @@ MonoBehaviour:
     projectileSpeed: 15
     animTrigger: ShootBigA
     startDelay: 2
+    fireSounds:
+    - {fileID: 8300000, guid: e7fefd0b0df1caf4cbfb66062031d3c7, type: 3}
     isMortar: 0
     lobHeight: 5
     nextFireTime: 0
@@ -695,6 +705,8 @@ MonoBehaviour:
     projectileSpeed: 15
     animTrigger: ShootBigB
     startDelay: 0
+    fireSounds:
+    - {fileID: 8300000, guid: e7fefd0b0df1caf4cbfb66062031d3c7, type: 3}
     isMortar: 0
     lobHeight: 5
     nextFireTime: 0
@@ -705,10 +717,22 @@ MonoBehaviour:
     projectileSpeed: 25
     animTrigger: ShootBigB
     startDelay: 0
+    fireSounds:
+    - {fileID: 8300000, guid: 78210c68e04e10d459dc11241c0240fb, type: 3}
     isMortar: 1
     lobHeight: 7
     nextFireTime: 0
+  mechMusic: {fileID: 8300000, guid: da400fff860b7044ca1771ec9430444b, type: 3}
   roundManager: {fileID: 0}
+  audioSource: {fileID: 9018491733746099192}
+  ambientSounds:
+  - {fileID: 8300000, guid: 9b55af405e3c1bd428c4cd5c6803c898, type: 3}
+  hurtSounds:
+  - {fileID: 8300000, guid: e7fefd0b0df1caf4cbfb66062031d3c7, type: 3}
+  deathSounds:
+  - {fileID: 8300000, guid: 89bd65613ba1110478a730eaa00658d0, type: 3}
+  minAmbientInterval: 2.5
+  maxAmbientInterval: 2.6
 --- !u!54 &6041660719137375170
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -779,6 +803,103 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!82 &9018491733746099192
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5681999435274990917}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 100
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &5681999435275348225 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400010, guid: fec746e46c2fd354fa0bc92720075dbd, type: 3}
