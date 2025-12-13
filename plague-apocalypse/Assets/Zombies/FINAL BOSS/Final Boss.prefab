@@ -393,11 +393,6 @@ MonoBehaviour:
   ultBulletPrefab: {fileID: 8377502302826763447, guid: b568fed3c657cfa45acec7c2eb322b22, type: 3}
   timeSlowFactor: 0.05
   timeStopColor: {r: 0, g: 1, b: 1, a: 1}
-  zombiePrefab: {fileID: 1384917990484669054, guid: 02983ffc2db6017418e3454aa9dd4fcf, type: 3}
-  minZombies: 3
-  maxZombies: 7
-  summonRadius: 10
-  summonSound: {fileID: 8300000, guid: 11dac853389c383469aff314d2995afe, type: 3}
   phaseTransitionHealthRatio: 0.3
   phaseOneDamageMultiplier: 1.5
   phaseTwoDamageMultiplier: 0.5

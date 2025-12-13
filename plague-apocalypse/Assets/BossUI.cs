@@ -19,6 +19,10 @@ public class BossUI : MonoBehaviour
     public Gradient phase2Gradient;
     public float colorCycleSpeed = 1.0f;
 
+    [Header("Scene Lighting (NEW)")]
+    public Light directionalLight; // DRAG YOUR DIRECTIONAL LIGHT HERE
+    private Color originalLightColor; // To remember what the sun looked like before
+
     private bool isPhase2 = false;
 
     [Header("Transition Settings")]
@@ -34,15 +38,34 @@ public class BossUI : MonoBehaviour
         {
             Instance = this;
             uiContainer.SetActive(false);
+
+            // Save the original sun color so we can reset it later
+            if (directionalLight != null)
+            {
+                originalLightColor = directionalLight.color;
+            }
         }
     }
 
     private void Update()
     {
-        if (isPhase2 && usePhase2Effects && currentHealthFillImage != null)
+        // Only run this logic if we are in Phase 2
+        if (isPhase2 && usePhase2Effects)
         {
             float t = Mathf.PingPong(Time.time * colorCycleSpeed, 1f);
-            currentHealthFillImage.color = phase2Gradient.Evaluate(t);
+            Color newColor = phase2Gradient.Evaluate(t);
+
+            // 1. Update the UI Bar
+            if (currentHealthFillImage != null)
+            {
+                currentHealthFillImage.color = newColor;
+            }
+
+            // 2. Update the Directional Light
+            if (directionalLight != null)
+            {
+                directionalLight.color = newColor;
+            }
         }
     }
 
@@ -51,7 +74,6 @@ public class BossUI : MonoBehaviour
         isPhase2 = true;
     }
 
-
     public void ShowHealthBar()
     {
         uiContainer.SetActive(true);
@@ -59,14 +81,17 @@ public class BossUI : MonoBehaviour
         // Reset Phase 2 flags
         isPhase2 = false;
 
-        // --- ADDED: Reset Color to Phase 1 Red ---
+        // Reset UI Color
         if (currentHealthFillImage != null)
             currentHealthFillImage.color = phase1Color;
+
+        // Reset Light Color
+        if (directionalLight != null)
+            directionalLight.color = originalLightColor;
 
         ghostHealthFillImage.fillAmount = 1f;
         currentHealthFillImage.fillAmount = 1f;
 
-        // --- ADDED: Reset Shield to 0 ---
         if (shieldHealthFillImage != null)
             shieldHealthFillImage.fillAmount = 0f;
     }
@@ -74,16 +99,17 @@ public class BossUI : MonoBehaviour
     public void HideHealthBar()
     {
         uiContainer.SetActive(false);
+
+        // Ensure light resets if we hide the bar (boss dies)
+        if (directionalLight != null)
+            directionalLight.color = originalLightColor;
     }
 
     public void UpdateHealthBar(int currentHealth, int maxHealth, float currentShield)
     {
         float targetHealthRatio = (float)currentHealth / maxHealth;
-
-        // Shield represents (HP + Shield)
         float totalEffectiveHealthRatio = (currentHealth + currentShield) / maxHealth;
 
-        // Update shield immediately
         if (shieldHealthFillImage)
         {
             shieldHealthFillImage.fillAmount = totalEffectiveHealthRatio;
@@ -102,12 +128,9 @@ public class BossUI : MonoBehaviour
         {
             timer += Time.deltaTime;
             float t = timer / damageDisplaySpeed;
-
-            // Use smooth step for a more satisfying deceleration
             t = t * t * (3f - 2f * t);
 
             currentHealthFillImage.fillAmount = Mathf.Lerp(startValue, targetHealthRatio, t);
-
             yield return null;
         }
 

@@ -28,10 +28,6 @@ public class OutOfBounds : MonoBehaviour
         {
             return;
         }
-        // Optional: Clean up enemies or bullets that fall off too
-        else
-        {
-            Destroy(other.gameObject);
-        }
+
     }
 }
