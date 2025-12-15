@@ -125,7 +125,7 @@ public class MainMenuScript : MonoBehaviour
         }
         AudioListener.volume = savedVolume;
 
-        int defaultIndex = 3;
+        int defaultIndex = 0;
         int savedQuality = PlayerPrefs.GetInt(QualityPrefKey, defaultIndex);
         if (qualityDropdown != null)
         {
