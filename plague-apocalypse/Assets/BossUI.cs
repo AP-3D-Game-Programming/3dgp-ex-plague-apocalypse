@@ -46,7 +46,10 @@ public class BossUI : MonoBehaviour
             }
         }
     }
-
+    public void SetBarVisibility(bool isVisible)
+    {
+        uiContainer.SetActive(isVisible);
+    }
     private void Update()
     {
         // Only run this logic if we are in Phase 2

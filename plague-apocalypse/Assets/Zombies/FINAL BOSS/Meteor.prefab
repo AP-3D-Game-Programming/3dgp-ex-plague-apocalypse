@@ -156,5 +156,5 @@ MonoBehaviour:
   aoeRadius: 3
   aoeDamage: 35
   impactEffect: {fileID: 2312591318274358134, guid: 77da29788f3010e4396994ea52057980, type: 3}
-  lifetime: 60
+  lifetime: 10
   impactSound: {fileID: 8300000, guid: 6e93667a5c2fd3f42a776442430be687, type: 3}

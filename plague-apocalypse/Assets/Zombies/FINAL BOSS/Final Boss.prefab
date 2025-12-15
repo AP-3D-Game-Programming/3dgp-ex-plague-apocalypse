@@ -204,6 +204,89 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2716896598912340908}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &85359696317170753
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2716896598912340908}
+    m_Modifications:
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1289543790355709915, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_Name
+      value: Magic shield blue
+      objectReference: {fileID: 0}
+    - target: {fileID: 1289543790355709915, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+--- !u!1 &1209818000243866522 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1289543790355709915, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+  m_PrefabInstance: {fileID: 85359696317170753}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1267300349339970095 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+  m_PrefabInstance: {fileID: 85359696317170753}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2467658627836441671
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -264,6 +347,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5409001466119636713, guid: fa940357bda31b948a7545c6c42164e2, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 3ab4b316143e9c74486436998ad8a469, type: 2}
+    - target: {fileID: -5409001466119636713, guid: fa940357bda31b948a7545c6c42164e2, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5b91d66f04102fd4690c51deec34cfb6, type: 2}
     - target: {fileID: 919132149155446097, guid: fa940357bda31b948a7545c6c42164e2, type: 3}
       propertyPath: m_Name
       value: Final Boss
@@ -290,6 +381,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: fa940357bda31b948a7545c6c42164e2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4670487896288135872}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: fa940357bda31b948a7545c6c42164e2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1267300349339970095}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fa940357bda31b948a7545c6c42164e2, type: 3}
       insertIndex: -1
@@ -374,7 +468,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   currentState: 0
   attackRange: 500
-  maxHealth: 50000
+  maxHealth: 100000
   animator: {fileID: -5066309858474983978}
   hoverHeight: 8
   normalMoveSpeed: 5
@@ -394,11 +488,11 @@ MonoBehaviour:
   timeSlowFactor: 0.05
   timeStopColor: {r: 0, g: 1, b: 1, a: 1}
   phaseTransitionHealthRatio: 0.3
-  phaseOneDamageMultiplier: 1.5
-  phaseTwoDamageMultiplier: 0.5
+  phaseOneDamageMultiplier: 5
+  phaseTwoDamageMultiplier: 0.35
   healAmountRatio: 0.05
-  shieldAmountRatio: 0.05
-  healAttackCooldown: 90
+  shieldAmountRatio: 0.1
+  healAttackCooldown: 35
   spammerDuration: 10
   beamSpins: 10
   meteorSpamCount: 50
@@ -413,6 +507,7 @@ MonoBehaviour:
   dashSound: {fileID: 8300000, guid: 47980c8ae212b2c4ab13f18a26c488eb, type: 3}
   healSound: {fileID: 8300000, guid: f8c6d75c1b6e1f94dab07fc97b0f63f3, type: 3}
   phaseTransitionSound: {fileID: 8300000, guid: e2e03626e12b86540a0b4637f1531733, type: 3}
+  ultimateSpamSound: {fileID: 8300000, guid: 50b7f499ff9fc4a468223f07efbe003d, type: 3}
   healEffectPrefab: {fileID: 8593464584776411535, guid: b21d155ec7ea5a349a0e36106f913148, type: 3}
   spawnVFX: {fileID: 100010, guid: eae1624132da00d428c5d34f366b20dd, type: 3}
   dashVFX: {fileID: 2715471840370901047, guid: df9374346b76e444dbbb2b019de4da25, type: 3}
@@ -423,7 +518,7 @@ MonoBehaviour:
   rageAuraVFX: {fileID: 100010, guid: 5bb3ae44215754a4b8d9a94ad088d0fe, type: 3}
   phaseTransitionVFX: {fileID: 6063518424537689786, guid: bad5794a53f5c3645bb444b3a040ba01, type: 3}
   deathExplosionVFX: {fileID: 5034656251238326012, guid: 9de2fa19f0390d44491264d9cab8cec5, type: 3}
-  shieldAuraVFX: {fileID: 1289543790355709915, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+  shieldAuraVFX: {fileID: 1209818000243866522}
   phaseOneAura: {fileID: 4135996348405508460}
   phaseTwoAura: {fileID: 4670487896288106208}
   ambientMusicSource: {fileID: 0}
@@ -483,8 +578,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 200
-  MaxDistance: 500
+  MinDistance: 15
+  MaxDistance: 1000000
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0

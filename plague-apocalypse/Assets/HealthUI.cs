@@ -18,10 +18,37 @@ public class HealthDisplayManager : MonoBehaviour
     public Sprite normalBackgroundSprite;
     public Sprite criticalBackgroundSprite;
 
+    [Header("Heartbeat Settings")]
+    public float minPulseSpeed = 2f;  // Speed at full health
+    public float maxPulseSpeed = 10f; // Speed at near death
+    public float pulseScaleAmount = 0.1f; // How much it grows (0.1 = 10% bigger)
+
+    private Vector3 _originalScale;
+    private float _currentPulseSpeed;
+
+    private void Start()
+    {
+        // Store the starting size of the heart so we can scale relative to it
+        if (healthSpriteImage != null)
+        {
+            _originalScale = healthSpriteImage.transform.localScale;
+        }
+    }
+
+    private void Update()
+    {
+        if (healthSpriteImage == null) return;
+
+        // Calculate the scale factor using a Sine wave
+        // Time.time * _currentPulseSpeed determines how fast the wave moves
+        float scaleOffset = Mathf.Sin(Time.time * _currentPulseSpeed) * pulseScaleAmount;
+
+        // Apply the scale (Original Size + The Sine Wave offset)
+        healthSpriteImage.transform.localScale = _originalScale + (_originalScale * scaleOffset);
+    }
 
     public void UpdateDisplay(int currentHealth, int maxHealth)
     {
-
         if (healthText != null)
         {
             healthText.text = $"{currentHealth}";
@@ -30,6 +57,9 @@ public class HealthDisplayManager : MonoBehaviour
         if (healthSpriteImage == null || healthPanelBackgroundImage == null) return;
 
         float healthPercent = (float)currentHealth / maxHealth;
+
+        _currentPulseSpeed = Mathf.Lerp(maxPulseSpeed, minPulseSpeed, healthPercent);
+
         Sprite foregroundIconSprite;
         Sprite backgroundPanelSprite;
 
@@ -52,7 +82,6 @@ public class HealthDisplayManager : MonoBehaviour
             backgroundPanelSprite = criticalBackgroundSprite;
         }
 
-        // 4. Apply the chosen sprites
         healthSpriteImage.sprite = foregroundIconSprite;
         healthPanelBackgroundImage.sprite = backgroundPanelSprite;
     }

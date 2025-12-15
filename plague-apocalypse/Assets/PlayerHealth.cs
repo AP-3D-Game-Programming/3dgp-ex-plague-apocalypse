@@ -1,12 +1,17 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI; // Import for Image
 using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
     [Header("UI Reference")]
     public HealthDisplayManager healthDisplayManager;
+    public Image damageOverlay;
 
+    [Header("Damage Overlay Settings")]
+    public float damageFlashSpeed = 2f;
+    public float maxOverlayAlpha = 0.7f;
     [Header("Health")]
     public int maxHealth = 100;
     public int currentHealth;
@@ -17,6 +22,7 @@ public class PlayerHealth : MonoBehaviour
 
     private float lastDamageTime;
     private float regenBuffer = 0f;
+    private bool damaged = false;
 
     [Header("Game Over Settings")]
     public Gameoverscript gameOverUI;
@@ -39,9 +45,32 @@ public class PlayerHealth : MonoBehaviour
 
     void Update()
     {
-        if (!isDead && currentHealth < maxHealth && Time.time >= lastDamageTime + regenDelay)
+        if (isDead) return;
+
+        // --- Handle Regeneration ---
+        if (currentHealth < maxHealth && Time.time >= lastDamageTime + regenDelay)
         {
             Regenerate();
+        }
+
+        // --- Handle Damage Overlay ---
+        if (damageOverlay != null)
+        {
+            // Calculate the target alpha based on missing health
+            float healthPercent = (float)currentHealth / maxHealth;
+            float targetAlpha = maxOverlayAlpha * (1f - healthPercent);
+
+            // If we just got hit, temporarily flash to a higher alpha
+            if (damaged)
+            {
+                damageOverlay.color = new Color(damageOverlay.color.r, damageOverlay.color.g, damageOverlay.color.b, 0.8f); // Instant flash
+                damaged = false;
+            }
+
+            // Smoothly lerp the current alpha towards the target alpha
+            Color newColor = damageOverlay.color;
+            newColor.a = Mathf.Lerp(damageOverlay.color.a, targetAlpha, damageFlashSpeed * Time.deltaTime);
+            damageOverlay.color = newColor;
         }
     }
 
@@ -73,6 +102,8 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (isDead) return;
+
+        damaged = true;
         currentHealth -= damage;
         lastDamageTime = Time.time;
         regenBuffer = 0f;
@@ -84,7 +115,6 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth <= 0)
             Die();
     }
-
 
     public void Heal(int amount)
     {
@@ -123,6 +153,12 @@ public class PlayerHealth : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
+        if (damageOverlay != null)
+        {
+            Color deadColor = damageOverlay.color;
+            deadColor.a = 1f;
+            damageOverlay.color = deadColor;
+        }
 
         Debug.Log("Player died!");
 

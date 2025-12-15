@@ -10512,7 +10512,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3254741864839565681, guid: 106d094bd438c5446a0ccdd5efb66d3b, type: 3}
       propertyPath: gameSceneName
-      value: MAIN_V2
+      value: Main_V3
       objectReference: {fileID: 0}
     - target: {fileID: 3254741864839565681, guid: 106d094bd438c5446a0ccdd5efb66d3b, type: 3}
       propertyPath: menuMusicClip

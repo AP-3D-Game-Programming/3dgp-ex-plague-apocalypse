@@ -73,6 +73,7 @@ public class FINALLBOSS : MonoBehaviour
     public AudioClip dashSound;
     public AudioClip healSound;
     public AudioClip phaseTransitionSound;
+    public AudioClip ultimateSpamSound;
 
     [Header("Visual Effects")]
     public GameObject healEffectPrefab;
@@ -565,7 +566,14 @@ public class FINALLBOSS : MonoBehaviour
     IEnumerator Ultimate_Spammer()
     {
         if (animator) animator.SetTrigger("Spin");
-        if (audioSource && timeStopSound) audioSource.PlayOneShot(timeStopSound);
+        if (audioSource && ultimateSpamSound)
+        {
+            audioSource.PlayOneShot(ultimateSpamSound);
+        }
+        else if (audioSource && timeStopSound)
+        {
+            audioSource.PlayOneShot(timeStopSound);
+        }
         PlayAttachedVFX(rageAuraVFX, spammerDuration + 2f);
         float startTime = Time.time;
         float rocketTimer = 0f;
@@ -633,7 +641,7 @@ public class FINALLBOSS : MonoBehaviour
             rocketTimer += Time.deltaTime;
             if (rocketTimer >= rocketShotInterval)
             {
-                if (audioSource && shootSound) audioSource.PlayOneShot(shootSound, 0.7f);
+                if (audioSource && shootSound) audioSource.PlayOneShot(shootSound, 0.2f);
                 PlayVFX(muzzleFlashVFX, firePoint.position, 0.2f);
                 // Calculate Random Pitch (Vertical Angle)
                 // 0 = Horizontal, 90 = Straight Down.
@@ -735,9 +743,9 @@ public class FINALLBOSS : MonoBehaviour
         if (shieldAuraVFX != null) shieldAuraVFX.SetActive(false); // Hide shield if active
         currentPhase = 2;
         currentState = BossState.Spawning; // This prevents him from taking damage or attacking
-
+        BossUI.Instance.SetBarVisibility(false);
         // 2. FAKE DEATH
-        Debug.Log("BOSS: Faking Death...");
+        Debug.Log("BOSS Fake Death");
         if (animator) animator.SetBool("Dead", true); // Play death animation
 
         // 3. PLAY FAKE OUT MUSIC
@@ -754,11 +762,11 @@ public class FINALLBOSS : MonoBehaviour
         Debug.Log("BOSS: PHASE 2 START!");
         if (animator) animator.SetBool("Dead", false); // Stop being dead
         if (animator) animator.SetTrigger("Rage");     // Play scream/rage anim
-
+        BossUI.Instance.SetBarVisibility(true);
         PlayAttachedVFX(phaseTransitionVFX, 4f);
         if (audioSource && phaseTransitionSound)
         {
-            audioSource.PlayOneShot(phaseTransitionSound, 5f);
+            audioSource.PlayOneShot(phaseTransitionSound, 3f);
         }
 
         // 7. START ACTUAL PHASE 2 MUSIC
