@@ -1406,7 +1406,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -319, y: -203}
+  m_AnchoredPosition: {x: -238, y: -254}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5164399972184113779
@@ -2024,6 +2024,18 @@ MonoBehaviour:
   volumeSlider: {fileID: 6373305974189637096}
   qualityDropdown: {fileID: 7396564165958630991}
   motionBlurToggle: {fileID: 7082177693972428204}
+  sensitivitySlider: {fileID: 0}
+  sensitivityValueText: {fileID: 0}
+  mainDirectionalLight: {fileID: 0}
+  difficultyColors: []
+  menuMusicSource: {fileID: 0}
+  menuMusicClip: {fileID: 0}
+  difficultySelectSounds: []
+  mainDifficultyIcon: {fileID: 0}
+  mainDifficultyText: {fileID: 0}
+  difficultyPopup: {fileID: 0}
+  difficultyIcons: []
+  difficultyNames: []
 --- !u!1 &5005713637589389594
 GameObject:
   m_ObjectHideFlags: 0
@@ -2373,7 +2385,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 55, y: 29}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5007269958138200822
@@ -2830,7 +2842,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 378, y: -238}
+  m_AnchoredPosition: {x: 346, y: -276}
   m_SizeDelta: {x: 100, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3854336241015092771
@@ -3399,7 +3411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}

@@ -121,4 +121,19 @@ public class MusicManager : MonoBehaviour
         }
         musicSource.volume = maxVolume;
     }
+    public void ForceMusic(AudioClip clip, int priority)
+    {
+        // 1. Clear all lower priorities (optional, use if you want to 'forget' previous music)
+        for (int i = 0; i < activeRequests.Length; i++)
+        {
+            activeRequests[i] = null;
+            priorityCounts[i] = 0;
+        }
+
+        // 2. Stop any current fades and cut immediately (optional)
+        StopAllCoroutines();
+        musicSource.volume = maxVolume; // Reset volume if it was fading
+
+        RequestMusic(clip, priority);
+    }
 }

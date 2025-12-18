@@ -468,7 +468,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   currentState: 0
   attackRange: 500
-  maxHealth: 100000
+  maxHealth: 1000
   animator: {fileID: -5066309858474983978}
   hoverHeight: 8
   normalMoveSpeed: 5
@@ -497,6 +497,21 @@ MonoBehaviour:
   beamSpins: 10
   meteorSpamCount: 50
   rocketShotInterval: 0.3
+  doomsdayDuration: 300
+  doomsdayOrbPrefab: {fileID: 8377502302826763447, guid: b568fed3c657cfa45acec7c2eb322b22, type: 3}
+  phase2StartDialogue:
+    text: "> SUDO RLOGIN -L ROOT SERVER_CORE \n> ACCESS GRANTED. INITIATING TOTAL
+      SYSTEM FORMAT."
+    audio: {fileID: 0}
+    duration: 15
+  warningDialogue:
+    text: "> WARNING: COMPILING FINAL SHUTDOWN SEQUENCE. \n> 99% COMPLETE..."
+    audio: {fileID: 0}
+    duration: 15
+  wipeDialogue:
+    text: '> SUDO RM -RF PLAYERCONTROLLER.CS'
+    audio: {fileID: 0}
+    duration: 10
   audioSource: {fileID: 3694839028467562648}
   screamSound: {fileID: 8300000, guid: 5f1e3e16aae36564dba702b13cdaf41a, type: 3}
   beamSound: {fileID: 8300000, guid: 4ebffa9788d27e248820cf1488d19d79, type: 3}

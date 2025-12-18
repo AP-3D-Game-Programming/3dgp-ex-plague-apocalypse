@@ -62,6 +62,24 @@ public class FINALLBOSS : MonoBehaviour
     public int beamSpins = 4; // How many times the beam spins 360 degrees
     public int meteorSpamCount = 30; // More meteors for the ult
     public float rocketShotInterval = 0.2f; // How often to shoot rockets during the ult
+    [Header("DOOMSDAY (Phase 2)")]
+
+    public float doomsdayDuration = 600f;
+    public GameObject doomsdayOrbPrefab;
+    [System.Serializable]
+    public struct DialogueLine
+    {
+        [TextArea] public string text;
+        public AudioClip audio;
+        public float duration;
+    }
+
+    [Header("Doomsday Dialogue")]
+    public DialogueLine phase2StartDialogue;
+    public DialogueLine warningDialogue;
+    public DialogueLine wipeDialogue;
+
+    private Coroutine doomsdayCoroutine;
     [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip screamSound;
@@ -784,9 +802,54 @@ public class FINALLBOSS : MonoBehaviour
         // 9. RESUME COMBAT
         if (phaseTwoAura != null) phaseTwoAura.SetActive(true);
         currentState = BossState.Moving;
+        doomsdayCoroutine = StartCoroutine(DoomsdayCountdownRoutine());
+    }
+    IEnumerator DoomsdayCountdownRoutine()
+    {
+        float timer = doomsdayDuration;
+        bool warningShown = false;
+
+        // 1. Initial Dialogue (ID 0)
+        StartCoroutine(PlayDialogue(phase2StartDialogue, 0));
+
+        while (timer > 0)
+        {
+            if (currentState == BossState.Dead) yield break;
+
+            timer -= Time.deltaTime;
+
+            if (BossUI.Instance != null)
+            {
+                float minutes = Mathf.FloorToInt(timer / 60);
+                float seconds = Mathf.FloorToInt(timer % 60);
+                BossUI.Instance.SetTimer(string.Format("{0:00}:{1:00}", minutes, seconds), (timer <= 60f) ? Color.red : Color.white);
+            }
+            float panicLevel = 1f - (timer / doomsdayDuration);
+            BossUI.Instance.UpdateTimerShake(panicLevel);
+            if (timer <= 60f && !warningShown)
+            {
+                warningShown = true;
+                StartCoroutine(PlayDialogue(warningDialogue, 1));
+            }
+
+            yield return null;
+        }
+
+        if (currentState != BossState.Dead)
+        {
+            StopAllCoroutines();
+            StartCoroutine(Attack_DoomsdayWipe());
+        }
     }
     private void Die()
     {
+
+        // STOP THE TIMER
+        if (doomsdayCoroutine != null) StopCoroutine(doomsdayCoroutine);
+
+
+        if (phaseOneAura != null) phaseOneAura.SetActive(false);
+        // ... rest of your Die() code ...
         if (phaseOneAura != null) phaseOneAura.SetActive(false);
         if (phaseTwoAura != null) phaseTwoAura.SetActive(false);
         currentState = BossState.Dead;
@@ -823,5 +886,54 @@ public class FINALLBOSS : MonoBehaviour
         t = Mathf.Clamp(t, 0.0f, 1.0f);
 
         return A + AB * t;
+    }
+    IEnumerator Attack_DoomsdayWipe()
+    {
+        currentState = BossState.Attacking;
+        if (animator) animator.SetTrigger("Spin");
+
+        // 3. Wipe Dialogue (ID 2)
+        StartCoroutine(PlayDialogue(wipeDialogue, 2));
+
+        // ... keep the rest of your orb logic here ...
+        Vector3 killPos = player.position + Vector3.up * 10f;
+        transform.position = killPos;
+
+        GameObject orb = null;
+        if (doomsdayOrbPrefab != null)
+            orb = Instantiate(doomsdayOrbPrefab, transform.position, Quaternion.identity);
+
+        // ... etc (rest of your orb growing code) ...
+        float wipeDuration = 5f;
+        float t = 0f;
+        while (t < wipeDuration)
+        {
+            t += Time.deltaTime;
+            if (orb != null) orb.transform.localScale = Vector3.one * Mathf.Lerp(1f, 200f, t / wipeDuration);
+            yield return null;
+        }
+        if (player != null) player.GetComponent<PlayerHealth>()?.TakeDamage(9999999);
+        if (orb != null) Destroy(orb, 1f);
+    }
+    IEnumerator PlayDialogue(DialogueLine line, int messageID)
+    {
+        // Turn ON the specific message object
+        if (BossUI.Instance != null)
+        {
+            BossUI.Instance.ToggleMessage(messageID, true);
+        }
+
+        if (audioSource && line.audio)
+        {
+            audioSource.PlayOneShot(line.audio);
+        }
+
+        yield return new WaitForSeconds(line.duration);
+
+        // Turn OFF the specific message object
+        if (BossUI.Instance != null)
+        {
+            BossUI.Instance.ToggleMessage(messageID, false);
+        }
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine.AI;
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(AudioSource))] // Ensures an AudioSource is attached
 public class RageZombie : MonoBehaviour, IElite
 {
     [Header("Stats")]
@@ -13,8 +14,32 @@ public class RageZombie : MonoBehaviour, IElite
     public float attackInterval = 1f;
     public float attackRange = 2f;
     public string isMovingParam = "IsMoving";
+
     // ==========================================
-    // 1. RAGE MODE SETTINGS (MODIFIED)
+    // 0. AUDIO SETTINGS (NEW)
+    // ==========================================
+    [Header("Audio Settings")]
+    public AudioSource audioSource;
+
+    [Tooltip("Sound played when the zombie takes damage")]
+    public AudioClip hitSound;
+
+    [Tooltip("Sound played when the zombie attacks")]
+    public AudioClip attackSound;
+
+    [Tooltip("Sound played when the zombie dies")]
+    public AudioClip deathSound;
+
+    [Tooltip("Sound played when entering Rage Mode")]
+    public AudioClip rageScreamSound;
+
+    [Header("Footsteps")]
+    public AudioClip[] footstepSounds; // Array for variety
+    public float footstepInterval = 0.5f; // Time between steps
+    private float footstepTimer;
+
+    // ==========================================
+    // 1. RAGE MODE SETTINGS
     // ==========================================
     [Header("Rage Mode")]
     public float rageHealthThreshold = 0.3f;
@@ -54,6 +79,11 @@ public class RageZombie : MonoBehaviour, IElite
     {
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponentInChildren<Animator>();
+
+        // Setup AudioSource
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
         player = GameObject.FindWithTag("Player")?.transform;
 
         if (player != null)
@@ -71,6 +101,7 @@ public class RageZombie : MonoBehaviour, IElite
             anim.SetBool(isMovingParam, true);
         }
     }
+
     public void ApplyStats(int hp, float speed, RoundManager rm, float fireRateMult, float damageMult, float phase2HealthMult, float phase2SpeedMult)
     {
         this.health = hp;
@@ -86,9 +117,12 @@ public class RageZombie : MonoBehaviour, IElite
         if (GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
             GetComponent<UnityEngine.AI.NavMeshAgent>().speed = speed;
     }
+
     void Update()
     {
         if (isDead || player == null || agent == null || isScreaming) return;
+
+        HandleFootsteps(); // Check for footstep sounds
 
         float distance = Vector3.Distance(transform.position, player.position);
 
@@ -111,12 +145,31 @@ public class RageZombie : MonoBehaviour, IElite
         }
     }
 
+    // New helper method to handle footstep logic
+    private void HandleFootsteps()
+    {
+        // If we are moving and not stopped
+        if (agent.velocity.sqrMagnitude > 0.1f && !agent.isStopped)
+        {
+            footstepTimer -= Time.deltaTime;
+            if (footstepTimer <= 0)
+            {
+                PlayRandomFootstep();
+                // Reset timer based on speed (faster speed = faster steps)
+                footstepTimer = footstepInterval / (isInRageMode ? rageSpeedMultiplier : 1f);
+            }
+        }
+    }
+
     // ==========================================
-    // 4. DAMAGE LOGIC (MODIFIED)
+    // 4. DAMAGE LOGIC
     // ==========================================
     public void TakeDamage(int damage)
     {
         if (isDead) return;
+
+        // Play Hit Sound
+        PlaySoundEffect(hitSound);
 
         int finalDamage = damage;
 
@@ -134,7 +187,6 @@ public class RageZombie : MonoBehaviour, IElite
 
         if (hitRageThreshold)
         {
-
             if (health <= 0)
             {
                 health = 1;
@@ -143,7 +195,6 @@ public class RageZombie : MonoBehaviour, IElite
         }
         if (health <= 0)
         {
-
             Die();
             return;
         }
@@ -153,6 +204,9 @@ public class RageZombie : MonoBehaviour, IElite
     {
         isInRageMode = true;
         isScreaming = true;
+
+        // Play Rage Scream
+        PlaySoundEffect(rageScreamSound);
 
         Debug.Log($"{gameObject.name} entered RAGE MODE!");
         agent.velocity = Vector3.zero;
@@ -185,6 +239,9 @@ public class RageZombie : MonoBehaviour, IElite
     // ==========================================
     private void Die()
     {
+        // Play Death Sound
+        PlaySoundEffect(deathSound);
+
         anim.SetBool(isMovingParam, false);
         isDead = true;
         anim.SetBool("IsDead", true);
@@ -211,6 +268,9 @@ public class RageZombie : MonoBehaviour, IElite
 
             if (distance > attackRange) break;
 
+            // Play Attack Sound
+            PlaySoundEffect(attackSound);
+
             playerHealth.TakeDamage(damage);
 
             yield return new WaitForSeconds(attackInterval);
@@ -224,5 +284,26 @@ public class RageZombie : MonoBehaviour, IElite
         isAttacking = false;
         anim.SetBool("IsAttacking", false);
         agent.isStopped = false;
+    }
+
+    // ==========================================
+    // 6. AUDIO HELPERS
+    // ==========================================
+    private void PlaySoundEffect(AudioClip clip)
+    {
+        if (clip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
+    private void PlayRandomFootstep()
+    {
+        if (footstepSounds != null && footstepSounds.Length > 0 && audioSource != null)
+        {
+            int index = Random.Range(0, footstepSounds.Length);
+            // Lower volume slightly for footsteps so they don't overpower screams
+            audioSource.PlayOneShot(footstepSounds[index], 0.6f);
+        }
     }
 }
