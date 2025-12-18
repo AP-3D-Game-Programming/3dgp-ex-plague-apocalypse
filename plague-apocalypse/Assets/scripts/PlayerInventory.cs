@@ -3,116 +3,121 @@ using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
 {
-    [SerializeField] private List<WeaponData> weapons = new List<WeaponData>();
+    [Header("Inventory Settings")]
+    [SerializeField] private List<WeaponData> startingWeaponsData = new List<WeaponData>(); 
     [SerializeField] private Transform weaponHolder;
     [SerializeField] private AmmoHUD ammoHUD;
-    // Welk wapen hebben we nu vast? (0 of 1)
+    
+    private List<WeaponInstance> weapons = new List<WeaponInstance>(); 
     private int currentWeaponIndex = 0;
     private int maxWeapons = 2;
-    private GameObject currentWeapon;
-    private PlayerShooting shootingScript;
+    private GameObject currentWeaponModel;
     private PlayerEffectManager effectManager;
+
     private void Awake()
     {
-        shootingScript = GetComponent<PlayerShooting>();
         effectManager = GetComponent<PlayerEffectManager>();
-        if (shootingScript == null) Debug.LogError("HELP! Geen PlayerShooting script gevonden op de Player!");
     }
+
     private void Start()
     {
-
-        if (weapons.Count > 0)
+        foreach(var data in startingWeaponsData)
         {
-            EquipWeapon(0); // equip the starter gun
-            if (shootingScript != null) shootingScript.UpdateCurrentGun();
+            PickupWeapon(data); 
         }
     }
+
     void Update()
     {
-        // Wapen wisselena met scrollwiel of toetsen
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            EquipWeapon(0);
-            shootingScript.UpdateCurrentGun();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            EquipWeapon(1);
-            shootingScript.UpdateCurrentGun();
-        }
+        if (Input.GetKeyDown(KeyCode.Alpha1)) EquipWeapon(0);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) EquipWeapon(1);
 
-        // Simpele scrollwiel logica
         if (Input.GetAxis("Mouse ScrollWheel") != 0)
         {
-            // Wissel tussen 0 en 1
             int newIndex = currentWeaponIndex == 0 ? 1 : 0;
             EquipWeapon(newIndex);
-            shootingScript.UpdateCurrentGun();
         }
     }
-    public void PickupWeapon(WeaponData newWeapon)
+
+    public void PickupWeapon(WeaponData newWeaponData)
     {
+        WeaponInstance existing = weapons.Find(x => x.data == newWeaponData);
+        
+        if (existing != null)
+        {
+            RefillAmmo(newWeaponData);
+            return;
+        }
+
+        WeaponInstance newInstance = new WeaponInstance(newWeaponData);
+
         if (weapons.Count < maxWeapons)
         {
-            weapons.Add(newWeapon);
-            EquipWeapon(weapons.Count - 1); // Pak het nieuwe wapen vast
+            weapons.Add(newInstance);
+            EquipWeapon(weapons.Count - 1);
         }
         else
         {
-            weapons[currentWeaponIndex] = newWeapon;
-            EquipWeapon(currentWeaponIndex); // Herlaad het model
+            weapons[currentWeaponIndex] = newInstance;
+            EquipWeapon(currentWeaponIndex);
         }
     }
 
     void EquipWeapon(int index)
     {
         if (index >= weapons.Count) return;
-        if (currentWeapon != null) Destroy(currentWeapon);
+        if (currentWeaponModel != null) Destroy(currentWeaponModel);
 
-        currentWeapon = Instantiate(weapons[index].weaponPrefab, weaponHolder);
-        Gun gunComponent = currentWeapon.GetComponent<Gun>();
-        if (gunComponent != null)
+        WeaponInstance instanceToEquip = weapons[index];
+
+        if (instanceToEquip.data.weaponPrefab != null)
         {
-            gunComponent.Initialize(weapons[index], effectManager);
-            gunComponent.onAmmoChanged = null; // Reset eventuele oude listeners
-            gunComponent.onAmmoChanged += ammoHUD.UpdateAmmoDisplay;
-            ammoHUD.UpdateAmmoDisplay(weapons[index].magazineSize, weapons[index].maxAmmo);
+            currentWeaponModel = Instantiate(instanceToEquip.data.weaponPrefab, weaponHolder);
         }
-        currentWeapon.transform.localPosition = new Vector3(0.25f, 1f, 1f);
-        currentWeapon.transform.localRotation = Quaternion.identity;
+        else
+        {
+            Debug.LogError($"FOUT: Wapen {instanceToEquip.data.weaponName} heeft geen prefab!");
+            return;
+        }
+
+        WeaponController ctrl = currentWeaponModel.GetComponent<WeaponController>();
+        if (ctrl != null)
+        {
+            ctrl.Initialize(instanceToEquip, effectManager);
+            ctrl.onAmmoChanged = null; 
+            ctrl.onAmmoChanged += ammoHUD.UpdateAmmoDisplay;
+            ammoHUD.UpdateAmmoDisplay(instanceToEquip.currentClip, instanceToEquip.currentReserve);
+        }
+        
+        currentWeaponModel.transform.localPosition = Vector3.zero; 
+        currentWeaponModel.transform.localRotation = Quaternion.identity;
         currentWeaponIndex = index;
     }
+
     public WeaponData GetCurrentWeapon()
     {
         if (weapons.Count == 0) return null;
-        if (currentWeaponIndex < weapons.Count)
-        {
-            return weapons[currentWeaponIndex];
-        }
+        if (currentWeaponIndex < weapons.Count) return weapons[currentWeaponIndex].data;
         return null;
     }
-    // Voeg dit toe aan PlayerInventory.cs
 
     public bool HasWeapon(WeaponData weaponToCheck)
     {
-        // Check of dit wapen al in onze lijst zit
-        return weapons.Contains(weaponToCheck);
+        return weapons.Exists(x => x.data == weaponToCheck);
     }
 
     public void RefillAmmo(WeaponData weaponToRefill)
     {
-        // Als we het wapen momenteel vast hebben, vul het direct bij
-        if (currentWeapon != null)
+        WeaponInstance instance = weapons.Find(x => x.data == weaponToRefill);
+        if(instance != null)
         {
-            Gun currentGunScript = currentWeapon.GetComponent<Gun>();
-
-            if (GetCurrentWeapon() == weaponToRefill && currentGunScript != null)
+            instance.RefillFull();
+            
+            if(GetCurrentWeapon() == weaponToRefill && currentWeaponModel != null)
             {
-                currentGunScript.RefillAmmo();
+                WeaponController ctrl = currentWeaponModel.GetComponent<WeaponController>();
+                if (ctrl != null) ctrl.onAmmoChanged?.Invoke(instance.currentClip, instance.currentReserve);
             }
         }
-
-
-
     }
 }

@@ -6,22 +6,21 @@ public class WeaponData : ScriptableObject
 {
     [Header("Info")]
     public string weaponName;
-    public bool isAutomatic;
+    public WeaponType weaponType;
+
     [Header("Visuals")]
-    public GameObject weaponPrefab;
-    public GameObject muzzleFlashPrefab;
-
-    [Header("Effects")]
-    public List<BulletEffect> effects;
-
-    [Header("Projectile")]
-    public GameObject projectilePrefab;
+    public GameObject weaponPrefab; // Het model dat de speler vasthoudt
 
     [Header("Stats")]
-    public WeaponType weaponType;
     public int maxAmmo;
     public int magazineSize;
     public float damage;
     public float fireRate;
     public float reloadTime;
+
+    [Header("Projectile")]
+    public GameObject projectilePrefab; // De kogel prefab
+
+    [Header("Effects")]
+    public List<BulletEffect> effects;
 }

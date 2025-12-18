@@ -5,79 +5,49 @@ public class WallBuy : Interactable
     [Header("Wall Buy Settings")]
     [SerializeField] private WeaponData weaponForSale;
     [SerializeField] private int weaponCost = 500;
-    [SerializeField] private int ammoCost = 250; // Goedkoper dan het wapen zelf
+    [SerializeField] private int ammoCost = 250; 
 
-    private bool playerHasWeapon = false; // Om bij te houden wat we moeten tonen
+    private bool playerHasWeapon = false; 
 
     private void Awake()
     {
-        // Visuele weergave van het wapen op de muur
-        GameObject weaponVisual = Instantiate(weaponForSale.weaponPrefab, this.transform);
-        weaponVisual.transform.localPosition = new Vector3(0f, 1.4f, 0f);
-        weaponVisual.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+        if (weaponForSale.weaponPrefab != null)
+        {
+            GameObject weaponVisual = Instantiate(weaponForSale.weaponPrefab, this.transform);
+            weaponVisual.transform.localPosition = Vector3.zero;
+            weaponVisual.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
 
-        // Verwijder scripts van het model op de muur zodat je er niet mee kan schieten
-        Destroy(weaponVisual.GetComponent<Gun>());
-        Destroy(weaponVisual.GetComponent<Rigidbody>());
-        Destroy(weaponVisual.GetComponent<Collider>());
+            // Verwijder scripts en physics
+            foreach (MonoBehaviour script in weaponVisual.GetComponents<MonoBehaviour>()) Destroy(script);
+            if (weaponVisual.GetComponent<Rigidbody>()) Destroy(weaponVisual.GetComponent<Rigidbody>());
+            if (weaponVisual.GetComponent<Collider>()) Destroy(weaponVisual.GetComponent<Collider>());
+        }
     }
 
     private void Update()
     {
-        // Dit is een simpele manier om de tekst te updaten als de speler in de buurt is.
-        // In een echte game zou je dit efficiënter doen, maar dit werkt prima.
-        UpdatePromptMessage();
-    }
-
-    private void UpdatePromptMessage()
-    {
-        // Zoek de inventory (je kan dit optimaliseren door het te cachen in OnTriggerEnter)
-        PlayerInventory inventory = FindFirstObjectByType<PlayerInventory>();
-
+        PlayerInventory inventory = FindObjectOfType<PlayerInventory>();
         if (inventory != null)
         {
             playerHasWeapon = inventory.HasWeapon(weaponForSale);
-
-            if (playerHasWeapon)
-            {
-                promptMessage = $"Press E to buy Ammo for {weaponForSale.weaponName} [{ammoCost}]";
-            }
-            else
-            {
-                promptMessage = $"Press E to buy {weaponForSale.weaponName} [{weaponCost}]";
-            }
+            promptMessage = playerHasWeapon 
+                ? $"Press E to buy Ammo for {weaponForSale.weaponName} [{ammoCost}]" 
+                : $"Press E to buy {weaponForSale.weaponName} [{weaponCost}]";
         }
     }
 
     public override void OnInteract(PlayerInventory inventory)
     {
-        // 1. Check of we het wapen al hebben
-        bool alreadyHasWeapon = inventory.HasWeapon(weaponForSale);
+        if (weaponForSale == null) return;
 
-        // 2. Bepaal de prijs
+        bool alreadyHasWeapon = inventory.HasWeapon(weaponForSale);
         int currentPrice = alreadyHasWeapon ? ammoCost : weaponCost;
 
-        // 3. Check Punten (via de Singleton die je hebt gestuurd)
-        if (PlayerStats.Instance.points >= currentPrice)
+        if (PlayerStats.Instance != null && PlayerStats.Instance.points >= currentPrice)
         {
-            // 4. Betaal
             PlayerStats.Instance.RemovePoints(currentPrice);
-
-            // 5. Geef Item
-            if (alreadyHasWeapon)
-            {
-                inventory.RefillAmmo(weaponForSale);
-                Debug.Log("Ammo Refilled!");
-            }
-            else
-            {
-                inventory.PickupWeapon(weaponForSale);
-                Debug.Log($"Je kocht een {weaponForSale.weaponName}!");
-            }
-        }
-        else
-        {
-            Debug.Log("Niet genoeg punten!");
+            if (alreadyHasWeapon) inventory.RefillAmmo(weaponForSale);
+            else inventory.PickupWeapon(weaponForSale);
         }
     }
 }
