@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 823e19a26cd2e964b85e1ad7988cc4ff, type: 3}
+  m_Name: rpg
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  weaponName: RPG
+  weaponType: 4
+  weaponPrefab: {fileID: 6423716519150866135, guid: 7b2e3be01e7b5084da20099656375d19, type: 3}
+  maxAmmo: 35
+  magazineSize: 1
+  damage: 250
+  fireRate: 1
+  reloadTime: 5
+  projectilePrefab: {fileID: 8614185746888270667, guid: 982fa000279ad144bae035c9fbd7a4a5, type: 3}
+  effects: []
+  weaponIcon: {fileID: 21300000, guid: cabdb5c261d11004eae781db68cc03bf, type: 3}

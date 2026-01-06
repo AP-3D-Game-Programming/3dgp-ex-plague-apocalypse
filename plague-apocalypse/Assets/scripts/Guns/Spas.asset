@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   weaponName: Spas
   weaponType: 3
-  weaponPrefab: {fileID: 919132149155446097, guid: 6081a6bba97c80541bd7abe89d67ba0e, type: 3}
+  weaponPrefab: {fileID: 5789492547346792982, guid: 9b88609d0af46cd48aeecdb2a860d35b, type: 3}
   maxAmmo: 32
   magazineSize: 8
   damage: 10
   fireRate: 1.5
   reloadTime: 3.5
-  projectilePrefab: {fileID: 8530781396959957148, guid: f99f3837a24927f4285bf46ce70fe771, type: 3}
+  projectilePrefab: {fileID: 558560356354663943, guid: c2b443950b2da494ead3bc0f54339b96, type: 3}
   effects: []
+  weaponIcon: {fileID: 0}

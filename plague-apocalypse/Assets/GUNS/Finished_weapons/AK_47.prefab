@@ -5006,6 +5006,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 706ed832550e1004d81dbea2cd9d0f71, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4544392467045434044}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 706ed832550e1004d81dbea2cd9d0f71, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2683277151257665168}
   m_SourcePrefab: {fileID: 100100000, guid: 706ed832550e1004d81dbea2cd9d0f71, type: 3}
 --- !u!1 &3665789407287347033 stripped
 GameObject:
@@ -5033,6 +5036,22 @@ MonoBehaviour:
   reloadTime: 2.5
   fireRate: 0.1
   currentAmmo: 0
+--- !u!114 &2683277151257665168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3665789407287347033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f608183656108b44e810cfd6eca60de9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponController
+  weaponInstance:
+    data: {fileID: 11400000, guid: 25cd1402d97a72844ae4dea506d95472, type: 2}
+    currentClip: 30
+    currentReserve: 100
 --- !u!4 &4149029837730799075 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 706ed832550e1004d81dbea2cd9d0f71, type: 3}

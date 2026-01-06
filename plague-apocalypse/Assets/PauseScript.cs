@@ -10,7 +10,10 @@ public class PauseMenu : MonoBehaviour
     public GameObject pauseRoot;
     public GameObject mainPanel;
     public GameObject settingsPanel;
+    private const string JumpscareKey = "JumpscaresEnabled";
 
+    [Header("Jumpscare Settings")]
+    public Toggle jumpscareToggle;
     [Header("Settings UI")]
     public Slider volumeSlider;
     public TMP_Dropdown qualityDropdown;
@@ -36,6 +39,7 @@ public class PauseMenu : MonoBehaviour
     private PlayerStats playerStats;
     public Sprite[] difficultyIcons;
     public string[] difficultyNames;
+
     void Start()
     {
 
@@ -181,6 +185,11 @@ public class PauseMenu : MonoBehaviour
             playerScript.sensitivity = sensitivity;
         }
     }
+    public void SetJumpscares(bool isEnabled)
+    {
+        PlayerPrefs.SetInt(JumpscareKey, isEnabled ? 1 : 0);
+        PlayerPrefs.Save();
+    }
     private void LoadCurrentSettings()
     {
         // Volume
@@ -222,6 +231,14 @@ public class PauseMenu : MonoBehaviour
             {
                 sensitivityValueText.text = savedSens.ToString("F1");
             }
+        }
+        // jumpscare
+        if (jumpscareToggle != null)
+        {
+            int jmpState = PlayerPrefs.GetInt(JumpscareKey, 1); // Default to ON (1)
+            jumpscareToggle.isOn = (jmpState == 1);
+            jumpscareToggle.onValueChanged.RemoveAllListeners();
+            jumpscareToggle.onValueChanged.AddListener(SetJumpscares);
         }
     }
     private void UpdateInGameStatsUI()

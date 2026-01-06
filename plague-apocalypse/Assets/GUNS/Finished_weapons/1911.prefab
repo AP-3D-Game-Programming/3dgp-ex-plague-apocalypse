@@ -5005,6 +5005,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cac3a47b7d6b22040822740989d8c392, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6102455522218859623}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cac3a47b7d6b22040822740989d8c392, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3319092574911774676}
     - targetCorrespondingSourceObject: {fileID: 5877832441175859513, guid: cac3a47b7d6b22040822740989d8c392, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3164456648607614915}
@@ -5081,10 +5084,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::M1911Gun
   muzzlePoint: {fileID: 3478524026083354047}
-  bulletPrefab: {fileID: 639195908317398632, guid: 357bb29f363cf6945b5f1b4d71884ce1, type: 3}
-  bulletForce: 400
   muzzleFlash: {fileID: 3254282216794799367}
-  magazineSize: 7
-  reserveAmmo: 35
-  reloadTime: 1.5
-  currentAmmo: 0
+--- !u!114 &3319092574911774676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9090385634532541132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f608183656108b44e810cfd6eca60de9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponController
+  weaponInstance:
+    data: {fileID: 11400000, guid: bbfc435c934bd34449d167cb30f7ddc8, type: 2}
+    currentClip: 30
+    currentReserve: 120

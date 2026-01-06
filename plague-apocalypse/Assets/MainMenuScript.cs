@@ -19,6 +19,7 @@ public class MainMenuScript : MonoBehaviour
     public Toggle motionBlurToggle;
     public Slider sensitivitySlider;
     public TMP_Text sensitivityValueText;
+    private const string JumpscareKey = "JumpscaresEnabled";
     [Header("Lighting")]
     public Light mainDirectionalLight;
     public Color[] difficultyColors;
@@ -42,6 +43,7 @@ public class MainMenuScript : MonoBehaviour
     private const string QualityPrefKey = "QualitySetting";
     private const string MotionBlurKey = "MotionBlur";
     private const string SensitivityKey = "MouseSensitivity";
+    public Toggle jumpscareToggle;
     void Start()
     {
         if (difficultyPopup != null) difficultyPopup.SetActive(false);
@@ -61,7 +63,11 @@ public class MainMenuScript : MonoBehaviour
         UpdateDifficultyIcon();
         ReturnToMain();
     }
-
+    public void SetJumpscares(bool isEnabled)
+    {
+        PlayerPrefs.SetInt(JumpscareKey, isEnabled ? 1 : 0);
+        PlayerPrefs.Save();
+    }
     public void PlayGame()
     {
         SceneManager.LoadScene(gameSceneName);
@@ -117,6 +123,14 @@ public class MainMenuScript : MonoBehaviour
 
     private void LoadSettings()
     {
+        int defaultJmp = 1;
+        int savedJmp = PlayerPrefs.GetInt(JumpscareKey, defaultJmp);
+        if (jumpscareToggle != null)
+        {
+            jumpscareToggle.isOn = (savedJmp == 1);
+            jumpscareToggle.onValueChanged.RemoveAllListeners(); // Clean up first
+            jumpscareToggle.onValueChanged.AddListener(SetJumpscares);
+        }
         float savedVolume = PlayerPrefs.GetFloat(VolumePrefKey, 1f);
         if (volumeSlider != null)
         {

@@ -1,106 +1,106 @@
-using UnityEngine;
-using System.Collections;
+// using UnityEngine;
+// using System.Collections;
 
-public class DesertEagleGun : MonoBehaviour
-{
-    [Header("Projectile Settings")]
-    public Transform muzzlePoint;
-    public GameObject projectilePrefab;
-    public float projectileForce = 500f; // Erg snelle, krachtige kogel
+// public class DesertEagleGun : MonoBehaviour
+// {
+//     [Header("Projectile Settings")]
+//     public Transform muzzlePoint;
+//     public GameObject projectilePrefab;
+//     public float projectileForce = 500f; // Erg snelle, krachtige kogel
 
-    [Header("Effects")]
-    public ParticleSystem muzzleFlash;
+//     [Header("Effects")]
+//     public ParticleSystem muzzleFlash;
 
-    private bool isReloading = false;
-    private Animator animator;
-    private float nextTimeToFire = 0f;
-    private WeaponController weaponController;
+//     private bool isReloading = false;
+//     private Animator animator;
+//     private float nextTimeToFire = 0f;
+//     private WeaponController weaponController;
 
-    void Start()
-    {
-        animator = GetComponent<Animator>();
-        weaponController = GetComponent<WeaponController>();
-        
-        if (weaponController == null)
-        {
-            Debug.LogError("DesertEagleGun: WeaponController niet gevonden!");
-        }
-    }
+//     void Start()
+//     {
+//         animator = GetComponent<Animator>();
+//         weaponController = GetComponent<WeaponController>();
 
-    void Update()
-    {
-        if (weaponController == null || isReloading)
-            return;
+//         if (weaponController == null)
+//         {
+//             Debug.LogError("DesertEagleGun: WeaponController niet gevonden!");
+//         }
+//     }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            TryReload();
-        }
+//     void Update()
+//     {
+//         if (weaponController == null || isReloading)
+//             return;
 
-        // SEMI-AUTOMATISCH: We gebruiken GetButtonDown
-        if (Input.GetButtonDown("Fire1")) 
-        {
-            if (Time.time >= nextTimeToFire && weaponController.HasAmmo())
-            {
-                Shoot();
-                // De fire rate voor een Deagle is laag (bijv. 2 of 3 schoten per seconde)
-                nextTimeToFire = Time.time + (1f / weaponController.GetFireRate());
-            }
-        }
-    }
+//         if (Input.GetKeyDown(KeyCode.R))
+//         {
+//             TryReload();
+//         }
 
-    void Shoot()
-    {
-        if (projectilePrefab != null && muzzlePoint != null)
-        {
-            Vector3 shootDir = muzzlePoint.forward;
-            GameObject projObj = Instantiate(projectilePrefab, muzzlePoint.position, Quaternion.LookRotation(shootDir));
+//         // SEMI-AUTOMATISCH: We gebruiken GetButtonDown
+//         if (Input.GetButtonDown("Fire1")) 
+//         {
+//             if (Time.time >= nextTimeToFire && weaponController.HasAmmo())
+//             {
+//                 Shoot();
+//                 // De fire rate voor een Deagle is laag (bijv. 2 of 3 schoten per seconde)
+//                 nextTimeToFire = Time.time + (1f / weaponController.GetFireRate());
+//             }
+//         }
+//     }
 
-            Projectile proj = projObj.GetComponent<Projectile>();
-            if (proj != null)
-            {
-                proj.Initialize(
-                    weaponController.GetDamage(),
-                    weaponController.weaponInstance.data.weaponType,
-                    weaponController.GetEffects()
-                );
-            }
+//     void Shoot()
+//     {
+//         if (projectilePrefab != null && muzzlePoint != null)
+//         {
+//             Vector3 shootDir = muzzlePoint.forward;
+//             GameObject projObj = Instantiate(projectilePrefab, muzzlePoint.position, Quaternion.LookRotation(shootDir));
 
-            Rigidbody rb = projObj.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                // Is Kinematic op de prefab + linearVelocity voorkomt bouncen
-                rb.linearVelocity = shootDir * projectileForce;
-            }
-        }
+//             Projectile proj = projObj.GetComponent<Projectile>();
+//             if (proj != null)
+//             {
+//                 proj.Initialize(
+//                     weaponController.GetDamage(),
+//                     weaponController.weaponInstance.data.weaponType,
+//                     weaponController.GetEffects()
+//                 );
+//             }
 
-        weaponController.ConsumeAmmo();
+//             Rigidbody rb = projObj.GetComponent<Rigidbody>();
+//             if (rb != null)
+//             {
+//                 // Is Kinematic op de prefab + linearVelocity voorkomt bouncen
+//                 rb.linearVelocity = shootDir * projectileForce;
+//             }
+//         }
 
-        if (muzzleFlash != null) muzzleFlash.Play();
+//         weaponController.ConsumeAmmo();
 
-        if (animator != null)
-        {
-            // Zorg voor een krachtige terugslag-animatie genaamd "Deagle_Shoot"
-            animator.Play("Deagle_Shoot", 0, 0f); 
-        }
-    }
+//         if (muzzleFlash != null) muzzleFlash.Play();
 
-    void TryReload()
-    {
-        if (weaponController.CanReload())
-        {
-            StartCoroutine(ReloadCoroutine());
-        }
-    }
+//         if (animator != null)
+//         {
+//             // Zorg voor een krachtige terugslag-animatie genaamd "Deagle_Shoot"
+//             animator.Play("Deagle_Shoot", 0, 0f); 
+//         }
+//     }
 
-    IEnumerator ReloadCoroutine()
-    {
-        isReloading = true;
-        Debug.Log("Desert Eagle: Herladen...");
+//     void TryReload()
+//     {
+//         if (weaponController.CanReload())
+//         {
+//             StartCoroutine(ReloadCoroutine());
+//         }
+//     }
 
-        yield return new WaitForSeconds(weaponController.GetReloadTime());
+//     IEnumerator ReloadCoroutine()
+//     {
+//         isReloading = true;
+//         Debug.Log("Desert Eagle: Herladen...");
 
-        weaponController.RefillClip();
-        isReloading = false;
-    }
-}
+//         yield return new WaitForSeconds(weaponController.GetReloadTime());
+
+//         weaponController.RefillClip();
+//         isReloading = false;
+//     }
+// }

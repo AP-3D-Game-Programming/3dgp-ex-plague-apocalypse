@@ -468,7 +468,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   currentState: 0
   attackRange: 500
-  maxHealth: 1000
+  maxHealth: 1000000
   animator: {fileID: -5066309858474983978}
   hoverHeight: 8
   normalMoveSpeed: 5
@@ -492,7 +492,7 @@ MonoBehaviour:
   phaseTwoDamageMultiplier: 0.35
   healAmountRatio: 0.05
   shieldAmountRatio: 0.1
-  healAttackCooldown: 35
+  healAttackCooldown: 30
   spammerDuration: 10
   beamSpins: 10
   meteorSpamCount: 50
@@ -538,7 +538,7 @@ MonoBehaviour:
   phaseTwoAura: {fileID: 4670487896288106208}
   ambientMusicSource: {fileID: 0}
   bossMusicSource: {fileID: 8300000, guid: 8e1410990c3f23f46a6eb9cfb4ae049c, type: 3}
-  phaseTwoMusic: {fileID: 8300000, guid: 6fd468ad9ce78a5418196475682a0e0b, type: 3}
+  phaseTwoMusic: {fileID: 8300000, guid: c26c8fda721b6f843a472942a2f28bb2, type: 3}
   pointsOnDeath: 676767
   roundManager: {fileID: 0}
   timeStopPityThreshold: 5

@@ -66,13 +66,20 @@ public class FINALLBOSSSUMMONER : MonoBehaviour
     {
         hasTriggered = true;
         if (promptUI != null) promptUI.SetActive(false);
+
+        // Stop lower priority music (Ambient/MiniBoss)
         if (MusicManager.Instance != null)
         {
+            MusicManager.Instance.StopRequest(0);
             MusicManager.Instance.StopRequest(1);
         }
+
+        // START THE BOSS MUSIC (Priority 2, Louder Volume: 0.8f)
         if (MusicManager.Instance != null && bossMusic != null)
         {
-            MusicManager.Instance.ForceMusic(bossMusic, 2);
+            // We use RequestMusic instead of ForceMusic to avoid breaking the logic
+            // The 0.8f makes it much louder than the default 0.3f
+            MusicManager.Instance.RequestMusic(bossMusic, 2, 0.8f);
         }
 
         // 1. FREEZE THE GAME
@@ -85,12 +92,12 @@ public class FINALLBOSSSUMMONER : MonoBehaviour
         // 3. START DIALOGUE
         StartCoroutine(DialogueRoutine());
 
+        // Wait using Realtime because TimeScale is 0
         yield return new WaitForSecondsRealtime(3.5f);
 
         // --- TELEPORT ---
         if (cutsceneBossObject != null && teleportTarget != null)
         {
-            // Move Boss
             cutsceneBossObject.position = teleportTarget.position;
             cutsceneBossObject.rotation = teleportTarget.rotation;
             if (teleportVFX != null)
@@ -107,12 +114,10 @@ public class FINALLBOSSSUMMONER : MonoBehaviour
         if (camera1 != null) camera1.SetActive(false);
         if (camera2 != null) camera2.SetActive(true);
 
-        yield return new WaitForSecondsRealtime(18.0f);
-
-        // --- WAIT FOR DIALOGUE TO FINISH ---
+        // Wait for the dialogue loop to finish
         while (!dialogueIsFinished)
         {
-            yield return null;
+            yield return null; // This works even at Time.timeScale = 0
         }
 
         // 5. UNFREEZE & CLEANUP

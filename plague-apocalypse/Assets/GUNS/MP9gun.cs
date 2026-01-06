@@ -1,106 +1,106 @@
-using UnityEngine;
-using System.Collections;
+// using UnityEngine;
+// using System.Collections;
 
-public class MP9gun : MonoBehaviour
-{
-    [Header("Projectile Settings")]
-    public Transform muzzlePoint;
-    public GameObject projectilePrefab;
-    public float projectileForce = 300f; 
+// public class MP9gun : MonoBehaviour
+// {
+//     [Header("Projectile Settings")]
+//     public Transform muzzlePoint;
+//     public GameObject projectilePrefab;
+//     public float projectileForce = 300f; 
 
-    [Header("Effects")]
-    public ParticleSystem muzzleFlash;
+//     [Header("Effects")]
+//     public ParticleSystem muzzleFlash;
 
-    private bool isReloading = false;
-    private Animator animator;
-    private float nextTimeToFire = 0f;
-    private WeaponController weaponController;
+//     private bool isReloading = false;
+//     private Animator animator;
+//     private float nextTimeToFire = 0f;
+//     private WeaponController weaponController;
 
-    void Start()
-    {
-        animator = GetComponent<Animator>();
-        weaponController = GetComponent<WeaponController>();
-        
-        if (weaponController == null)
-        {
-            Debug.LogError("MP9gun: WeaponController component niet gevonden op dit object!");
-        }
-    }
+//     void Start()
+//     {
+//         animator = GetComponent<Animator>();
+//         weaponController = GetComponent<WeaponController>();
 
-    void Update()
-    {
-        if (weaponController == null || isReloading)
-            return;
+//         if (weaponController == null)
+//         {
+//             Debug.LogError("MP9gun: WeaponController component niet gevonden op dit object!");
+//         }
+//     }
 
-        // Herladen
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            TryReload();
-        }
+//     void Update()
+//     {
+//         if (weaponController == null || isReloading)
+//             return;
 
-        // Volautomatisch schieten (GetButton houdt de muisknop ingedrukt)
-        if (Input.GetButton("Fire1"))
-        {
-            if (Time.time >= nextTimeToFire && weaponController.HasAmmo())
-            {
-                Shoot();
-                // MP9 vuursnelheid is erg hoog
-                nextTimeToFire = Time.time + (1f / weaponController.GetFireRate());
-            }
-        }
-    }
+//         // Herladen
+//         if (Input.GetKeyDown(KeyCode.R))
+//         {
+//             TryReload();
+//         }
 
-    void Shoot()
-    {
-        if (projectilePrefab != null && muzzlePoint != null)
-        {
-            Vector3 shootDir = muzzlePoint.forward;
-            GameObject projObj = Instantiate(projectilePrefab, muzzlePoint.position, Quaternion.LookRotation(shootDir));
+//         // Volautomatisch schieten (GetButton houdt de muisknop ingedrukt)
+//         if (Input.GetButton("Fire1"))
+//         {
+//             if (Time.time >= nextTimeToFire && weaponController.HasAmmo())
+//             {
+//                 Shoot();
+//                 // MP9 vuursnelheid is erg hoog
+//                 nextTimeToFire = Time.time + (1f / weaponController.GetFireRate());
+//             }
+//         }
+//     }
 
-            Projectile proj = projObj.GetComponent<Projectile>();
-            if (proj != null)
-            {
-                proj.Initialize(
-                    weaponController.GetDamage(),
-                    weaponController.weaponInstance.data.weaponType,
-                    weaponController.GetEffects()
-                );
-            }
+//     void Shoot()
+//     {
+//         if (projectilePrefab != null && muzzlePoint != null)
+//         {
+//             Vector3 shootDir = muzzlePoint.forward;
+//             GameObject projObj = Instantiate(projectilePrefab, muzzlePoint.position, Quaternion.LookRotation(shootDir));
 
-            Rigidbody rb = projObj.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                // Gebruik linearVelocity voor consistente snelheid zonder bouncen
-                rb.linearVelocity = shootDir * projectileForce;
-            }
-        }
+//             Projectile proj = projObj.GetComponent<Projectile>();
+//             if (proj != null)
+//             {
+//                 proj.Initialize(
+//                     weaponController.GetDamage(),
+//                     weaponController.weaponInstance.data.weaponType,
+//                     weaponController.GetEffects()
+//                 );
+//             }
 
-        weaponController.ConsumeAmmo();
+//             Rigidbody rb = projObj.GetComponent<Rigidbody>();
+//             if (rb != null)
+//             {
+//                 // Gebruik linearVelocity voor consistente snelheid zonder bouncen
+//                 rb.linearVelocity = shootDir * projectileForce;
+//             }
+//         }
 
-        if (muzzleFlash != null) muzzleFlash.Play();
+//         weaponController.ConsumeAmmo();
 
-        if (animator != null)
-        {
-            animator.Play("MP9_Shoot", 0, 0f);
-        }
-    }
+//         if (muzzleFlash != null) muzzleFlash.Play();
 
-    void TryReload()
-    {
-        if (weaponController.CanReload())
-        {
-            StartCoroutine(ReloadCoroutine());
-        }
-    }
+//         if (animator != null)
+//         {
+//             animator.Play("MP9_Shoot", 0, 0f);
+//         }
+//     }
 
-    IEnumerator ReloadCoroutine()
-    {
-        isReloading = true;
-        Debug.Log("MP9: Herladen...");
+//     void TryReload()
+//     {
+//         if (weaponController.CanReload())
+//         {
+//             StartCoroutine(ReloadCoroutine());
+//         }
+//     }
 
-        yield return new WaitForSeconds(weaponController.GetReloadTime());
+//     IEnumerator ReloadCoroutine()
+//     {
+//         isReloading = true;
+//         Debug.Log("MP9: Herladen...");
 
-        weaponController.RefillClip();
-        isReloading = false;
-    }
-}
+//         yield return new WaitForSeconds(weaponController.GetReloadTime());
+
+//         weaponController.RefillClip();
+//         isReloading = false;
+//     }
+// }

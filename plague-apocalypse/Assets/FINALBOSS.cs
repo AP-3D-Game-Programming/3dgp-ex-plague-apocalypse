@@ -11,7 +11,7 @@ public class FINALLBOSS : MonoBehaviour
 
     [Header("General Settings")]
     public float attackRange = 25f;
-    public int maxHealth = 1000;
+    public int maxHealth = 10000;
     public Animator animator; // Link your Animator here!
 
     [Header("Movement (Erratic)")]
@@ -42,11 +42,11 @@ public class FINALLBOSS : MonoBehaviour
     public float timeSlowFactor = 0.05f; // Game slows to 5% speed
     public Color timeStopColor = Color.cyan; // Optional: change material color
     [Header("Phase Settings (NEW)")]
-    public float phaseTransitionHealthRatio = 0.5f; // 50% HP threshold (500/1000)
+    public float phaseTransitionHealthRatio = 0.3f; // 50% HP threshold (500/1000)
     [Tooltip("Damage reduction for Phase 1 (1.5 means 50% damage bonus to player)")]
-    public float phaseOneDamageMultiplier = 1.5f; // 1.5x damage taken (Negative reduction)
+    public float phaseOneDamageMultiplier = 10f; // 1.5x damage taken (Negative reduction)
     [Tooltip("Damage reduction for Phase 2 (0.9 means 10% damage reduction)")]
-    public float phaseTwoDamageMultiplier = 0.9f; // 0.9x damage taken
+    public float phaseTwoDamageMultiplier = 0.3f; // 0.9x damage taken
 
     private int currentPhase = 1;
 
@@ -64,7 +64,7 @@ public class FINALLBOSS : MonoBehaviour
     public float rocketShotInterval = 0.2f; // How often to shoot rockets during the ult
     [Header("DOOMSDAY (Phase 2)")]
 
-    public float doomsdayDuration = 600f;
+    public float doomsdayDuration = 300f;
     public GameObject doomsdayOrbPrefab;
     [System.Serializable]
     public struct DialogueLine
@@ -787,17 +787,16 @@ public class FINALLBOSS : MonoBehaviour
             audioSource.PlayOneShot(phaseTransitionSound, 3f);
         }
 
-        // 7. START ACTUAL PHASE 2 MUSIC
-        if (MusicManager.Instance != null && phaseTwoMusic != null)
-        {
-            MusicManager.Instance.RequestMusic(phaseTwoMusic, 2);
-        }
 
         if (BossUI.Instance != null)
         {
             BossUI.Instance.TriggerPhase2Visuals();
         }
-        yield return new WaitForSeconds(3f);
+        if (MusicManager.Instance != null && phaseTwoMusic != null)
+        {
+            MusicManager.Instance.RequestMusic(phaseTwoMusic, 2, 3.0f);
+        }
+        yield return new WaitForSeconds(2f);
 
         // 9. RESUME COMBAT
         if (phaseTwoAura != null) phaseTwoAura.SetActive(true);
@@ -806,31 +805,43 @@ public class FINALLBOSS : MonoBehaviour
     }
     IEnumerator DoomsdayCountdownRoutine()
     {
+
         float timer = doomsdayDuration;
         bool warningShown = false;
 
-        // 1. Initial Dialogue (ID 0)
+        // 1. Initial Dialogue
         StartCoroutine(PlayDialogue(phase2StartDialogue, 0));
 
         while (timer > 0)
         {
             if (currentState == BossState.Dead) yield break;
 
-            timer -= Time.deltaTime;
+            // FIX: Use unscaledDeltaTime to count real-world seconds
+            timer -= Time.unscaledDeltaTime;
 
             if (BossUI.Instance != null)
             {
-                float minutes = Mathf.FloorToInt(timer / 60);
-                float seconds = Mathf.FloorToInt(timer % 60);
-                BossUI.Instance.SetTimer(string.Format("{0:00}:{1:00}", minutes, seconds), (timer <= 60f) ? Color.red : Color.white);
+                // --- FIXED TIMER CALCULATION ---
+                float displayTimer = Mathf.Max(0, timer);
+                int minutes = Mathf.FloorToInt(displayTimer / 60);
+                int seconds = Mathf.FloorToInt(displayTimer % 60);
+                // Multiply by 100 to get 2-digit milliseconds
+                int milliseconds = Mathf.FloorToInt((displayTimer * 100f) % 100);
+
+                // Passing 3 arguments now: minutes {0}, seconds {1}, and milliseconds {2}
+                string timeString = string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
+
+                BossUI.Instance.SetTimer(timeString, (timer <= 60f) ? Color.red : Color.white);
             }
             float panicLevel = 1f - (timer / doomsdayDuration);
             BossUI.Instance.UpdateTimerShake(panicLevel);
+
             if (timer <= 60f && !warningShown)
             {
                 warningShown = true;
                 StartCoroutine(PlayDialogue(warningDialogue, 1));
             }
+
 
             yield return null;
         }
@@ -903,7 +914,6 @@ public class FINALLBOSS : MonoBehaviour
         if (doomsdayOrbPrefab != null)
             orb = Instantiate(doomsdayOrbPrefab, transform.position, Quaternion.identity);
 
-        // ... etc (rest of your orb growing code) ...
         float wipeDuration = 5f;
         float t = 0f;
         while (t < wipeDuration)

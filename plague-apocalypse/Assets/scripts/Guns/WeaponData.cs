@@ -23,4 +23,6 @@ public class WeaponData : ScriptableObject
 
     [Header("Effects")]
     public List<BulletEffect> effects;
+    [Header("UI")]
+    public Sprite weaponIcon;
 }

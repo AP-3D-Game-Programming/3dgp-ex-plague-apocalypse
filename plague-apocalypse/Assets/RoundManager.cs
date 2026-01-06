@@ -255,7 +255,7 @@ public class RoundManager : MonoBehaviour
         UpdateZombiesUI();
         if (audioSource != null && roundStartSound != null)
         {
-            audioSource.PlayOneShot(roundStartSound);
+            audioSource.PlayOneShot(roundStartSound, 0.5f);
         }
         SpawnQueuedUnits();
         bool elitesPending = true;
@@ -453,7 +453,7 @@ public class RoundManager : MonoBehaviour
             UpdateRoundUI();
             if (audioSource != null && roundCompleteSound != null)
             {
-                audioSource.PlayOneShot(roundCompleteSound);
+                audioSource.PlayOneShot(roundCompleteSound, 0.5f);
             }
             StartCoroutine(RoundFlash());
             StartCoroutine(ShowCardOptions());
@@ -687,7 +687,7 @@ public class RoundManager : MonoBehaviour
         }
     }
 
-    // --- NEW FUNCTION: TRY TO SPAWN ONE FROM QUOTA ---
+
     bool AttemptSpawnEliteFromQuota(EliteType elite)
     {
         if (!eliteRoundQuota.ContainsKey(elite) || eliteRoundQuota[elite] <= 0) return false;

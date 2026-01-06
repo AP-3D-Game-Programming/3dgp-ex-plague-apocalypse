@@ -5113,6 +5113,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5789492547347226166}
   - component: {fileID: 4356413856044559252}
+  - component: {fileID: -61793778281657035}
   m_Layer: 0
   m_Name: shotgun_double_barrel
   m_TagString: Untagged
@@ -5162,3 +5163,19 @@ MonoBehaviour:
   bulletsPerShot: 10
   spreadRadius: 5
   currentAmmo: 0
+--- !u!114 &-61793778281657035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5789492547346792982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f608183656108b44e810cfd6eca60de9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponController
+  weaponInstance:
+    data: {fileID: 11400000, guid: 6fe91b11f826f3747b0db5c31f3d9601, type: 2}
+    currentClip: 30
+    currentReserve: 100

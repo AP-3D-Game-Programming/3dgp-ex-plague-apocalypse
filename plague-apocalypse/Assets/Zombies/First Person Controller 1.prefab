@@ -926,7 +926,6 @@ GameObject:
   - component: {fileID: 7201043070242177366}
   - component: {fileID: 3966835343433180167}
   - component: {fileID: 6905095473394296388}
-  - component: {fileID: 1896726431239413577}
   m_Layer: 0
   m_Name: First Person Controller 1
   m_TagString: Player
@@ -1041,6 +1040,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   healthDisplayManager: {fileID: 0}
+  damageOverlay: {fileID: 0}
+  damageFlashSpeed: 2
+  maxOverlayAlpha: 0.7
   maxHealth: 100
   currentHealth: 0
   regenRate: 5
@@ -1110,8 +1112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d8c8c3fb1a446d439b6849448ef3e46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
-  weapons:
-  - {fileID: 11400000, guid: 74aa92b58b0b68f4fbd461c8e4ab9ae8, type: 2}
+  startingWeaponsData: []
   weaponHolder: {fileID: 3525841527417452890}
   ammoHUD: {fileID: 0}
 --- !u!114 &6905095473394296388
@@ -1130,18 +1131,6 @@ MonoBehaviour:
   interactLayers:
     serializedVersion: 2
     m_Bits: 512
---- !u!114 &1896726431239413577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6336719980203926188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2657af3b9212694aaaccc61623a1954, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerShooting
 --- !u!1 &6421581890635486605
 GameObject:
   m_ObjectHideFlags: 0
@@ -1330,7 +1319,7 @@ Transform:
   m_GameObject: {fileID: 7944476757790440562}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.488, z: 0}
+  m_LocalPosition: {x: 0, y: -0.487, z: 0.548}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

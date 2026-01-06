@@ -5103,7 +5103,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 83a5076ed750ef746bf1abcbada77ae6, type: 3}
       propertyPath: m_Name
-      value: Mauser_98K 1
+      value: Werkende_sniper
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5127,6 +5127,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 83a5076ed750ef746bf1abcbada77ae6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8189358259814508207}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 83a5076ed750ef746bf1abcbada77ae6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5430881916117616741}
   m_SourcePrefab: {fileID: 100100000, guid: 83a5076ed750ef746bf1abcbada77ae6, type: 3}
 --- !u!1 &263994574531374477 stripped
 GameObject:
@@ -5169,6 +5172,22 @@ MonoBehaviour:
   reloadTime: 4
   fireRate: 1.5
   currentAmmo: 0
+--- !u!114 &5430881916117616741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263994574531374477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f608183656108b44e810cfd6eca60de9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponController
+  weaponInstance:
+    data: {fileID: 11400000, guid: e8fef51e8263433469aefb459d9ba37c, type: 2}
+    currentClip: 30
+    currentReserve: 100
 --- !u!4 &640132397716928311 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 83a5076ed750ef746bf1abcbada77ae6, type: 3}

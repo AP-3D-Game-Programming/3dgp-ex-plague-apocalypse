@@ -12,15 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 823e19a26cd2e964b85e1ad7988cc4ff, type: 3}
   m_Name: M1911
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  weaponName: 
-  isAutomatic: 0
-  weaponPrefab: {fileID: 0}
-  muzzleFlashPrefab: {fileID: 0}
-  effects: []
-  projectilePrefab: {fileID: 0}
+  weaponName: M1911
   weaponType: 0
-  maxAmmo: 0
-  magazineSize: 0
-  damage: 0
-  fireRate: 0
-  reloadTime: 0
+  weaponPrefab: {fileID: 9090385634532541132, guid: f86fcb20131823e42ac03749f272a70e, type: 3}
+  maxAmmo: 120
+  magazineSize: 30
+  damage: 30
+  fireRate: 1
+  reloadTime: 1
+  projectilePrefab: {fileID: 558560356354663943, guid: c2b443950b2da494ead3bc0f54339b96, type: 3}
+  effects: []
+  weaponIcon: {fileID: 0}

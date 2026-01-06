@@ -8,37 +8,41 @@ public class MusicManager : MonoBehaviour
     [Header("Audio Source")]
     public AudioSource musicSource;
     public float fadeDuration = 1.0f;
-    public float maxVolume = 0.3f;
+    public float maxVolume = 1.0f; // This is your standard default volume
 
-    // INCREASED SIZE to 11 to allow index 10
-    // 0 = Ambient
-    // 1 = MiniBoss
-    // 2 = FinalBoss
-    // 10 = Game Over (Highest)
     private AudioClip[] activeRequests = new AudioClip[11];
     private int[] priorityCounts = new int[11];
+    private float[] targetVolumes = new float[11];
+    private float currentTargetVolume;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        // Initialize all priorities to use your standard maxVolume
+        for (int i = 0; i < targetVolumes.Length; i++) targetVolumes[i] = maxVolume;
     }
 
-    public void RequestMusic(AudioClip clip, int priority)
+    // By adding "= -1f", the volume parameter becomes OPTIONAL. 
+    // If you don't provide it, it uses your default maxVolume.
+    public void RequestMusic(AudioClip clip, int priority, float customVolume = -1f)
     {
         if (priority < 0 || priority >= activeRequests.Length) return;
 
         activeRequests[priority] = clip;
         priorityCounts[priority]++;
 
-        // Clean up lower priorities if a major event starts (optional but keeps it clean)
-        // If Game Over (10) starts, we don't care about anything else.
+        // If no custom volume was provided, use the default maxVolume
+        targetVolumes[priority] = (customVolume <= 0) ? maxVolume : customVolume;
+
         if (priority == 10)
         {
             for (int i = 0; i < 10; i++)
             {
                 activeRequests[i] = null;
                 priorityCounts[i] = 0;
+                targetVolumes[i] = maxVolume;
             }
         }
 
@@ -55,6 +59,7 @@ public class MusicManager : MonoBehaviour
         {
             priorityCounts[priority] = 0;
             activeRequests[priority] = null;
+            targetVolumes[priority] = maxVolume; // Reset back to default
         }
 
         EvaluateMusic();
@@ -63,45 +68,37 @@ public class MusicManager : MonoBehaviour
     private void EvaluateMusic()
     {
         AudioClip clipToPlay = null;
+        float volumeToSet = maxVolume;
 
-        // 1. CHECK PRIORITY 10 (GAME OVER) FIRST
-        if (activeRequests[10] != null)
+        // Loop backwards to find the highest active priority
+        for (int i = 10; i >= 0; i--)
         {
-            clipToPlay = activeRequests[10];
-        }
-        // 2. Final Boss
-        else if (activeRequests[2] != null)
-        {
-            clipToPlay = activeRequests[2];
-        }
-        // 3. Mini Boss
-        else if (activeRequests[1] != null)
-        {
-            clipToPlay = activeRequests[1];
-        }
-        // 4. Ambient
-        else if (activeRequests[0] != null)
-        {
-            clipToPlay = activeRequests[0];
+            if (activeRequests[i] != null)
+            {
+                clipToPlay = activeRequests[i];
+                volumeToSet = targetVolumes[i];
+                break;
+            }
         }
 
-        if (musicSource.clip != clipToPlay)
+        // Change music if the clip is different OR if the volume target has changed
+        if (musicSource.clip != clipToPlay || currentTargetVolume != volumeToSet)
         {
+            currentTargetVolume = volumeToSet;
             StopAllCoroutines();
-            StartCoroutine(CrossfadeMusic(clipToPlay));
+            StartCoroutine(CrossfadeMusic(clipToPlay, volumeToSet));
         }
     }
 
-    IEnumerator CrossfadeMusic(AudioClip newClip)
+    IEnumerator CrossfadeMusic(AudioClip newClip, float targetVolume)
     {
-        float startVolume = maxVolume;
-
         if (musicSource.isPlaying)
         {
-            startVolume = musicSource.volume;
+            float startVol = musicSource.volume;
             while (musicSource.volume > 0)
             {
-                musicSource.volume -= startVolume * Time.deltaTime / fadeDuration;
+                // Use unscaledDeltaTime so music keeps fading if the game pauses
+                musicSource.volume -= startVol * Time.unscaledDeltaTime / fadeDuration;
                 yield return null;
             }
             musicSource.Stop();
@@ -111,29 +108,14 @@ public class MusicManager : MonoBehaviour
 
         if (newClip != null)
         {
-            musicSource.loop = true; // Ensure looping
+            musicSource.loop = true;
             musicSource.Play();
-            while (musicSource.volume < maxVolume)
+            while (musicSource.volume < targetVolume)
             {
-                musicSource.volume += maxVolume * Time.deltaTime / fadeDuration;
+                musicSource.volume += targetVolume * Time.unscaledDeltaTime / fadeDuration;
                 yield return null;
             }
         }
-        musicSource.volume = maxVolume;
-    }
-    public void ForceMusic(AudioClip clip, int priority)
-    {
-        // 1. Clear all lower priorities (optional, use if you want to 'forget' previous music)
-        for (int i = 0; i < activeRequests.Length; i++)
-        {
-            activeRequests[i] = null;
-            priorityCounts[i] = 0;
-        }
-
-        // 2. Stop any current fades and cut immediately (optional)
-        StopAllCoroutines();
-        musicSource.volume = maxVolume; // Reset volume if it was fading
-
-        RequestMusic(clip, priority);
+        musicSource.volume = targetVolume;
     }
 }

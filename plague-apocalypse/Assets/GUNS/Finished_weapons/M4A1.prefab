@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponController
   weaponInstance:
-    data: {fileID: 11400000, guid: ad9e1ff9f126b264485dc625a9a97488, type: 2}
+    data: {fileID: 11400000, guid: b85edbe332369b6408c6b26286cfd11d, type: 2}
     currentClip: 30
     currentReserve: 90
 --- !u!1 &7318249220028103106

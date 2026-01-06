@@ -129,6 +129,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   bossPrefab: {fileID: 3386578978194278678, guid: a463a2daf29976d4ca1b3a8297980a48, type: 3}
   interactionKey: 101
+  bossMusic: {fileID: 0}
+  dialogueLines:
+  - textObject: {fileID: 0}
+    duration: 4
+  - textObject: {fileID: 0}
+    duration: 3
+  - textObject: {fileID: 0}
+    duration: 6
+  - textObject: {fileID: 0}
+    duration: 6
+  - textObject: {fileID: 0}
+    duration: 6
+  cutsceneBossObject: {fileID: 0}
+  teleportTarget: {fileID: 0}
+  realBossSpawnPoint: {fileID: 0}
+  camera1: {fileID: 0}
+  camera2: {fileID: 0}
+  teleportVFX: {fileID: 0}
+  summonVFX: {fileID: 0}
   promptUI: {fileID: 1264653230206203619}
 --- !u!1 &1264653230206203619
 GameObject:

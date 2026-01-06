@@ -4,11 +4,11 @@ using UnityEngine;
 public class PlayerInventory : MonoBehaviour
 {
     [Header("Inventory Settings")]
-    [SerializeField] private List<WeaponData> startingWeaponsData = new List<WeaponData>(); 
+    [SerializeField] private List<WeaponData> startingWeaponsData = new List<WeaponData>();
     [SerializeField] private Transform weaponHolder;
     [SerializeField] private AmmoHUD ammoHUD;
-    
-    private List<WeaponInstance> weapons = new List<WeaponInstance>(); 
+
+    private List<WeaponInstance> weapons = new List<WeaponInstance>();
     private int currentWeaponIndex = 0;
     private int maxWeapons = 2;
     private GameObject currentWeaponModel;
@@ -21,9 +21,9 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
-        foreach(var data in startingWeaponsData)
+        foreach (var data in startingWeaponsData)
         {
-            PickupWeapon(data); 
+            PickupWeapon(data);
         }
     }
 
@@ -42,7 +42,7 @@ public class PlayerInventory : MonoBehaviour
     public void PickupWeapon(WeaponData newWeaponData)
     {
         WeaponInstance existing = weapons.Find(x => x.data == newWeaponData);
-        
+
         if (existing != null)
         {
             RefillAmmo(newWeaponData);
@@ -61,6 +61,7 @@ public class PlayerInventory : MonoBehaviour
             weapons[currentWeaponIndex] = newInstance;
             EquipWeapon(currentWeaponIndex);
         }
+        ammoHUD.RefreshInventory(weapons, currentWeaponIndex);
     }
 
     void EquipWeapon(int index)
@@ -80,20 +81,28 @@ public class PlayerInventory : MonoBehaviour
             return;
         }
 
-        WeaponController ctrl = currentWeaponModel.GetComponent<WeaponController>();
+        // IMPORTANT: Move the model rotation fix here if you used the "Parent Container" method
+        currentWeaponModel.transform.localPosition = Vector3.zero;
+        currentWeaponModel.transform.localRotation = Quaternion.identity;
+
+        WeaponController ctrl = currentWeaponModel.GetComponentInChildren<WeaponController>();
         if (ctrl != null)
         {
             ctrl.Initialize(instanceToEquip, effectManager);
-            ctrl.onAmmoChanged = null; 
+
+            ammoHUD.UpdateAmmoDisplay(instanceToEquip.currentClip, instanceToEquip.currentReserve);
+
+            ammoHUD.RefreshInventory(weapons, index);
+
+
+            ctrl.onAmmoChanged = null;
             ctrl.onAmmoChanged += ammoHUD.UpdateAmmoDisplay;
+
             ammoHUD.UpdateAmmoDisplay(instanceToEquip.currentClip, instanceToEquip.currentReserve);
         }
-        
-        currentWeaponModel.transform.localPosition = Vector3.zero; 
-        currentWeaponModel.transform.localRotation = Quaternion.identity;
+
         currentWeaponIndex = index;
     }
-
     public WeaponData GetCurrentWeapon()
     {
         if (weapons.Count == 0) return null;
@@ -109,11 +118,11 @@ public class PlayerInventory : MonoBehaviour
     public void RefillAmmo(WeaponData weaponToRefill)
     {
         WeaponInstance instance = weapons.Find(x => x.data == weaponToRefill);
-        if(instance != null)
+        if (instance != null)
         {
             instance.RefillFull();
-            
-            if(GetCurrentWeapon() == weaponToRefill && currentWeaponModel != null)
+
+            if (GetCurrentWeapon() == weaponToRefill && currentWeaponModel != null)
             {
                 WeaponController ctrl = currentWeaponModel.GetComponent<WeaponController>();
                 if (ctrl != null) ctrl.onAmmoChanged?.Invoke(instance.currentClip, instance.currentReserve);

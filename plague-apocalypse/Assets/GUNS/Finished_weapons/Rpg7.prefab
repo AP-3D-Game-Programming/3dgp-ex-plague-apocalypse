@@ -272,6 +272,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 99eb69af207bf7b4a89a8038800035a1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4402116813454916655}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 99eb69af207bf7b4a89a8038800035a1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8727327817506157879}
   m_SourcePrefab: {fileID: 100100000, guid: 99eb69af207bf7b4a89a8038800035a1, type: 3}
 --- !u!1 &7040781309771344921 stripped
 GameObject:
@@ -295,6 +298,22 @@ MonoBehaviour:
   _dummyKogel: {fileID: 3089741566467048867}
   _rocketPosition: {fileID: 4536307744038802932}
   _reloadTime: 3
+--- !u!114 &-8727327817506157879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7040781309771344921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f608183656108b44e810cfd6eca60de9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponController
+  weaponInstance:
+    data: {fileID: 0}
+    currentClip: 0
+    currentReserve: 0
 --- !u!4 &7709654453276718755 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 99eb69af207bf7b4a89a8038800035a1, type: 3}

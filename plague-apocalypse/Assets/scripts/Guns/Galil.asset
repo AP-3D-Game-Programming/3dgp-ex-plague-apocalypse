@@ -20,5 +20,5 @@ MonoBehaviour:
   damage: 24
   fireRate: 11
   reloadTime: 2.5
-  projectilePrefab: {fileID: 639195908317398632, guid: 12d6d2aedfebabe44be25e3b00c9961c, type: 3}
+  projectilePrefab: {fileID: 558560356354663943, guid: c2b443950b2da494ead3bc0f54339b96, type: 3}
   effects: []

@@ -91,140 +91,94 @@ public class Card : ScriptableObject
 
     public void Apply(RoundManager roundManager)
     {
-        // --- 1. APPLY PLAYER STATS ---
-        if (playerLuckBonus != 0f)
+        // --- 1. APPLY PLAYER & WEAPON STATS ---
+        // This wrapper ensures "Zombie Only" cards don't touch your guns.
+        if (target == CardTarget.Player || target == CardTarget.Both)
         {
-            roundManager.playerLuck += playerLuckBonus;
-        }
+            if (playerLuckBonus != 0f) roundManager.playerLuck += playerLuckBonus;
 
-
-        if (roundManager.playerTransform != null)
-        {
-            PlayerStats playerStats = roundManager.playerTransform.GetComponent<PlayerStats>();
-            PlayerHealth playerHealth = roundManager.playerTransform.GetComponent<PlayerHealth>();
-
-            if (playerStats != null && playerHealth != null)
+            if (roundManager.playerTransform != null)
             {
-                playerHealth.maxHealth += playerHealthBonus;
-                playerHealth.currentHealth += playerHealthBonus;
-                playerStats.lifeStealPerHit += lifeStealAmount;
+                PlayerStats playerStats = roundManager.playerTransform.GetComponent<PlayerStats>();
+                PlayerHealth playerHealth = roundManager.playerTransform.GetComponent<PlayerHealth>();
 
-                if (lifeStealAmount > 0)
-                    if (playerRegenBonus != 0f) playerHealth.regenRate += playerRegenBonus;
-
-                // Handle multipliers carefully. If the inspector says 0, we assume no change (1).
-                if (playerFireRateMultiplier > 0) playerStats.fireRate *= playerFireRateMultiplier;
-
-                playerStats.bouncingBullets |= playerBouncingBullets;
-
-                if (shotPointsMultiplier > 0) playerStats.shotPointsMultiplier *= shotPointsMultiplier;
-                if (deathPointsMultiplier > 0) playerStats.deathPointsMultiplier *= deathPointsMultiplier;
-                if (applyToSpecificType)
+                if (playerStats != null && playerHealth != null)
                 {
-                    if (playerStats.typeDamageMults.ContainsKey(targetWeaponType))
-                        playerStats.typeDamageMults[targetWeaponType] *= weaponDamageMultiplier;
+                    // Basic Health/Regen
+                    playerHealth.maxHealth += playerHealthBonus;
+                    playerHealth.currentHealth += playerHealthBonus;
+                    playerStats.lifeStealPerHit += lifeStealAmount;
+                    if (lifeStealAmount > 0 && playerRegenBonus != 0f) playerHealth.regenRate += playerRegenBonus;
 
-                    if (playerStats.typeFireRateMults.ContainsKey(targetWeaponType))
-                        playerStats.typeFireRateMults[targetWeaponType] *= weaponFireRateMultiplier;
+                    // Player specific fire rate (separate from weapon fire rate)
+                    if (playerFireRateMultiplier > 0 && playerFireRateMultiplier != 1f)
+                        playerStats.fireRate *= playerFireRateMultiplier;
+
+                    playerStats.bouncingBullets |= playerBouncingBullets;
+
+                    // Points logic
+                    if (shotPointsMultiplier > 0 && shotPointsMultiplier != 1f) playerStats.shotPointsMultiplier *= shotPointsMultiplier;
+                    if (deathPointsMultiplier > 0 && deathPointsMultiplier != 1f) playerStats.deathPointsMultiplier *= deathPointsMultiplier;
+
+                    // --- THE SNIPER VS PISTOL FIX ---
+                    if (applyToSpecificType)
+                    {
+                        // PATH A: Only update the dictionary for the specific type (e.g., Sniper).
+                        // The Pistol will check this dictionary, find no entry for "Pistol", and ignore it.
+                        if (playerStats.typeDamageMults.ContainsKey(targetWeaponType))
+                            playerStats.typeDamageMults[targetWeaponType] *= weaponDamageMultiplier;
+
+                        if (playerStats.typeFireRateMults.ContainsKey(targetWeaponType))
+                            playerStats.typeFireRateMults[targetWeaponType] *= weaponFireRateMultiplier;
+                    }
+                    else
+                    {
+                        // PATH B: Only runs if 'applyToSpecificType' is FALSE.
+                        // This updates the GLOBAL multiplier which affects ALL guns.
+                        if (weaponDamageMultiplier != 1f)
+                            playerStats.damageMultiplier *= weaponDamageMultiplier;
+
+                        if (weaponFireRateMultiplier != 1f)
+                            playerStats.fireRateMultiplier *= weaponFireRateMultiplier;
+                    }
+
+                    // Global weapon stats (Reload and Mag size usually apply to all weapons)
+                    if (weaponReloadTimeMultiplier != 1f) playerStats.reloadSpeedMultiplier *= weaponReloadTimeMultiplier;
+                    if (weaponMagSizeBonus != 0) playerStats.magazineSizeBonus += weaponMagSizeBonus;
                 }
-                else
-                {
-                    if (weaponDamageMultiplier != 1f)
-                        playerStats.damageMultiplier *= weaponDamageMultiplier;
-
-                    if (weaponFireRateMultiplier != 1f)
-                        playerStats.fireRateMultiplier *= weaponFireRateMultiplier;
-                }
-
-                if (weaponReloadTimeMultiplier != 1f)
-                    playerStats.reloadSpeedMultiplier *= weaponReloadTimeMultiplier;
-
-                if (weaponMagSizeBonus != 0)
-                    playerStats.magazineSizeBonus += weaponMagSizeBonus;
-
             }
-
         }
 
-        // --- 2. APPLY ZOMBIE STATS (SAFELY) ---
+        // --- 2. APPLY ZOMBIE STATS ---
         if (target == CardTarget.Zombies || target == CardTarget.Both)
         {
-            // Instead of looping through types, we modify the RoundManager's global multipliers.
-
-            // Example: If zombieHealthPercentIncrease is 0.1 (10%), we add that to the global multiplier
-            if (zombieHealthPercentIncrease != 0)
-            {
-                // If it was 1.0, it becomes 1.1 (10% harder)
-                roundManager.globalEnemyHealthMultiplier += zombieHealthPercentIncrease;
-            }
-
-            if (zombieSpeedPercentIncrease != 0)
-            {
-                roundManager.globalEnemySpeedMultiplier += zombieSpeedPercentIncrease;
-            }
-
-            if (zombieSpeedFlatBonus != 0)
-            {
-                roundManager.speedIncrement += zombieSpeedFlatBonus;
-            }
-
-            if (zombieFireRateBonus != 0)
-            {
-                roundManager.fireRateIncrement += zombieFireRateBonus;
-            }
+            if (zombieHealthPercentIncrease != 0) roundManager.globalEnemyHealthMultiplier += zombieHealthPercentIncrease;
+            if (zombieSpeedPercentIncrease != 0) roundManager.globalEnemySpeedMultiplier += zombieSpeedPercentIncrease;
+            if (zombieSpeedFlatBonus != 0) roundManager.speedIncrement += zombieSpeedFlatBonus;
+            if (zombieFireRateBonus != 0) roundManager.fireRateIncrement += zombieFireRateBonus;
         }
-        // --- 3. APPLY ELITE STATS (SAFELY) ---
+
+        // --- 3. APPLY ELITE STATS ---
         if (target == CardTarget.Elites || target == CardTarget.Both)
         {
-            if (eliteHealthPercentIncrease != 0)
-            {
-                roundManager.globalEliteHealthMultiplier += eliteHealthPercentIncrease;
-            }
-
-            if (eliteSpeedPercentIncrease != 0)
-            {
-                roundManager.globalEliteSpeedMultiplier += eliteSpeedPercentIncrease;
-            }
-
-            // --- APPLY NEW ABILITY MULTIPLIERS ---
-            if (eliteFireRateMultiplier > 0)
-            {
-                // Note: We use multiplication for rate/damage, not addition
-                roundManager.globalEliteFireRateMultiplier *= eliteFireRateMultiplier;
-            }
-            if (eliteDamageMultiplier > 0)
-            {
-                roundManager.globalEliteDamageMultiplier *= eliteDamageMultiplier;
-            }
-            if (elitePhase2HealthTriggerMultiplier > 0)
-            {
-                // This is a special case: a 1.0 multiplier is 1/3 health. 
-                // A card giving a "stronger" Elite might decrease this number (e.g., 0.5 for 50% health trigger).
-                // Assuming cards *decrease* this value to make elites harder (phase 2 earlier).
-                roundManager.globalElitePhase2HealthTriggerMultiplier *= elitePhase2HealthTriggerMultiplier;
-            }
-            if (elitePhase2SpeedMultiplier > 0)
-            {
-                roundManager.globalElitePhase2SpeedMultiplier *= elitePhase2SpeedMultiplier;
-            }
+            if (eliteHealthPercentIncrease != 0) roundManager.globalEliteHealthMultiplier += eliteHealthPercentIncrease;
+            if (eliteSpeedPercentIncrease != 0) roundManager.globalEliteSpeedMultiplier += eliteSpeedPercentIncrease;
+            if (eliteFireRateMultiplier > 0 && eliteFireRateMultiplier != 1f) roundManager.globalEliteFireRateMultiplier *= eliteFireRateMultiplier;
+            if (eliteDamageMultiplier > 0 && eliteDamageMultiplier != 1f) roundManager.globalEliteDamageMultiplier *= eliteDamageMultiplier;
+            if (elitePhase2HealthTriggerMultiplier > 0 && elitePhase2HealthTriggerMultiplier != 1f) roundManager.globalElitePhase2HealthTriggerMultiplier *= elitePhase2HealthTriggerMultiplier;
+            if (elitePhase2SpeedMultiplier > 0 && elitePhase2SpeedMultiplier != 1f) roundManager.globalElitePhase2SpeedMultiplier *= elitePhase2SpeedMultiplier;
         }
-        if (forceElitesNextRound > 0)
-            roundManager.ForceSpawnEliteNextRound(forceElitesNextRound);
+
+        // --- 4. SPAWNING LOGIC ---
+        if (forceElitesNextRound > 0) roundManager.ForceSpawnEliteNextRound(forceElitesNextRound);
         if (specialUnitPrefab != null && specialUnitCount > 0)
         {
-            if (spawnImmediately)
-            {
-                roundManager.SpawnSpecialUnitImmediate(specialUnitPrefab, specialUnitCount);
-            }
-            else
-            {
-
-                roundManager.QueueSpecialUnit(specialUnitPrefab, specialUnitCount);
-            }
+            if (spawnImmediately) roundManager.SpawnSpecialUnitImmediate(specialUnitPrefab, specialUnitCount);
+            else roundManager.QueueSpecialUnit(specialUnitPrefab, specialUnitCount);
         }
-        Debug.Log($"Applied Card: {cardName}");
-    }
 
+        Debug.Log($"Applied Card: {cardName} | Target: {target} | Specific Type: {(applyToSpecificType ? targetWeaponType.ToString() : "None")}");
+    }
 
 
 }

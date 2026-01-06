@@ -1,90 +1,115 @@
 using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections;
 
 public class WeaponController : MonoBehaviour
 {
-    public WeaponInstance weaponInstance;
-    private PlayerEffectManager effectManager;
-
+    private WeaponInstance instance;
+    private PlayerStats playerStats;
+    public Transform muzzlePoint;
     public Action<int, int> onAmmoChanged;
 
-    public void Initialize(WeaponInstance instance, PlayerEffectManager manager)
+    private float nextFireTime;
+    private bool isReloading;
+
+    public void Initialize(WeaponInstance weaponInstance, PlayerEffectManager effects)
     {
-        this.weaponInstance = instance;
-        this.effectManager = manager;
-        UpdateUI();
+        instance = weaponInstance;
+        // Search in parent to find the PlayerStats component
+        playerStats = GetComponentInParent<PlayerStats>();
     }
 
-    public bool HasAmmo()
+    void Update()
     {
-        return weaponInstance != null && weaponInstance.currentClip > 0;
-    }
+        if (isReloading || instance == null) return;
 
-    public bool CanReload()
-    {
-         return weaponInstance != null && 
-                weaponInstance.currentClip < weaponInstance.data.magazineSize && 
-                weaponInstance.currentReserve > 0;
-    }
-
-    public void ConsumeAmmo()
-    {
-        if (weaponInstance != null)
+        if (Input.GetButton("Fire1") && Time.time >= nextFireTime)
         {
-            weaponInstance.currentClip--;
-            UpdateUI();
+            if (instance.currentClip > 0) Shoot();
+            else StartCoroutine(Reload());
         }
+
+        if (Input.GetKeyDown(KeyCode.R) && instance.currentClip < GetMaxMagSize())
+            StartCoroutine(Reload());
     }
 
-    public void RefillClip()
+    void Shoot()
     {
-        if (weaponInstance == null) return;
+        // 1. Calculate Fire Rate (includes Global and Type-Specific)
+        nextFireTime = Time.time + (1f / GetFinalFireRate());
 
-        int needed = weaponInstance.data.magazineSize - weaponInstance.currentClip;
-        int toLoad = Mathf.Min(needed, weaponInstance.currentReserve);
+        GameObject bulletObj = Instantiate(instance.data.projectilePrefab, muzzlePoint.position, muzzlePoint.rotation);
+        Projectile projectile = bulletObj.GetComponent<Projectile>();
 
-        weaponInstance.currentReserve -= toLoad;
-        weaponInstance.currentClip += toLoad;
-        UpdateUI();
+        if (projectile != null)
+        {
+            // 2. Calculate Damage (includes Global and Type-Specific)
+            float finalDamage = GetFinalDamage();
+            projectile.Initialize(finalDamage, instance.data.weaponType, instance.data.effects);
+        }
+
+        instance.currentClip--;
+        onAmmoChanged?.Invoke(instance.currentClip, instance.currentReserve);
     }
 
-    public float GetDamage()
+    IEnumerator Reload()
     {
-        float dmg = weaponInstance.data.damage;
-        if (PlayerStats.Instance != null) 
-            dmg *= PlayerStats.Instance.GetTotalDamageMult(weaponInstance.data.weaponType);
-        return dmg;
+        isReloading = true;
+
+        // 3. Calculate Reload Time (Standard time * Multiplier)
+        // Note: Usually reload multipliers are < 1 (e.g., 0.8) to make it faster.
+        float reloadDuration = instance.data.reloadTime * (playerStats != null ? playerStats.reloadSpeedMultiplier : 1f);
+
+        yield return new WaitForSeconds(reloadDuration);
+
+        int amountNeeded = GetMaxMagSize() - instance.currentClip;
+        int amountToTake = Mathf.Min(amountNeeded, instance.currentReserve);
+
+        instance.currentClip += amountToTake;
+        instance.currentReserve -= amountToTake;
+
+        onAmmoChanged?.Invoke(instance.currentClip, instance.currentReserve);
+        isReloading = false;
     }
 
-    public float GetFireRate()
+    // --- Calculation Helpers ---
+
+    private float GetFinalDamage()
     {
-        float rate = weaponInstance.data.fireRate; 
-        if (PlayerStats.Instance != null) 
-            rate /= PlayerStats.Instance.GetTotalFireRateMult(weaponInstance.data.weaponType);
+        float damage = instance.data.damage;
+        if (playerStats == null) return damage;
+
+        // Apply Global Multiplier
+        damage *= playerStats.damageMultiplier;
+
+        // Apply Weapon-Specific Multiplier (e.g., from a "Sniper Buff" card)
+        if (playerStats.typeDamageMults.TryGetValue(instance.data.weaponType, out float typeMult))
+        {
+            damage *= typeMult;
+        }
+
+        return damage;
+    }
+
+    private float GetFinalFireRate()
+    {
+        float rate = instance.data.fireRate;
+        if (playerStats == null) return rate;
+
+        // Apply Global Multiplier
+        rate *= playerStats.fireRateMultiplier;
+
+        // Apply Weapon-Specific Multiplier
+        if (playerStats.typeFireRateMults.TryGetValue(instance.data.weaponType, out float typeMult))
+        {
+            rate *= typeMult;
+        }
+
         return rate;
     }
 
-    public float GetReloadTime()
+    private int GetMaxMagSize()
     {
-        float time = weaponInstance.data.reloadTime;
-        if (PlayerStats.Instance != null) 
-            time /= PlayerStats.Instance.reloadSpeedMultiplier;
-        return time;
-    }
-
-    public List<BulletEffect> GetEffects()
-    {
-        List<BulletEffect> allEffects = new List<BulletEffect>();
-        if (weaponInstance.data.effects != null) 
-            allEffects.AddRange(weaponInstance.data.effects);
-        if (effectManager != null) 
-            allEffects.AddRange(effectManager.GetActiveEffectsForWeapon(weaponInstance.data.weaponType));
-        return allEffects;
-    }
-
-    private void UpdateUI()
-    {
-        onAmmoChanged?.Invoke(weaponInstance.currentClip, weaponInstance.currentReserve);
+        return instance.data.magazineSize + (playerStats != null ? playerStats.magazineSizeBonus : 0);
     }
 }
