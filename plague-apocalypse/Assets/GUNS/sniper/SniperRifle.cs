@@ -5,7 +5,7 @@ public class SniperRifle : MonoBehaviour
     [Header("Bullet")]
     public Transform muzzlePoint;        // Waar de kogel uitkomt
     public GameObject bulletPrefab;      // Je bullet prefab
-    public float bulletForce = 1500f;    // Snelheid van de kogel (sniper = snel)
+    public float bulletForce = 5000f;    // Snelheid van de kogel (sniper = snel)
 
     [Header("Effects")]
     public ParticleSystem muzzleFlash;   // Wijs hier je "muzzle_flash" ParticleSystem toe
@@ -83,14 +83,33 @@ public class SniperRifle : MonoBehaviour
         // Spawn één kogel
         if (bulletPrefab != null && muzzlePoint != null)
         {
-            GameObject bullet = Instantiate(bulletPrefab, muzzlePoint.position, muzzlePoint.rotation);
+            // bepaal richting vóór instantiate
+            Vector3 shootDir = muzzlePoint.forward;
+            
+            GameObject bullet = Instantiate(bulletPrefab, muzzlePoint.position, Quaternion.LookRotation(shootDir));
             Rigidbody rb = bullet.GetComponent<Rigidbody>();
 
             if (rb != null)
             {
-                Vector3 shootDirection = muzzlePoint.forward;
-                rb.AddForce(shootDirection * bulletForce, ForceMode.VelocityChange);
+                // Zet interpolation aan voor smooth movement
+                rb.interpolation = RigidbodyInterpolation.Interpolate;
+                
+                // Schiet de kogel af met AddForce (net als AK47)
+                rb.AddForce(shootDir * bulletForce, ForceMode.VelocityChange);
+                
+                Debug.Log($"Sniper bullet fired! Force: {bulletForce}, Direction: {shootDir}");
             }
+            else
+            {
+                Debug.LogError("Bullet prefab has no Rigidbody!");
+            }
+            
+            // Verwijder bullet na 10 seconden
+            Destroy(bullet, 10f);
+        }
+        else
+        {
+            Debug.LogError("bulletPrefab or muzzlePoint is not assigned!");
         }
 
         // Play muzzle flash bij muzzlePoint
