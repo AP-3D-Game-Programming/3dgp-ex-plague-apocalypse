@@ -15,6 +15,18 @@ public struct CurrentPlayerStats
 public class PlayerStats : MonoBehaviour
 {
     public static PlayerStats Instance;
+    public AudioSource audioSource;
+    public AudioClip hitmarker;
+
+    public AudioClip kaching;
+
+    public AudioClip blood1;
+    public AudioClip blood2;
+    public AudioClip blood3;
+    public List<AudioClip> bloodList = new List<AudioClip>();
+
+    private int bloodIndex = 0;
+
 
     public float fireRate = 1f;
     public bool bouncingBullets = false;
@@ -37,6 +49,9 @@ public class PlayerStats : MonoBehaviour
     public float fireRateMultiplier = 1f;
     public float reloadSpeedMultiplier = 1f;
     public int magazineSizeBonus = 0;
+
+
+
 
     public Dictionary<WeaponType, float> typeDamageMults = new Dictionary<WeaponType, float>();
     public Dictionary<WeaponType, float> typeFireRateMults = new Dictionary<WeaponType, float>();
@@ -91,6 +106,21 @@ public class PlayerStats : MonoBehaviour
         if (_roundManager != null)
         {
             _roundManager.AddPointsToTotal(amount);
+            audioSource.PlayOneShot(hitmarker);
+            // werkt momenteel niet het bloodlist
+            if (bloodList.Count > 0)
+            {
+                audioSource.PlayOneShot(bloodList[bloodIndex]);
+
+                bloodIndex++;
+
+                // Loop back to start if we reach the end
+                if (bloodIndex >= bloodList.Count)
+                    bloodIndex = 0;
+            }   
+
+
+
         }
 
         RefreshUIAnimated();
@@ -99,6 +129,7 @@ public class PlayerStats : MonoBehaviour
     public void RemovePoints(int amount)
     {
         points = Mathf.Max(0, points - amount);
+        audioSource.PlayOneShot(kaching);
         RefreshUIAnimated();
     }
 
